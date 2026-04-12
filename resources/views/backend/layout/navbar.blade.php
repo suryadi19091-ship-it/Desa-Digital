@@ -95,7 +95,7 @@
         <!-- User Menu -->
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
-                <img src="{{ Auth::user()->avatar_url ?? 'https://via.placeholder.com/32x32/28a745/fff?text=' . strtoupper(substr(Auth::user()->name, 0, 1)) }}" 
+                <img src="{{ Auth::user()->avatar_url }}" 
                      class="img-circle elevation-2" alt="User Image" width="32" height="32">
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">

@@ -12,7 +12,7 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="{{ Auth::user()->avatar_url ?? 'https://via.placeholder.com/160x160/28a745/fff?text=' . strtoupper(substr(Auth::user()->name, 0, 1)) }}" 
+                <img src="{{ Auth::user()->avatar_url }}" 
                      class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">

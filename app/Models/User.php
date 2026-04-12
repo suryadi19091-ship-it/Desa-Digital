@@ -37,6 +37,7 @@ class User extends Authenticatable
         'nik',
         'phone',
         'address',
+        'avatar',
         'last_login_at',
     ];
 
@@ -162,5 +163,19 @@ class User extends Authenticatable
         if ($permission) {
             $this->permissions()->detach($permission->id);
         }
+    }
+
+    /**
+     * Get the user's avatar URL.
+     *
+     * @return string
+     */
+    public function getAvatarUrlAttribute(): string
+    {
+        if ($this->avatar && \Illuminate\Support\Facades\Storage::disk('public')->exists($this->avatar)) {
+            return \Illuminate\Support\Facades\Storage::url($this->avatar);
+        }
+
+        return "https://ui-avatars.com/api/?name=" . urlencode($this->name) . "&color=7F9CF5&background=EBF4FF";
     }
 }

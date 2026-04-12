@@ -96,8 +96,8 @@ class DashboardController extends Controller
             // Budget statistics
             if (Gate::allows('manage-village-budget')) {
                 $currentYear = Carbon::now()->year;
-                $stats['total_budgets'] = VillageBudget::whereYear('year', $currentYear)->count();
-                $stats['budget_amount'] = VillageBudget::whereYear('year', $currentYear)->sum('amount') ?? 0;
+                $stats['total_budgets'] = VillageBudget::where('fiscal_year', $currentYear)->count();
+                $stats['budget_amount'] = VillageBudget::where('fiscal_year', $currentYear)->sum('planned_amount') ?? 0;
             }
 
             // Location statistics
@@ -281,7 +281,7 @@ class DashboardController extends Controller
                 foreach ($recentBudgets as $budget) {
                     $activities[] = [
                         'title' => 'Anggaran baru diperbarui',
-                        'description' => $budget->item_name . ' - Rp ' . number_format($budget->amount, 0, ',', '.'),
+                        'description' => $budget->item_name . ' - Rp ' . number_format($budget->planned_amount, 0, ',', '.'),
                         'time' => $budget->created_at->diffForHumans(),
                         'icon' => 'fas fa-coins',
                         'color' => 'emerald'
@@ -587,5 +587,116 @@ class DashboardController extends Controller
             \Log::error('Error clearing logs: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Failed to clear logs.']);
         }
+    }
+
+    /**
+     * Show statistics page
+     */
+    public function statistics()
+    {
+        if (!Gate::allows('generate-reports')) {
+            abort(403, 'Unauthorized access to statistics');
+        }
+
+        $demographics = [
+            'gender' => [
+                'male' => PopulationData::where('gender', 'L')->count(),
+                'female' => PopulationData::where('gender', 'P')->count(),
+            ],
+            'age_groups' => [
+                'child' => PopulationData::where('age', '<', 15)->count(),
+                'productive' => PopulationData::whereBetween('age', [15, 64])->count(),
+                'elderly' => PopulationData::where('age', '>=', 65)->count(),
+            ],
+            'religion' => PopulationData::select('religion', DB::raw('count(*) as total'))
+                ->groupBy('religion')
+                ->get(),
+            'occupation' => PopulationData::select('occupation', DB::raw('count(*) as total'))
+                ->groupBy('occupation')
+                ->orderBy('total', 'desc')
+                ->take(5)
+                ->get(),
+        ];
+
+        $budgetStats = [
+            'total_income' => VillageBudget::where('budget_type', 'pendapatan')->sum('planned_amount'),
+            'total_expense' => VillageBudget::where('budget_type', 'belanja')->sum('planned_amount'),
+            'realization_income' => VillageBudget::where('budget_type', 'pendapatan')->sum('realized_amount'),
+            'realization_expense' => VillageBudget::where('budget_type', 'belanja')->sum('realized_amount'),
+        ];
+
+        return view('backend.pages.statistics', compact('demographics', 'budgetStats'));
+    }
+
+    /**
+     * Show reports page
+     */
+    public function reports()
+    {
+        if (!Gate::allows('generate-reports')) {
+            abort(403, 'Unauthorized access to reports');
+        }
+
+        $reports = [
+            'population' => [
+                'total' => PopulationData::count(),
+                'male' => PopulationData::where('gender', 'L')->count(),
+                'female' => PopulationData::where('gender', 'P')->count(),
+            ],
+            'content' => [
+                'news' => News::count(),
+                'agendas' => Agenda::count(),
+                'messages' => ContactMessage::count(),
+            ],
+            'budget' => [
+                'planned' => VillageBudget::sum('planned_amount'),
+                'realized' => VillageBudget::sum('realized_amount'),
+            ]
+        ];
+
+        return view('backend.pages.reports', compact('reports'));
+    }
+
+    /**
+     * Export reports to CSV
+     */
+    public function exportReports()
+    {
+        if (!Gate::allows('export-data')) {
+            abort(403, 'Unauthorized to export data');
+        }
+
+        $filename = "report-desa-" . date('Y-m-d') . ".csv";
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['Kategori', 'Item', 'Nilai', 'Keterangan'];
+
+        $callback = function() use ($columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            // Population data
+            fputcsv($file, ['Penduduk', 'Total Penduduk', PopulationData::count(), 'Jiwa']);
+            fputcsv($file, ['Penduduk', 'Laki-laki', PopulationData::where('gender', 'L')->count(), 'Jiwa']);
+            fputcsv($file, ['Penduduk', 'Perempuan', PopulationData::where('gender', 'P')->count(), 'Jiwa']);
+
+            // Content data
+            fputcsv($file, ['Konten', 'Berita', News::count(), 'Artikel']);
+            fputcsv($file, ['Konten', 'Agenda', Agenda::count(), 'Kegiatan']);
+
+            // Budget data
+            fputcsv($file, ['Anggaran', 'Total Rencana', VillageBudget::sum('planned_amount'), 'Rupiah']);
+            fputcsv($file, ['Anggaran', 'Total Realisasi', VillageBudget::sum('realized_amount'), 'Rupiah']);
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

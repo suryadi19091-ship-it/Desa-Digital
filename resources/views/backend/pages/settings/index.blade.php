@@ -4,447 +4,500 @@
 @section('header', 'Pengaturan Sistem')
 @section('description', 'Konfigurasi dan pengaturan website desa')
 
+@push('styles')
+<style>
+    .settings-nav-item {
+        transition: all 0.2s ease;
+        border: none;
+        background: transparent;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+    }
+    .settings-nav-item.active {
+        background-color: #3b82f6 !important;
+        color: white !important;
+        box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5);
+    }
+    .settings-nav-item.active i, 
+    .settings-nav-item.active small {
+        color: white !important;
+    }
+    .settings-nav-item:not(.active):hover {
+        background-color: #f3f4f6;
+        transform: translateX(4px);
+    }
+    body.dark-mode .settings-nav-item:not(.active):hover {
+        background-color: #374151;
+    }
+    .settings-card {
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .settings-content.hidden {
+        display: none;
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    .preview-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: 0.5rem;
+        border: 2px dashed #d1d5db;
+        transition: all 0.2s ease;
+    }
+    .preview-container:hover {
+        border-color: #3b82f6;
+    }
+    body.dark-mode .preview-container {
+        border-color: #4b5563;
+    }
+    .sticky-save-bar {
+        position: sticky;
+        top: 20px;
+        z-index: 1020;
+    }
+</style>
+@endpush
+
 @section('content')
-<div class="space-y-6">
-    <!-- Settings Navigation -->
-    <div class="bg-white shadow sm:rounded-lg">
-        <div class="border-b border-gray-200">
-            <nav class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
-                <button onclick="showTab('general')" 
-                        class="settings-tab active border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
-                        data-tab="general">
-                    <i class="fas fa-cog mr-2"></i>
-                    Umum
-                </button>
-                <button onclick="showTab('appearance')" 
-                        class="settings-tab border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
-                        data-tab="appearance">
-                    <i class="fas fa-palette mr-2"></i>
-                    Tampilan
-                </button>
-                <button onclick="showTab('email')" 
-                        class="settings-tab border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
-                        data-tab="email">
-                    <i class="fas fa-envelope mr-2"></i>
-                    Email
-                </button>
-                <button onclick="showTab('security')" 
-                        class="settings-tab border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
-                        data-tab="security">
-                    <i class="fas fa-shield-alt mr-2"></i>
-                    Keamanan
-                </button>
-                <button onclick="showTab('backup')" 
-                        class="settings-tab border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
-                        data-tab="backup">
-                    <i class="fas fa-database mr-2"></i>
-                    Backup
-                </button>
-            </nav>
+<div class="container-fluid pb-5">
+    <div class="row">
+        <!-- Left Sidebar Navigation -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-lg overflow-hidden">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h5 class="mb-0 font-weight-bold"><i class="fas fa-sliders-h mr-2 text-primary"></i> Menu Pengaturan</h5>
+                </div>
+                <div class="card-body p-2">
+                    <div class="nav flex-column" id="settings-tab">
+                        <button type="button" onclick="showTab('general')" class="settings-nav-item active nav-link mb-2 py-3 px-4 rounded-lg d-flex align-items-center" data-tab="general">
+                            <i class="fas fa-cog mr-3 fa-fw text-primary"></i>
+                            <div>
+                                <div class="font-weight-bold">Umum</div>
+                                <small class="text-xs text-muted">Informasi dasar website</small>
+                            </div>
+                        </button>
+                        <button type="button" onclick="showTab('appearance')" class="settings-nav-item nav-link mb-2 py-3 px-4 rounded-lg d-flex align-items-center" data-tab="appearance">
+                            <i class="fas fa-palette mr-3 fa-fw text-primary"></i>
+                            <div>
+                                <div class="font-weight-bold text-dark">Tampilan</div>
+                                <small class="text-xs text-muted">Tema dan mode website</small>
+                            </div>
+                        </button>
+                        <button type="button" onclick="showTab('email')" class="settings-nav-item nav-link mb-2 py-3 px-4 rounded-lg d-flex align-items-center" data-tab="email">
+                            <i class="fas fa-envelope mr-3 fa-fw text-primary"></i>
+                            <div>
+                                <div class="font-weight-bold text-dark">Email</div>
+                                <small class="text-xs text-muted">Konfigurasi SMTP & driver</small>
+                            </div>
+                        </button>
+                        <button type="button" onclick="showTab('security')" class="settings-nav-item nav-link mb-2 py-3 px-4 rounded-lg d-flex align-items-center" data-tab="security">
+                            <i class="fas fa-shield-alt mr-3 fa-fw text-primary"></i>
+                            <div>
+                                <div class="font-weight-bold text-dark">Keamanan</div>
+                                <small class="text-xs text-muted">Autentikasi & sesi</small>
+                            </div>
+                        </button>
+                        <button type="button" onclick="showTab('backup')" class="settings-nav-item nav-link mb-2 py-3 px-4 rounded-lg d-flex align-items-center" data-tab="backup">
+                            <i class="fas fa-database mr-3 fa-fw text-primary"></i>
+                            <div>
+                                <div class="font-weight-bold text-dark">Backup</div>
+                                <small class="text-xs text-muted">Kelola cadangan data</small>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Info / Status Card -->
+            <div class="card shadow-sm border-0 rounded-lg mt-4 bg-gradient-primary text-white">
+                <div class="card-body">
+                    <h6 class="font-weight-bold"><i class="fas fa-info-circle mr-2"></i> Status Sistem</h6>
+                    <hr class="bg-white opacity-25">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Versi Laravel</span>
+                        <span class="badge badge-light">11.x</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>PHP Version</span>
+                        <span class="badge badge-light">8.x</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Environment</span>
+                        <span class="badge badge-success">Production</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <form id="settings-form" action="{{ route('backend.settings.update') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            @method('PUT')
+        <!-- Right Content Area -->
+        <div class="col-md-9">
+            <form id="settings-form" action="{{ route('backend.settings.update') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
 
-            <!-- General Settings Tab -->
-            <div id="tab-general" class="settings-content">
-                <div class="px-6 py-6 space-y-6">
-                    <div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Informasi Website</h3>
+                <!-- General Settings -->
+                <div id="tab-general" class="settings-content settings-card card shadow-sm border-0 rounded-lg">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 font-weight-bold text-primary">Pengaturan Umum</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col-md-12 mb-4">
+                                <label class="font-weight-bold text-dark">Nama Website <span class="text-danger">*</span></label>
+                                <input type="text" name="settings[site_name]" class="form-control form-control-lg border-gray-300" 
+                                       value="{{ old('settings.site_name', $settings['site_name'] ?? '') }}" placeholder="Contoh: Website Resmi Desa Ciuwlan">
+                                <small class="text-muted">Nama ini akan muncul di judul browser dan navbar.</small>
+                            </div>
+                            
+                            <div class="col-md-12 mb-4">
+                                <label class="font-weight-bold text-dark">Deskripsi Website</label>
+                                <textarea name="settings[site_description]" rows="3" class="form-control border-gray-300">{{ old('settings.site_description', $settings['site_description'] ?? '') }}</textarea>
+                                <small class="text-muted">Gunakan deskripsi yang SEO friendly untuk meningkatkan visibilitas di Google.</small>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label class="font-weight-bold d-block text-dark">Logo Website</label>
+                                <div class="preview-container p-3 d-flex align-items-center bg-light">
+                                    <img id="logo-preview" class="img-fluid rounded mr-3" style="max-height: 80px;"
+                                         src="{{ !empty($settings['site_logo']) ? Storage::url($settings['site_logo']) : 'https://placehold.co/200x80/eef2ff/6366f1?text=LOGO' }}">
+                                    <div>
+                                        <input type="file" id="site_logo" name="site_logo" accept="image/*" class="d-none">
+                                        <label for="site_logo" class="btn btn-sm btn-primary mb-1 shadow-sm">Pilih File</label>
+                                        <p class="mb-0 text-xs text-muted">PNG, JPG (Maks. 2MB)</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label class="font-weight-bold d-block text-dark">Favicon</label>
+                                <div class="preview-container p-3 d-flex align-items-center bg-light">
+                                    <img id="favicon-preview" class="img-fluid rounded mr-3 shadow-sm" style="height: 40px; width: 40px;"
+                                         src="{{ !empty($settings['site_favicon']) ? Storage::url($settings['site_favicon']) : 'https://placehold.co/40x40/eef2ff/6366f1?text=F' }}">
+                                    <div>
+                                        <input type="file" id="site_favicon" name="site_favicon" accept="image/*" class="d-none">
+                                        <label for="site_favicon" class="btn btn-sm btn-primary mb-1 shadow-sm">Pilih File</label>
+                                        <p class="mb-0 text-xs text-muted">Format .ico atau .png</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+                        <h6 class="font-weight-bold text-dark mb-4"><i class="fas fa-address-book mr-2 text-primary"></i> Informasi Kontak & Alamat</h6>
                         
-                        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                            <!-- Site Name -->
-                            <div class="sm:col-span-2">
-                                <label for="site_name" class="block text-sm font-medium text-gray-700">
-                                    Nama Website <span class="text-red-500">*</span>
-                                </label>
-                                <input type="text" name="settings[site_name]" id="site_name" 
-                                       value="{{ old('settings.site_name', $settings['site_name'] ?? 'Website Desa Ciuwlan') }}"
-                                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                                <p class="mt-1 text-sm text-gray-500">Nama website yang akan ditampilkan di header</p>
-                            </div>
-
-                            <!-- Site Description -->
-                            <div class="sm:col-span-2">
-                                <label for="site_description" class="block text-sm font-medium text-gray-700">Deskripsi Website</label>
-                                <textarea name="settings[site_description]" id="site_description" rows="3"
-                                          class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">{{ old('settings.site_description', $settings['site_description'] ?? 'Website resmi Desa Ciuwlan, Kecamatan Telagsari') }}</textarea>
-                                <p class="mt-1 text-sm text-gray-500">Deskripsi singkat untuk SEO dan meta description</p>
-                            </div>
-
-                            <!-- Site Logo -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Logo Website</label>
-                                <div class="flex items-center space-x-4">
-                                    <div class="flex-shrink-0">
-                                        <img id="logo-preview" class="h-16 w-16 rounded-lg object-cover border-2 border-gray-300" 
-                                             src="{{ !empty($settings['site_logo']) ? Storage::url($settings['site_logo']) : 'https://via.placeholder.com/64x64/e5e7eb/6b7280?text=LOGO' }}" 
-                                             alt="Logo Preview">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label class="font-weight-bold text-dark">Email Desa</label>
+                                <div class="input-group shadow-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-white border-right-0"><i class="fas fa-envelope text-muted"></i></span>
                                     </div>
-                                    <div>
-                                        <input type="file" id="site_logo" name="site_logo" accept="image/*" class="hidden">
-                                        <label for="site_logo" 
-                                               class="cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50">
-                                            Pilih Logo
-                                        </label>
-                                        <p class="mt-1 text-xs text-gray-500">PNG, JPG, SVG up to 2MB</p>
-                                    </div>
+                                    <input type="email" name="settings[contact_email]" class="form-control border-left-0" value="{{ $settings['contact_email'] ?? '' }}">
                                 </div>
                             </div>
-
-                            <!-- Site Favicon -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Favicon</label>
-                                <div class="flex items-center space-x-4">
-                                    <div class="flex-shrink-0">
-                                        <img id="favicon-preview" class="h-8 w-8 rounded object-cover border-2 border-gray-300" 
-                                             src="{{ !empty($settings['site_favicon']) ? Storage::url($settings['site_favicon']) : 'https://via.placeholder.com/32x32/e5e7eb/6b7280?text=F' }}" 
-                                             alt="Favicon Preview">
+                            <div class="col-md-6 mb-4">
+                                <label class="font-weight-bold text-dark">Telepon / WhatsApp</label>
+                                <div class="input-group shadow-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-white border-right-0"><i class="fas fa-phone text-muted"></i></span>
                                     </div>
-                                    <div>
-                                        <input type="file" id="site_favicon" name="site_favicon" accept="image/*" class="hidden">
-                                        <label for="site_favicon" 
-                                               class="cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50">
-                                            Pilih Favicon
-                                        </label>
-                                        <p class="mt-1 text-xs text-gray-500">ICO, PNG 32x32px</p>
-                                    </div>
+                                    <input type="text" name="settings[contact_phone]" class="form-control border-left-0" value="{{ $settings['contact_phone'] ?? '' }}">
                                 </div>
                             </div>
-
-                            <!-- Contact Info -->
-                            <div>
-                                <label for="contact_email" class="block text-sm font-medium text-gray-700">Email Kontak</label>
-                                <input type="email" name="settings[contact_email]" id="contact_email" 
-                                       value="{{ old('settings.contact_email', $settings['contact_email'] ?? 'info@desaciuwlan.com') }}"
-                                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                            </div>
-
-                            <div>
-                                <label for="contact_phone" class="block text-sm font-medium text-gray-700">Telepon Kontak</label>
-                                <input type="tel" name="settings[contact_phone]" id="contact_phone" 
-                                       value="{{ old('settings.contact_phone', $settings['contact_phone'] ?? '+62 xxx xxxx xxxx') }}"
-                                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                            </div>
-
-                            <!-- Address -->
-                            <div class="sm:col-span-2">
-                                <label for="contact_address" class="block text-sm font-medium text-gray-700">Alamat Lengkap</label>
-                                <textarea name="settings[contact_address]" id="contact_address" rows="2"
-                                          class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">{{ old('settings.contact_address', $settings['contact_address'] ?? 'Desa Ciuwlan, Kecamatan Telagsari, Kabupaten Cirebon, Jawa Barat') }}</textarea>
-                            </div>
-
-                            <!-- Social Media -->
-                            <div>
-                                <label for="social_facebook" class="block text-sm font-medium text-gray-700">Facebook URL</label>
-                                <input type="url" name="settings[social_facebook]" id="social_facebook" 
-                                       value="{{ old('settings.social_facebook', $settings['social_facebook'] ?? '') }}"
-                                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                            </div>
-
-                            <div>
-                                <label for="social_instagram" class="block text-sm font-medium text-gray-700">Instagram URL</label>
-                                <input type="url" name="settings[social_instagram]" id="social_instagram" 
-                                       value="{{ old('settings.social_instagram', $settings['social_instagram'] ?? '') }}"
-                                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <div class="col-md-12">
+                                <label class="font-weight-bold text-dark">Alamat Kantor Desa</label>
+                                <textarea name="settings[contact_address]" rows="2" class="form-control shadow-sm">{{ $settings['contact_address'] ?? '' }}</textarea>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Appearance Settings Tab -->
-            <div id="tab-appearance" class="settings-content hidden">
-                <div class="px-6 py-6 space-y-6">
-                    <div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Pengaturan Tampilan</h3>
-                        
-                        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                            <!-- Theme -->
-                            <div>
-                                <label for="theme" class="block text-sm font-medium text-gray-700">Tema Website</label>
-                                <select name="settings[theme]" id="theme"
-                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                                    <option value="default" {{ ($settings['theme'] ?? 'default') === 'default' ? 'selected' : '' }}>Default</option>
-                                    <option value="blue" {{ ($settings['theme'] ?? '') === 'blue' ? 'selected' : '' }}>Blue</option>
-                                    <option value="green" {{ ($settings['theme'] ?? '') === 'green' ? 'selected' : '' }}>Green</option>
-                                </select>
-                            </div>
-
-                            <!-- Maintenance Mode -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Mode Maintenance</label>
-                                <div class="mt-2">
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" name="settings[maintenance_mode]" value="1" 
-                                               {{ ($settings['maintenance_mode'] ?? false) ? 'checked' : '' }}
-                                               class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                        <span class="ml-2 text-sm text-gray-600">Aktifkan mode maintenance</span>
-                                    </label>
+                <!-- Appearance Settings -->
+                <div id="tab-appearance" class="settings-content settings-card card shadow-sm border-0 rounded-lg hidden">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 font-weight-bold text-primary">Tampilan & Tema</h5>
+                    </div>
+                    <div class="card-body p-4 text-center">
+                        <div class="row justify-content-center py-4">
+                            <div class="col-md-10">
+                                <i class="fas fa-paint-roller fa-4x text-light mb-4"></i>
+                                <h4 class="font-weight-bold text-dark">Kustomisasi Visual</h4>
+                                <p class="text-muted">Pilih skema warna utama untuk dashboard dan website publik.</p>
+                                
+                                <div class="row mt-5">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="p-4 rounded-xl border-2 {{ ($settings['theme'] ?? 'default') === 'default' ? 'border-primary bg-primary-light' : 'border-gray-200 bg-white' }} shadow-sm cursor-pointer theme-select" onclick="setTheme('default', this)">
+                                            <div class="flex items-center justify-between mb-3">
+                                                <div class="h-8 w-8 bg-blue-600 rounded-full"></div>
+                                                @if(($settings['theme'] ?? 'default') === 'default')
+                                                    <i class="fas fa-check-circle text-primary"></i>
+                                                @endif
+                                            </div>
+                                            <div class="font-weight-bold text-dark text-left">Modern Blue (Default)</div>
+                                            <div class="text-xs text-muted text-left">Warna biru profesional dan bersih.</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="p-4 rounded-xl border-2 {{ ($settings['theme'] ?? '') === 'green' ? 'border-primary bg-primary-light' : 'border-gray-200 bg-white' }} shadow-sm cursor-pointer theme-select" onclick="setTheme('green', this)">
+                                            <div class="flex items-center justify-between mb-3">
+                                                <div class="h-8 w-8 bg-green-600 rounded-full"></div>
+                                                @if(($settings['theme'] ?? '') === 'green')
+                                                    <i class="fas fa-check-circle text-primary"></i>
+                                                @endif
+                                            </div>
+                                            <div class="font-weight-bold text-dark text-left">Nature Green</div>
+                                            <div class="text-xs text-muted text-left">Warna hijau segar bertema alam pedesaan.</div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <p class="mt-1 text-xs text-gray-500">Website tidak dapat diakses publik saat mode maintenance aktif</p>
+
+                                <input type="hidden" name="settings[theme]" id="theme_input" value="{{ $settings['theme'] ?? 'default' }}">
+
+                                <div class="mt-5 p-4 bg-light rounded-lg text-left border">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <h6 class="font-weight-bold mb-1 text-dark">Mode Maintenance</h6>
+                                            <p class="text-sm text-muted mb-0">Website publik tidak bisa diakses saat aktif.</p>
+                                        </div>
+                                        <div class="custom-control custom-switch custom-switch-lg">
+                                            <input type="checkbox" name="settings[maintenance_mode]" value="1" class="custom-control-input" id="maintenanceMode" {{ ($settings['maintenance_mode'] ?? false) ? 'checked' : '' }}>
+                                            <label class="custom-control-label cursor-pointer" for="maintenanceMode"></label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Email Settings Tab -->
-            <div id="tab-email" class="settings-content hidden">
-                <div class="px-6 py-6 space-y-6">
-                    <div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Konfigurasi Email</h3>
+                <!-- Email Settings -->
+                <div id="tab-email" class="settings-content settings-card card shadow-sm border-0 rounded-lg hidden">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 font-weight-bold text-primary">Konfigurasi Email (SMTP)</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="alert alert-info border-0 rounded-lg shadow-sm">
+                            <i class="fas fa-info-circle mr-2"></i> Pengaturan ini diperlukan agar sistem dapat mengirimkan notifikasi dan laporan secara otomatis.
+                        </div>
                         
-                        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                            <!-- Mail Driver -->
-                            <div>
-                                <label for="mail_driver" class="block text-sm font-medium text-gray-700">Mail Driver</label>
-                                <select name="settings[mail_driver]" id="mail_driver"
-                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                                    <option value="smtp" {{ ($settings['mail_driver'] ?? 'smtp') === 'smtp' ? 'selected' : '' }}>SMTP</option>
-                                    <option value="sendmail" {{ ($settings['mail_driver'] ?? '') === 'sendmail' ? 'selected' : '' }}>Sendmail</option>
+                        <div class="row mt-4">
+                            <div class="col-md-6 mb-4">
+                                <label class="font-weight-bold text-dark">Mail Driver</label>
+                                <select name="settings[mail_driver]" class="form-control custom-select shadow-sm">
+                                    <option value="smtp" {{ ($settings['mail_driver'] ?? '') === 'smtp' ? 'selected' : '' }}>SMTP (GMAIL/MAILTRAP)</option>
                                     <option value="mailgun" {{ ($settings['mail_driver'] ?? '') === 'mailgun' ? 'selected' : '' }}>Mailgun</option>
+                                    <option value="log" {{ ($settings['mail_driver'] ?? '') === 'log' ? 'selected' : '' }}>Log (Hanya Testing)</option>
                                 </select>
                             </div>
-
-                            <!-- SMTP Host -->
-                            <div>
-                                <label for="mail_host" class="block text-sm font-medium text-gray-700">SMTP Host</label>
-                                <input type="text" name="settings[mail_host]" id="mail_host" 
-                                       value="{{ old('settings.mail_host', $settings['mail_host'] ?? 'smtp.gmail.com') }}"
-                                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <div class="col-md-6 mb-4">
+                                <label class="font-weight-bold text-dark">Host SMTP</label>
+                                <input type="text" name="settings[mail_host]" class="form-control shadow-sm" value="{{ $settings['mail_host'] ?? '' }}" placeholder="smtp.gmail.com">
                             </div>
-
-                            <!-- SMTP Port -->
-                            <div>
-                                <label for="mail_port" class="block text-sm font-medium text-gray-700">SMTP Port</label>
-                                <input type="number" name="settings[mail_port]" id="mail_port" 
-                                       value="{{ old('settings.mail_port', $settings['mail_port'] ?? '587') }}"
-                                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <div class="col-md-4 mb-4">
+                                <label class="font-weight-bold text-dark">Port</label>
+                                <input type="number" name="settings[mail_port]" class="form-control shadow-sm" value="{{ $settings['mail_port'] ?? '587' }}">
                             </div>
-
-                            <!-- SMTP Username -->
-                            <div>
-                                <label for="mail_username" class="block text-sm font-medium text-gray-700">SMTP Username</label>
-                                <input type="email" name="settings[mail_username]" id="mail_username" 
-                                       value="{{ old('settings.mail_username', $settings['mail_username'] ?? '') }}"
-                                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <div class="col-md-8 mb-4">
+                                <label class="font-weight-bold text-dark">Username / Email</label>
+                                <input type="text" name="settings[mail_username]" class="form-control shadow-sm" value="{{ $settings['mail_username'] ?? '' }}">
                             </div>
-
-                            <!-- SMTP Password -->
-                            <div class="sm:col-span-2">
-                                <label for="mail_password" class="block text-sm font-medium text-gray-700">SMTP Password</label>
-                                <input type="password" name="settings[mail_password]" id="mail_password" 
-                                       value="{{ old('settings.mail_password', $settings['mail_password'] ?? '') }}"
-                                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                                <p class="mt-1 text-xs text-gray-500">Kosongkan jika tidak ingin mengubah password</p>
-                            </div>
-
-                            <!-- From Address -->
-                            <div>
-                                <label for="mail_from_address" class="block text-sm font-medium text-gray-700">From Address</label>
-                                <input type="email" name="settings[mail_from_address]" id="mail_from_address" 
-                                       value="{{ old('settings.mail_from_address', $settings['mail_from_address'] ?? 'noreply@desaciuwlan.com') }}"
-                                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                            </div>
-
-                            <div>
-                                <label for="mail_from_name" class="block text-sm font-medium text-gray-700">From Name</label>
-                                <input type="text" name="settings[mail_from_name]" id="mail_from_name" 
-                                       value="{{ old('settings.mail_from_name', $settings['mail_from_name'] ?? 'Website Desa Ciuwlan') }}"
-                                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <div class="col-md-12 mb-4">
+                                <label class="font-weight-bold text-dark">Password <small class="text-danger">(Kosongkan jika tidak ingin mengubah password)</small></label>
+                                <input type="password" name="settings[mail_password]" class="form-control shadow-sm" placeholder="••••••••••••">
                             </div>
                         </div>
 
-                        <!-- Test Email -->
-                        <div class="mt-6 pt-6 border-t border-gray-200">
-                            <h4 class="text-base font-medium text-gray-900 mb-4">Test Email</h4>
-                            <div class="flex items-center space-x-4">
-                                <div class="flex-1">
-                                    <input type="email" id="test_email" placeholder="Masukkan email untuk test"
-                                           class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                                </div>
-                                <button type="button" onclick="sendTestEmail()" 
-                                        class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                                    <i class="fas fa-paper-plane mr-2"></i>
-                                    Kirim Test Email
+                        <h6 class="font-weight-bold border-top pt-4 mt-2 text-dark"><i class="fas fa-user-edit mr-2 text-muted"></i> Identitas Pengirim</h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label class="font-weight-bold text-dark">Email Pengirim</label>
+                                <input type="email" name="settings[mail_from_address]" class="form-control shadow-sm" value="{{ $settings['mail_from_address'] ?? '' }}">
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="font-weight-bold text-dark">Nama Pengirim</label>
+                                <input type="text" name="settings[mail_from_name]" class="form-control shadow-sm" value="{{ $settings['mail_from_name'] ?? '' }}">
+                            </div>
+                        </div>
+
+                        <div class="bg-light p-4 rounded-xl mt-3 border">
+                            <h6 class="font-weight-bold mb-3 text-dark"><i class="fas fa-vial mr-2 text-warning"></i> Uji Koneksi Email</h6>
+                            <p class="text-xs text-muted mb-3">Kirim email percobaan untuk memastikan konfigurasi SMTP Anda sudah benar.</p>
+                            <div class="d-flex">
+                                <input type="email" id="test_email" class="form-control mr-3 shadow-sm" placeholder="Email tujuan...">
+                                <button type="button" onclick="sendTestEmail()" class="btn btn-warning px-4 shadow-sm font-weight-bold">
+                                    <i class="fas fa-paper-plane mr-2"></i> Test
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Security Settings Tab -->
-            <div id="tab-security" class="settings-content hidden">
-                <div class="px-6 py-6 space-y-6">
-                    <div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Pengaturan Keamanan</h3>
+                <!-- Security Settings -->
+                <div id="tab-security" class="settings-content settings-card card shadow-sm border-0 rounded-lg hidden">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 font-weight-bold text-primary">Keamanan Sesi & Akun</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label class="font-weight-bold text-dark">Durasi Sesi (menit)</label>
+                                <input type="number" name="settings[session_lifetime]" class="form-control shadow-sm" value="{{ $settings['session_lifetime'] ?? '120' }}">
+                                <small class="text-xs text-muted">Pengguna akan otomatis logout jika tidak aktif selama durasi ini.</small>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="font-weight-bold text-dark">Maksimal Gagal Login</label>
+                                <input type="number" name="settings[max_login_attempts]" class="form-control shadow-sm" value="{{ $settings['max_login_attempts'] ?? '5' }}">
+                                <small class="text-xs text-muted">Berapa kali percobaan login sebelum akun dikunci sementara.</small>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+                        <h6 class="font-weight-bold mb-4 text-dark"><i class="fas fa-key mr-2 text-muted"></i> Standar Keamanan Kata Sandi</h6>
                         
-                        <div class="space-y-6">
-                            <!-- Session Settings -->
-                            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                                <div>
-                                    <label for="session_lifetime" class="block text-sm font-medium text-gray-700">Session Lifetime (menit)</label>
-                                    <input type="number" name="settings[session_lifetime]" id="session_lifetime" 
-                                           value="{{ old('settings.session_lifetime', $settings['session_lifetime'] ?? '120') }}"
-                                           class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                                </div>
-
-                                <div>
-                                    <label for="max_login_attempts" class="block text-sm font-medium text-gray-700">Max Login Attempts</label>
-                                    <input type="number" name="settings[max_login_attempts]" id="max_login_attempts" 
-                                           value="{{ old('settings.max_login_attempts', $settings['max_login_attempts'] ?? '5') }}"
-                                           class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                                </div>
+                        <div class="p-4 bg-light rounded-lg border">
+                            <div class="custom-control custom-checkbox mb-3">
+                                <input type="checkbox" name="settings[password_require_uppercase]" class="custom-control-input" id="checkUpper" value="1" {{ ($settings['password_require_uppercase'] ?? false) ? 'checked' : '' }}>
+                                <label class="custom-control-label font-weight-bold cursor-pointer" for="checkUpper">Wajib Huruf Besar (A-Z)</label>
                             </div>
-
-                            <!-- Password Policy -->
-                            <div>
-                                <h4 class="text-base font-medium text-gray-900 mb-3">Password Policy</h4>
-                                <div class="space-y-3">
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" name="settings[password_require_uppercase]" value="1" 
-                                               {{ ($settings['password_require_uppercase'] ?? false) ? 'checked' : '' }}
-                                               class="rounded border-gray-300 text-blue-600">
-                                        <span class="ml-2 text-sm text-gray-600">Wajib menggunakan huruf besar</span>
-                                    </label>
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" name="settings[password_require_numbers]" value="1" 
-                                               {{ ($settings['password_require_numbers'] ?? false) ? 'checked' : '' }}
-                                               class="rounded border-gray-300 text-blue-600">
-                                        <span class="ml-2 text-sm text-gray-600">Wajib menggunakan angka</span>
-                                    </label>
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" name="settings[password_require_symbols]" value="1" 
-                                               {{ ($settings['password_require_symbols'] ?? false) ? 'checked' : '' }}
-                                               class="rounded border-gray-300 text-blue-600">
-                                        <span class="ml-2 text-sm text-gray-600">Wajib menggunakan simbol</span>
-                                    </label>
-                                </div>
+                            <div class="custom-control custom-checkbox mb-3">
+                                <input type="checkbox" name="settings[password_require_numbers]" class="custom-control-input" id="checkNum" value="1" {{ ($settings['password_require_numbers'] ?? false) ? 'checked' : '' }}>
+                                <label class="custom-control-label font-weight-bold cursor-pointer" for="checkNum">Wajib Angka (0-9)</label>
                             </div>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" name="settings[password_require_symbols]" class="custom-control-input" id="checkSym" value="1" {{ ($settings['password_require_symbols'] ?? false) ? 'checked' : '' }}>
+                                <label class="custom-control-label font-weight-bold cursor-pointer" for="checkSym">Wajib Simbol (@, #, $, !)</label>
+                            </div>
+                        </div>
 
-                            <!-- Two Factor Authentication -->
-                            <div>
-                                <h4 class="text-base font-medium text-gray-900 mb-3">Two Factor Authentication</h4>
-                                <label class="inline-flex items-center">
-                                    <input type="checkbox" name="settings[enable_2fa]" value="1" 
-                                           {{ ($settings['enable_2fa'] ?? false) ? 'checked' : '' }}
-                                           class="rounded border-gray-300 text-blue-600">
-                                    <span class="ml-2 text-sm text-gray-600">Aktifkan 2FA untuk semua pengguna admin</span>
-                                </label>
+                        <div class="mt-5 p-4 border-left border-warning bg-warning-light rounded-right">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="font-weight-bold text-dark mb-1">Dua Faktor Autentikasi (2FA)</h6>
+                                    <p class="text-xs text-muted mb-0">Wajibkan verifikasi tambahan via Email/App saat login admin.</p>
+                                </div>
+                                <div class="custom-control custom-switch custom-switch-lg text-warning">
+                                    <input type="checkbox" name="settings[enable_2fa]" class="custom-control-input" id="enable2fa" value="1" {{ ($settings['enable_2fa'] ?? false) ? 'checked' : '' }}>
+                                    <label class="custom-control-label cursor-pointer" for="enable2fa"></label>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Backup Settings Tab -->
-            <div id="tab-backup" class="settings-content hidden">
-                <div class="px-6 py-6 space-y-6">
-                    <div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Pengaturan Backup</h3>
-                        
-                        <div class="space-y-6">
-                            <!-- Auto Backup -->
-                            <div>
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <h4 class="text-base font-medium text-gray-900">Auto Backup</h4>
-                                        <p class="text-sm text-gray-500">Backup otomatis database dan file</p>
+                <!-- Backup Settings -->
+                <div id="tab-backup" class="settings-content settings-card card shadow-sm border-0 rounded-lg hidden">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 font-weight-bold text-primary">Manajemen Pencadangan (Backup)</h5>
+                    </div>
+                    <div class="card-body p-4 text-center">
+                        <div class="p-5 bg-white border rounded-xl mb-4 shadow-sm">
+                            <div class="mb-4">
+                                <span class="bg-primary-light p-4 rounded-circle d-inline-block shadow-sm">
+                                    <i class="fas fa-cloud-upload-alt fa-3x text-primary"></i>
+                                </span>
+                            </div>
+                            <h4 class="font-weight-bold text-dark">Cadangkan Data Desa</h4>
+                            <p class="text-muted mb-4 px-md-5">Seluruh database dan file yang diunggah dapat dicadangkan secara manual atau otomatis ke penyimpanan aman.</p>
+                            
+                            <div class="d-flex flex-wrap justify-content-center">
+                                <button type="button" onclick="createBackup('database')" class="btn btn-outline-primary m-2 px-4 shadow-sm border-2 font-weight-bold d-flex align-items-center">
+                                    <i class="fas fa-database mr-2"></i> Database Only
+                                </button>
+                                <button type="button" onclick="createBackup('files')" class="btn btn-outline-info m-2 px-4 shadow-sm border-2 font-weight-bold d-flex align-items-center">
+                                    <i class="fas fa-folder-open mr-2"></i> Files Only
+                                </button>
+                                <button type="button" onclick="createBackup('full')" class="btn btn-primary m-2 px-5 py-2 shadow-lg font-weight-bold d-flex align-items-center">
+                                    <i class="fas fa-archive mr-2"></i> FULL BACKUP
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="text-left py-3 px-1">
+                            <h6 class="font-weight-bold mb-4 text-dark"><i class="fas fa-clock mr-2 text-muted"></i> Penjadwalan Otomatis</h6>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="text-muted small font-weight-bold">Berapa Sering?</label>
+                                    <select name="settings[backup_frequency]" class="form-control shadow-sm">
+                                        <option value="daily" {{ ($settings['backup_frequency'] ?? '') === 'daily' ? 'selected' : '' }}>Sekali Sehari</option>
+                                        <option value="weekly" {{ ($settings['backup_frequency'] ?? '') === 'weekly' ? 'selected' : '' }}>Seminggu Sekali</option>
+                                        <option value="monthly" {{ ($settings['backup_frequency'] ?? '') === 'monthly' ? 'selected' : '' }}>Sebulan Sekali</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="text-muted small font-weight-bold">Ingat Berapa Lama? (Hari)</label>
+                                    <input type="number" name="settings[backup_retention]" class="form-control shadow-sm" value="{{ $settings['backup_retention'] ?? '30' }}">
+                                </div>
+                                <div class="col-md-12 mt-2">
+                                    <div class="bg-light p-3 rounded-lg d-flex align-items-center justify-content-between border">
+                                        <div class="font-weight-bold text-dark">Aktifkan Backup Otomatis</div>
+                                        <div class="custom-control custom-switch custom-switch-lg">
+                                            <input type="checkbox" name="settings[auto_backup]" class="custom-control-input" id="checkAuto" value="1" {{ ($settings['auto_backup'] ?? false) ? 'checked' : '' }}>
+                                            <label class="custom-control-label cursor-pointer" for="checkAuto"></label>
+                                        </div>
                                     </div>
-                                    <label class="inline-flex items-center">
-                                        <input type="checkbox" name="settings[auto_backup]" value="1" 
-                                               {{ ($settings['auto_backup'] ?? false) ? 'checked' : '' }}
-                                               class="rounded border-gray-300 text-blue-600">
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- Backup Frequency -->
-                            <div>
-                                <label for="backup_frequency" class="block text-sm font-medium text-gray-700">Frekuensi Backup</label>
-                                <select name="settings[backup_frequency]" id="backup_frequency"
-                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                                    <option value="daily" {{ ($settings['backup_frequency'] ?? 'daily') === 'daily' ? 'selected' : '' }}>Harian</option>
-                                    <option value="weekly" {{ ($settings['backup_frequency'] ?? '') === 'weekly' ? 'selected' : '' }}>Mingguan</option>
-                                    <option value="monthly" {{ ($settings['backup_frequency'] ?? '') === 'monthly' ? 'selected' : '' }}>Bulanan</option>
-                                </select>
-                            </div>
-
-                            <!-- Backup Retention -->
-                            <div>
-                                <label for="backup_retention" class="block text-sm font-medium text-gray-700">Simpan Backup (hari)</label>
-                                <input type="number" name="settings[backup_retention]" id="backup_retention" 
-                                       value="{{ old('settings.backup_retention', $settings['backup_retention'] ?? '30') }}"
-                                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                                <p class="mt-1 text-sm text-gray-500">Backup lama akan dihapus otomatis</p>
-                            </div>
-
-                            <!-- Manual Backup -->
-                            <div class="pt-6 border-t border-gray-200">
-                                <h4 class="text-base font-medium text-gray-900 mb-4">Manual Backup</h4>
-                                <div class="flex space-x-4">
-                                    <button type="button" onclick="createBackup('database')" 
-                                            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                                        <i class="fas fa-database mr-2"></i>
-                                        Backup Database
-                                    </button>
-                                    <button type="button" onclick="createBackup('files')" 
-                                            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                                        <i class="fas fa-folder mr-2"></i>
-                                        Backup Files
-                                    </button>
-                                    <button type="button" onclick="createBackup('full')" 
-                                            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                                        <i class="fas fa-archive mr-2"></i>
-                                        Full Backup
-                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Save Button -->
-            <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-end space-x-3">
-                <button type="button" onclick="resetSettings()" 
-                        class="bg-gray-200 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-300">
-                    Reset
-                </button>
-                <button type="submit" id="save-settings"
-                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
-                    <i class="fas fa-save mr-2"></i>
-                    <span id="save-text">Simpan Pengaturan</span>
-                    <div id="save-loading" class="hidden ml-2">
-                        <i class="fas fa-spinner fa-spin"></i>
+                <!-- Sticky Save Action Bar -->
+                <div class="sticky-save-bar mt-4">
+                    <div class="card shadow rounded-pill border-0">
+                        <div class="card-body py-2 px-4 d-flex justify-content-between align-items-center bg-white rounded-pill">
+                            <div class="d-flex align-items-center">
+                                <div id="tab-label" class="badge badge-pill badge-primary px-3 py-2 text-uppercase font-weight-bold">Umum</div>
+                                <span class="text-muted d-none d-lg-inline ml-3 text-sm">Pastikan semua data sudah benar sebelum menyimpan.</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <button type="button" onclick="resetSettings()" class="btn btn-link text-danger font-weight-bold mr-3">Reset</button>
+                                <button type="submit" id="save-settings" class="btn btn-primary rounded-pill px-5 shadow font-weight-bold d-flex align-items-center">
+                                    <i class="fas fa-save mr-2"></i> 
+                                    <span id="save-text">Simpan</span>
+                                    <div id="save-loading" class="hidden ml-2">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </button>
-            </div>
-        </form>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
+<!-- Extra Helper Classes -->
+<style>
+    .rounded-xl { border-radius: 1rem !important; }
+    .bg-primary-light { background-color: rgba(59, 130, 246, 0.1) !important; }
+    .bg-warning-light { background-color: rgba(245, 158, 11, 0.1) !important; }
+    .custom-switch-lg .custom-control-label::before {
+        height: 1.5rem;
+        width: 2.75rem;
+        border-radius: 1rem;
+    }
+    .custom-switch-lg .custom-control-label::after {
+        width: calc(1.5rem - 4px);
+        height: calc(1.5rem - 4px);
+        background-color: #adb5bd;
+        border-radius: 1rem;
+    }
+    .custom-switch-lg .custom-control-input:checked ~ .custom-control-label::after {
+        transform: translateX(1.25rem);
+        background-color: #fff;
+    }
+    .cursor-pointer { cursor: pointer; }
+</style>
 @endsection
 
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Tab functionality
-        const tabs = document.querySelectorAll('.settings-tab');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', function() {
-                const targetTab = this.getAttribute('data-tab');
-                showTab(targetTab);
-            });
-        });
-
-        // Image preview functionality
         setupImagePreview('site_logo', 'logo-preview');
         setupImagePreview('site_favicon', 'favicon-preview');
 
-        // Form submission
         const form = document.getElementById('settings-form');
         form.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -453,26 +506,65 @@
     });
 
     function showTab(tabName) {
-        // Hide all content
-        document.querySelectorAll('.settings-content').forEach(content => {
-            content.classList.add('hidden');
+        const navItems = document.querySelectorAll('.settings-nav-item');
+        const contents = document.querySelectorAll('.settings-content');
+        
+        // Hide animate
+        contents.forEach(content => {
+            content.style.opacity = '0';
+            content.style.transform = 'translateY(10px)';
+            setTimeout(() => content.classList.add('hidden'), 50);
         });
 
-        // Remove active class from all tabs
-        document.querySelectorAll('.settings-tab').forEach(tab => {
-            tab.classList.remove('active');
-            tab.classList.add('border-transparent', 'text-gray-500');
-            tab.classList.remove('border-blue-500', 'text-blue-600');
+        navItems.forEach(item => {
+            item.classList.remove('active');
+            item.querySelector('.font-weight-bold').classList.add('text-dark');
         });
 
-        // Show target content
-        document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+        setTimeout(() => {
+            const targetContent = document.getElementById(`tab-${tabName}`);
+            targetContent.classList.remove('hidden');
+            
+            requestAnimationFrame(() => {
+                targetContent.style.opacity = '1';
+                targetContent.style.transform = 'translateY(0)';
+            });
 
-        // Add active class to target tab
-        const targetTab = document.querySelector(`[data-tab="${tabName}"]`);
-        targetTab.classList.add('active');
-        targetTab.classList.remove('border-transparent', 'text-gray-500');
-        targetTab.classList.add('border-blue-500', 'text-blue-600');
+            const activeBtn = document.querySelector(`[data-tab="${tabName}"]`);
+            activeBtn.classList.add('active');
+            activeBtn.querySelector('.font-weight-bold').classList.remove('text-dark');
+            
+            const labelMap = {
+                'general': 'Umum',
+                'appearance': 'Tampilan',
+                'email': 'Email',
+                'security': 'Keamanan',
+                'backup': 'Backup'
+            };
+            document.getElementById('tab-label').textContent = labelMap[tabName];
+        }, 100);
+    }
+
+    function setTheme(theme, element) {
+        document.getElementById('theme_input').value = theme;
+        document.querySelectorAll('.theme-select').forEach(card => {
+            card.classList.remove('border-primary', 'bg-primary-light');
+            card.classList.add('border-gray-200', 'bg-white');
+            const icon = card.querySelector('.fa-check-circle');
+            if(icon) icon.remove();
+            
+            // Fix text muted for labels
+            const label = card.nextElementSibling;
+            if(label) label.classList.add('text-muted');
+        });
+
+        element.classList.remove('border-gray-200', 'bg-white');
+        element.classList.add('border-primary', 'bg-primary-light');
+        if(element.nextElementSibling) element.nextElementSibling.classList.remove('text-muted');
+        
+        const check = document.createElement('i');
+        check.className = 'fas fa-check-circle text-primary';
+        element.querySelector('.flex').appendChild(check);
     }
 
     function setupImagePreview(inputId, previewId) {
@@ -498,12 +590,10 @@
         const saveText = document.getElementById('save-text');
         const saveLoading = document.getElementById('save-loading');
 
-        // Show loading state
         saveBtn.disabled = true;
         saveText.textContent = 'Menyimpan...';
         saveLoading.classList.remove('hidden');
 
-        // Submit form
         const form = document.getElementById('settings-form');
         const formData = new FormData(form);
 
@@ -511,115 +601,67 @@
             method: 'POST',
             body: formData,
             headers: {
-                'X-Requested-With': 'XMLHttpRequest'
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             }
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                showNotification(data.message || 'Pengaturan berhasil disimpan', 'success');
-                
-                // Update form with new values if needed
-                if (data.settings) {
-                    // Update form values
-                }
+                Swal.fire({ icon: 'success', title: 'Berhasil!', text: data.message || 'Pengaturan diperbarui', timer: 1500, showConfirmButton: false });
             } else {
-                showNotification(data.message || 'Terjadi kesalahan saat menyimpan pengaturan', 'error');
-                
-                // Show validation errors
-                if (data.errors) {
-                    Object.keys(data.errors).forEach(field => {
-                        // Show field errors
-                    });
-                }
+                Swal.fire({ icon: 'error', title: 'Gagal', text: data.message || 'Terjadi kesalahan' });
             }
         })
         .catch(error => {
-            console.error('Save error:', error);
-            showNotification('Terjadi kesalahan saat menyimpan pengaturan', 'error');
+            console.error('Error:', error);
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Gagal menghubungi server' });
         })
         .finally(() => {
-            // Reset button state
             saveBtn.disabled = false;
-            saveText.textContent = 'Simpan Pengaturan';
+            saveText.textContent = 'Simpan';
             saveLoading.classList.add('hidden');
         });
     }
 
-    function resetSettings() {
-        if (confirm('Apakah Anda yakin ingin mereset pengaturan ke nilai default?')) {
-            // Reset form to default values
-            document.getElementById('settings-form').reset();
-            showNotification('Pengaturan direset ke nilai default', 'info');
-        }
-    }
-
     function sendTestEmail() {
-        const emailInput = document.getElementById('test_email');
-        const email = emailInput.value;
+        const email = document.getElementById('test_email').value;
+        if(!email) { Swal.fire('Input Kosong', 'Harap masukkan email tujuan', 'warning'); return; }
 
-        if (!email) {
-            showNotification('Masukkan alamat email untuk test', 'error');
-            return;
-        }
-
-        // Show loading
-        emailInput.disabled = true;
+        Swal.fire({ title: 'Mengirim...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
         fetch(`{{ route('backend.settings.test-email') }}`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            },
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
             body: JSON.stringify({ email: email })
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
-                showNotification('Test email berhasil dikirim', 'success');
-            } else {
-                showNotification(data.message || 'Gagal mengirim test email', 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Test email error:', error);
-            showNotification('Terjadi kesalahan saat mengirim test email', 'error');
-        })
-        .finally(() => {
-            emailInput.disabled = false;
+            Swal.close();
+            if(data.success) Swal.fire('Berhasil', 'Email uji coba terkirim ke ' + email, 'success');
+            else Swal.fire('Gagal', data.message, 'error');
         });
     }
 
     function createBackup(type) {
-        if (confirm(`Apakah Anda yakin ingin membuat backup ${type}?`)) {
-            fetch(`{{ route('backend.backup.create') }}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: JSON.stringify({ type: type })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showNotification('Backup berhasil dibuat', 'success');
-                } else {
-                    showNotification(data.message || 'Gagal membuat backup', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Backup error:', error);
-                showNotification('Terjadi kesalahan saat membuat backup', 'error');
-            });
-        }
+        Swal.fire({ title: 'Memulai Backup...', text: 'Tunggu sebentar...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+
+        fetch(`{{ route('backend.backup.create') }}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+            body: JSON.stringify({ type: type })
+        })
+        .then(response => response.json())
+        .then(data => {
+            Swal.close();
+            if(data.success) Swal.fire('Selesai', 'Backup berhasil: ' + data.filename, 'success');
+            else Swal.fire('Gagal', data.message, 'error');
+        });
+    }
+
+    function resetSettings() {
+        Swal.fire({ title: 'Reset?', text: 'Hapus input yang belum tersimpan?', icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Reset', cancelButtonText: 'Batal' })
+            .then((result) => { if (result.isConfirmed) document.getElementById('settings-form').reset(); });
     }
 </script>
-
-<style>
-.settings-tab.active {
-    @apply border-blue-500 text-blue-600;
-}
-</style>
 @endpush
