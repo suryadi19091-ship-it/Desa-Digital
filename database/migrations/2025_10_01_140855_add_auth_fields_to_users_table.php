@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             // Add status field if it doesn't exist
             if (!Schema::hasColumn('users', 'status')) {
-                $table->enum('status', ['active', 'inactive', 'pending', 'suspended'])->default('active')->after('is_active');
+                $table->enum('status', ['pending', 'active', 'inactive', 'banned', 'suspended'])
+                      ->default('pending')
+                      ->after('is_active')
+                      ->comment('User account status');
             }
             
             // Add authentication tracking fields
@@ -66,6 +69,11 @@ return new class extends Migration
             if (!Schema::hasColumn('users', 'updated_by')) {
                 $table->unsignedBigInteger('updated_by')->nullable()->after('created_by');
             }
+
+            // Add indexes for performance
+            $table->index(['status', 'role']);
+            $table->index(['email', 'status']);
+            $table->index('last_login_at');
         });
     }
 
@@ -87,6 +95,11 @@ return new class extends Migration
                     $table->dropColumn($column);
                 }
             }
+
+            // Drop indexes
+            $table->dropIndex(['status', 'role']);
+            $table->dropIndex(['email', 'status']);
+            $table->dropIndex(['last_login_at']);
         });
     }
 };

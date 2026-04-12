@@ -42,45 +42,45 @@
 
     <!-- Quick Access Buttons -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <button class="bg-white rounded-lg shadow-lg p-4 text-center hover:shadow-xl transition-shadow group">
+        <button class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 text-center hover:shadow-xl transition-shadow group">
             <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-200 transition-colors">
                 <i class="fas fa-download text-blue-600 text-xl"></i>
             </div>
-            <div class="font-semibold text-gray-900">Download Semua</div>
-            <div class="text-xs text-gray-600">ZIP Archive</div>
+            <div class="font-semibold text-gray-900 dark:text-gray-100">Download Semua</div>
+            <div class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">ZIP Archive</div>
         </button>
 
-        <button class="bg-white rounded-lg shadow-lg p-4 text-center hover:shadow-xl transition-shadow group">
+        <button class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 text-center hover:shadow-xl transition-shadow group">
             <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-green-200 transition-colors">
                 <i class="fas fa-eye text-green-600 text-xl"></i>
             </div>
-            <div class="font-semibold text-gray-900">Preview Online</div>
-            <div class="text-xs text-gray-600">Lihat Langsung</div>
+            <div class="font-semibold text-gray-900 dark:text-gray-100">Preview Online</div>
+            <div class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">Lihat Langsung</div>
         </button>
 
-        <button class="bg-white rounded-lg shadow-lg p-4 text-center hover:shadow-xl transition-shadow group">
+        <button class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 text-center hover:shadow-xl transition-shadow group">
             <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-yellow-200 transition-colors">
                 <i class="fas fa-share text-yellow-600 text-xl"></i>
             </div>
-            <div class="font-semibold text-gray-900">Bagikan</div>
-            <div class="text-xs text-gray-600">Social Media</div>
+            <div class="font-semibold text-gray-900 dark:text-gray-100">Bagikan</div>
+            <div class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">Social Media</div>
         </button>
 
-        <button class="bg-white rounded-lg shadow-lg p-4 text-center hover:shadow-xl transition-shadow group">
+        <button class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 text-center hover:shadow-xl transition-shadow group">
             <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-purple-200 transition-colors">
                 <i class="fas fa-print text-purple-600 text-xl"></i>
             </div>
-            <div class="font-semibold text-gray-900">Cetak</div>
-            <div class="text-xs text-gray-600">PDF Format</div>
+            <div class="font-semibold text-gray-900 dark:text-gray-100">Cetak</div>
+            <div class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">PDF Format</div>
         </button>
     </div>
 
     <!-- Laporan Bulanan -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="font-bold text-gray-900 text-xl">Laporan Bulanan 2025</h3>
+            <h3 class="font-bold text-gray-900 dark:text-gray-100 text-xl">Laporan Bulanan 2025</h3>
             <form method="GET" action="{{ route('budget.report') }}" class="flex items-center space-x-2">
-                <select name="filter_month" class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                <select name="filter_month" class="border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-sm">
                     <option value="">Semua Bulan</option>
                     @for($i = 1; $i <= 12; $i++)
                         <option value="{{ $i }}" {{ request('filter_month') == $i ? 'selected' : '' }}>
@@ -88,7 +88,7 @@
                         </option>
                     @endfor
                 </select>
-                <select name="filter_year" class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                <select name="filter_year" class="border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-sm">
                     @for($year = 2023; $year <= 2025; $year++)
                         <option value="{{ $year }}" {{ request('filter_year', 2025) == $year ? 'selected' : '' }}>
                             {{ $year }}
@@ -113,15 +113,15 @@
                 $color = $colors[$index % count($colors)];
                 $isLatest = $index === 0;
             @endphp
-            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow">
                 <div class="flex items-start justify-between mb-3">
                     <div class="flex items-center">
                         <div class="w-10 h-10 bg-{{ $color }}-100 rounded-lg flex items-center justify-center mr-3">
                             <i class="fas fa-calendar text-{{ $color }}-600"></i>
                         </div>
                         <div>
-                            <h4 class="font-semibold text-gray-900">{{ $report['month_name'] }} {{ $report['year'] }}</h4>
-                            <p class="text-sm text-gray-600">Laporan Bulanan</p>
+                            <h4 class="font-semibold text-gray-900 dark:text-gray-100">{{ $report['month_name'] }} {{ $report['year'] }}</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Laporan Bulanan</p>
                         </div>
                     </div>
                     <span class="bg-{{ $color }}-100 text-{{ $color }}-800 text-xs font-medium px-2 py-1 rounded">
@@ -131,15 +131,15 @@
                 
                 <div class="space-y-2 mb-4">
                     <div class="flex justify-between text-sm">
-                        <span class="text-gray-600">Realisasi:</span>
-                        <span class="font-medium text-gray-900">Rp {{ number_format($report['realization'] / 1000000, 0) }} Jt</span>
+                        <span class="text-gray-600 dark:text-gray-400 dark:text-gray-500">Realisasi:</span>
+                        <span class="font-medium text-gray-900 dark:text-gray-100">Rp {{ number_format($report['realization'] / 1000000, 0) }} Jt</span>
                     </div>
                     <div class="flex justify-between text-sm">
-                        <span class="text-gray-600">Kumulatif:</span>
-                        <span class="font-medium text-gray-900">Rp {{ number_format($report['cumulative'] / 1000000, 1) }} M</span>
+                        <span class="text-gray-600 dark:text-gray-400 dark:text-gray-500">Kumulatif:</span>
+                        <span class="font-medium text-gray-900 dark:text-gray-100">Rp {{ number_format($report['cumulative'] / 1000000, 1) }} M</span>
                     </div>
                     <div class="flex justify-between text-sm">
-                        <span class="text-gray-600">Progress:</span>
+                        <span class="text-gray-600 dark:text-gray-400 dark:text-gray-500">Progress:</span>
                         <span class="font-medium text-{{ $color }}-600">{{ number_format($report['progress'], 1) }}%</span>
                     </div>
                 </div>
@@ -149,14 +149,14 @@
                             data-month="{{ $report['month'] }}" data-year="{{ $report['year'] }}">
                         <i class="fas fa-download mr-1"></i>Download
                     </button>
-                    <button class="flex-1 bg-gray-100 text-gray-700 py-2 px-3 rounded text-sm hover:bg-gray-200 transition-colors preview-btn" 
+                    <button class="flex-1 bg-gray-100 text-gray-700 dark:text-gray-300 py-2 px-3 rounded text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors preview-btn" 
                             data-month="{{ $report['month'] }}" data-year="{{ $report['year'] }}">
                         <i class="fas fa-eye mr-1"></i>Preview
                     </button>
                 </div>
             </div>
             @empty
-            <div class="col-span-3 text-center py-8 text-gray-500">
+            <div class="col-span-3 text-center py-8 text-gray-500 dark:text-gray-400 dark:text-gray-500">
                 <i class="fas fa-file-alt text-4xl mb-4"></i>
                 <p>Belum ada laporan bulanan tersedia</p>
             </div>
@@ -166,22 +166,22 @@
         </div>
 
         <div class="mt-6 text-center">
-            <button class="bg-gray-100 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-200 transition-colors">
+            <button class="bg-gray-100 text-gray-700 dark:text-gray-300 px-6 py-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
                 <i class="fas fa-history mr-2"></i>Lihat Arsip Laporan
             </button>
         </div>
     </div>
 
     <!-- Laporan Tahunan -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-        <h3 class="font-bold text-gray-900 mb-6 text-xl">Laporan Tahunan</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+        <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-6 text-xl">Laporan Tahunan</h3>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             @foreach($annualReports as $index => $report)
             @php
-                $borderClass = $report['status'] === 'current' ? 'border-2 border-indigo-200 bg-indigo-50' : 'border border-gray-200';
-                $textColor = $report['status'] === 'current' ? 'text-indigo-700' : 'text-gray-600';
-                $boldTextColor = $report['status'] === 'current' ? 'text-indigo-900' : 'text-gray-900';
+                $borderClass = $report['status'] === 'current' ? 'border-2 border-indigo-200 bg-indigo-50 dark:bg-indigo-900/40' : 'border border-gray-200 dark:border-gray-700';
+                $textColor = $report['status'] === 'current' ? 'text-indigo-700' : 'text-gray-600 dark:text-gray-400 dark:text-gray-500';
+                $boldTextColor = $report['status'] === 'current' ? 'text-indigo-900' : 'text-gray-900 dark:text-gray-100';
                 
                 if ($report['status'] === 'current') {
                     $iconClass = 'fas fa-chart-line text-indigo-600';
@@ -253,8 +253,8 @@
     </div>
 
     <!-- Dokumentasi Kegiatan -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-        <h3 class="font-bold text-gray-900 mb-6 text-xl">Dokumentasi Kegiatan</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+        <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-6 text-xl">Dokumentasi Kegiatan</h3>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             @forelse($recentGalleries as $gallery)
@@ -266,7 +266,7 @@
                              class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300">
                     @else
                         <div class="w-full h-48 bg-gray-300 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                            <i class="fas fa-image text-gray-500 text-4xl"></i>
+                            <i class="fas fa-image text-gray-500 dark:text-gray-400 dark:text-gray-500 text-4xl"></i>
                         </div>
                     @endif
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
@@ -275,7 +275,7 @@
                         <p class="text-sm opacity-90">{{ $gallery->created_at->format('d F Y') }}</p>
                     </div>
                     <div class="absolute top-3 right-3">
-                        <span class="bg-white/90 text-gray-800 text-xs font-medium px-2 py-1 rounded">
+                        <span class="bg-white dark:bg-gray-800/90 text-gray-800 dark:text-gray-200 text-xs font-medium px-2 py-1 rounded">
                             {{ $gallery->likes_count ?? rand(10, 50) }} Foto
                         </span>
                     </div>
@@ -294,7 +294,7 @@
                         <p class="text-sm opacity-90">15 September 2025</p>
                     </div>
                     <div class="absolute top-3 right-3">
-                        <span class="bg-white/90 text-gray-800 text-xs font-medium px-2 py-1 rounded">
+                        <span class="bg-white dark:bg-gray-800/90 text-gray-800 dark:text-gray-200 text-xs font-medium px-2 py-1 rounded">
                             25 Foto
                         </span>
                     </div>
@@ -312,7 +312,7 @@
                         <p class="text-sm opacity-90">10 September 2025</p>
                     </div>
                     <div class="absolute top-3 right-3">
-                        <span class="bg-white/90 text-gray-800 text-xs font-medium px-2 py-1 rounded">
+                        <span class="bg-white dark:bg-gray-800/90 text-gray-800 dark:text-gray-200 text-xs font-medium px-2 py-1 rounded">
                             18 Foto
                         </span>
                     </div>
@@ -331,44 +331,44 @@
     <!-- Statistik & Analytics -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Download Statistics -->
-        <div class="bg-white rounded-lg shadow-lg p-6">
-            <h3 class="font-bold text-gray-900 mb-6 text-xl">Statistik Download</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-6 text-xl">Statistik Download</h3>
             
             <div class="space-y-4">
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
                     <div class="flex items-center">
                         <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
                             <i class="fas fa-file-pdf text-blue-600"></i>
                         </div>
                         <div>
-                            <div class="font-semibold text-gray-900">Laporan PDF</div>
-                            <div class="text-sm text-gray-600">Bulan ini</div>
+                            <div class="font-semibold text-gray-900 dark:text-gray-100">Laporan PDF</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Bulan ini</div>
                         </div>
                     </div>
                     <div class="text-2xl font-bold text-blue-600">1,247</div>
                 </div>
 
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
                     <div class="flex items-center">
                         <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
                             <i class="fas fa-file-excel text-green-600"></i>
                         </div>
                         <div>
-                            <div class="font-semibold text-gray-900">Data Excel</div>
-                            <div class="text-sm text-gray-600">Bulan ini</div>
+                            <div class="font-semibold text-gray-900 dark:text-gray-100">Data Excel</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Bulan ini</div>
                         </div>
                     </div>
                     <div class="text-2xl font-bold text-green-600">892</div>
                 </div>
 
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
                     <div class="flex items-center">
                         <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center mr-3">
                             <i class="fas fa-images text-yellow-600"></i>
                         </div>
                         <div>
-                            <div class="font-semibold text-gray-900">Dokumentasi</div>
-                            <div class="text-sm text-gray-600">Bulan ini</div>
+                            <div class="font-semibold text-gray-900 dark:text-gray-100">Dokumentasi</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Bulan ini</div>
                         </div>
                     </div>
                     <div class="text-2xl font-bold text-yellow-600">456</div>
@@ -377,8 +377,8 @@
         </div>
 
         <!-- Transparency Rating -->
-        <div class="bg-white rounded-lg shadow-lg p-6">
-            <h3 class="font-bold text-gray-900 mb-6 text-xl">Rating Transparansi</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-6 text-xl">Rating Transparansi</h3>
             
             <div class="text-center mb-6">
                 <div class="w-32 h-32 mx-auto relative">
@@ -386,7 +386,7 @@
                     <div class="absolute inset-0 flex items-center justify-center">
                         <div class="text-center">
                             <div class="text-3xl font-bold text-green-600">A</div>
-                            <div class="text-sm text-gray-600">Excellent</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Excellent</div>
                         </div>
                     </div>
                 </div>
@@ -394,42 +394,42 @@
 
             <div class="space-y-3">
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Kelengkapan Data</span>
+                    <span class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Kelengkapan Data</span>
                     <div class="flex items-center">
                         <div class="w-20 bg-gray-200 rounded-full h-2 mr-2">
                             <div class="bg-green-500 h-2 rounded-full" style="width: 95%"></div>
                         </div>
-                        <span class="text-sm font-medium text-gray-900">95%</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-gray-100">95%</span>
                     </div>
                 </div>
 
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Ketepatan Waktu</span>
+                    <span class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Ketepatan Waktu</span>
                     <div class="flex items-center">
                         <div class="w-20 bg-gray-200 rounded-full h-2 mr-2">
                             <div class="bg-green-500 h-2 rounded-full" style="width: 98%"></div>
                         </div>
-                        <span class="text-sm font-medium text-gray-900">98%</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-gray-100">98%</span>
                     </div>
                 </div>
 
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Akses Publik</span>
+                    <span class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Akses Publik</span>
                     <div class="flex items-center">
                         <div class="w-20 bg-gray-200 rounded-full h-2 mr-2">
                             <div class="bg-green-500 h-2 rounded-full" style="width: 100%"></div>
                         </div>
-                        <span class="text-sm font-medium text-gray-900">100%</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-gray-100">100%</span>
                     </div>
                 </div>
 
                 <div class="flex justify-between items-center">
-                    <span class="text-sm text-gray-600">Format Standar</span>
+                    <span class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Format Standar</span>
                     <div class="flex items-center">
                         <div class="w-20 bg-gray-200 rounded-full h-2 mr-2">
                             <div class="bg-green-500 h-2 rounded-full" style="width: 92%"></div>
                         </div>
-                        <span class="text-sm font-medium text-gray-900">92%</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-gray-100">92%</span>
                     </div>
                 </div>
             </div>
@@ -468,7 +468,7 @@
 
     // Card hover animations
     function addCardAnimations() {
-        const cards = document.querySelectorAll('.border.border-gray-200.rounded-lg');
+        const cards = document.querySelectorAll('.border.border-gray-200 dark:border-gray-700.rounded-lg');
         cards.forEach(card => {
             card.addEventListener('mouseenter', function() {
                 this.style.transform = 'translateY(-5px)';
@@ -488,7 +488,7 @@
         const buttons = document.querySelectorAll('button');
         buttons.forEach(button => {
             button.addEventListener('mouseenter', function() {
-                if (!this.classList.contains('bg-white')) {
+                if (!this.classList.contains('bg-white dark:bg-gray-800')) {
                     this.style.transform = 'scale(1.05)';
                     this.style.transition = 'transform 0.2s ease-out';
                 }
@@ -541,22 +541,22 @@
                 const modal = document.createElement('div');
                 modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
                 modal.innerHTML = `
-                    <div class="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-                        <div class="p-6 border-b border-gray-200">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
                             <div class="flex justify-between items-center">
-                                <h3 class="text-xl font-bold text-gray-900">Preview Laporan Bulan ${month}/${year}</h3>
-                                <button class="text-gray-500 hover:text-gray-700 close-modal">
+                                <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">Preview Laporan Bulan ${month}/${year}</h3>
+                                <button class="text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:text-gray-300 close-modal">
                                     <i class="fas fa-times text-xl"></i>
                                 </button>
                             </div>
                         </div>
                         <div class="p-6">
                             <div class="text-center py-8">
-                                <i class="fas fa-file-alt text-4xl text-gray-400 mb-4"></i>
-                                <p class="text-gray-600 mb-4">Preview laporan untuk bulan ${getMonthName(month)} ${year}</p>
-                                <div class="bg-gray-50 rounded-lg p-4 text-left">
+                                <i class="fas fa-file-alt text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
+                                <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">Preview laporan untuk bulan ${getMonthName(month)} ${year}</p>
+                                <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 text-left">
                                     <h4 class="font-semibold mb-2">Ringkasan Laporan:</h4>
-                                    <ul class="text-sm text-gray-600 space-y-1">
+                                    <ul class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 space-y-1">
                                         <li>• Realisasi Anggaran Bulan ${getMonthName(month)}</li>
                                         <li>• Detail Transaksi dan Pengeluaran</li>
                                         <li>• Grafik Progress Kumulatif</li>
@@ -605,28 +605,28 @@
                 const modal = document.createElement('div');
                 modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
                 modal.innerHTML = `
-                    <div class="bg-white rounded-lg max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-                        <div class="p-6 border-b border-gray-200">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
                             <div class="flex justify-between items-center">
-                                <h3 class="text-xl font-bold text-gray-900">Progress Laporan Tahunan ${year}</h3>
-                                <button class="text-gray-500 hover:text-gray-700 close-modal">
+                                <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">Progress Laporan Tahunan ${year}</h3>
+                                <button class="text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:text-gray-300 close-modal">
                                     <i class="fas fa-times text-xl"></i>
                                 </button>
                             </div>
                         </div>
                         <div class="p-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="bg-blue-50 rounded-lg p-4">
+                                <div class="bg-blue-50 dark:bg-blue-900/40 rounded-lg p-4">
                                     <h4 class="font-semibold text-blue-800 mb-2">Status Progress</h4>
                                     <p class="text-sm text-blue-600">Tahun berjalan dengan monitoring real-time</p>
                                 </div>
-                                <div class="bg-green-50 rounded-lg p-4">
+                                <div class="bg-green-50 dark:bg-green-900/40 rounded-lg p-4">
                                     <h4 class="font-semibold text-green-800 mb-2">Data Tersedia</h4>
                                     <p class="text-sm text-green-600">Jan - ${getCurrentMonthName()} ${year}</p>
                                 </div>
                             </div>
                             <div class="mt-6 text-center">
-                                <p class="text-gray-600 mb-4">Laporan lengkap akan tersedia setelah akhir tahun fiscal</p>
+                                <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">Laporan lengkap akan tersedia setelah akhir tahun fiscal</p>
                                 <button class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600 close-modal">
                                     <i class="fas fa-times mr-2"></i>Tutup
                                 </button>
@@ -811,11 +811,11 @@
                 modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
                 modal.innerHTML = `
                     <div class="max-w-4xl max-h-full p-4">
-                        <div class="bg-white rounded-lg overflow-hidden">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden">
                             <div class="p-4 border-b">
                                 <div class="flex justify-between items-center">
                                     <h3 class="font-bold text-lg">${title}</h3>
-                                    <button class="text-gray-500 hover:text-gray-700">
+                                    <button class="text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:text-gray-300">
                                         <i class="fas fa-times text-xl"></i>
                                     </button>
                                 </div>

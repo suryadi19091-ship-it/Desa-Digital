@@ -40,38 +40,38 @@
 
     <!-- Quick Navigation -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <a href="{{ route('budget.plan') }}" class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300 group">
+        <a href="{{ route('budget.plan') }}" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300 group">
             <div class="flex items-center">
                 <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-blue-200 transition duration-200">
                     <i class="fas fa-calculator text-blue-600 text-xl"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-gray-900 group-hover:text-blue-600">Anggaran 2025</h3>
-                    <p class="text-sm text-gray-600">Rincian anggaran per bidang</p>
+                    <h3 class="font-bold text-gray-900 dark:text-gray-100 group-hover:text-blue-600">Anggaran 2025</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Rincian anggaran per bidang</p>
                 </div>
             </div>
         </a>
 
-        <a href="{{ route('budget.realization') }}" class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300 group">
+        <a href="{{ route('budget.realization') }}" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300 group">
             <div class="flex items-center">
                 <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-green-200 transition duration-200">
                     <i class="fas fa-chart-line text-green-600 text-xl"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-gray-900 group-hover:text-green-600">Realisasi</h3>
-                    <p class="text-sm text-gray-600">Progress realisasi anggaran</p>
+                    <h3 class="font-bold text-gray-900 dark:text-gray-100 group-hover:text-green-600">Realisasi</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Progress realisasi anggaran</p>
                 </div>
             </div>
         </a>
 
-        <a href="{{ route('budget.report') }}" class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300 group">
+        <a href="{{ route('budget.report') }}" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300 group">
             <div class="flex items-center">
                 <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-purple-200 transition duration-200">
                     <i class="fas fa-file-alt text-purple-600 text-xl"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-gray-900 group-hover:text-purple-600">Laporan Keuangan</h3>
-                    <p class="text-sm text-gray-600">Laporan dan transparansi</p>
+                    <h3 class="font-bold text-gray-900 dark:text-gray-100 group-hover:text-purple-600">Laporan Keuangan</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Laporan dan transparansi</p>
                 </div>
             </div>
         </a>
@@ -80,9 +80,9 @@
     <!-- Summary Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <!-- Pendapatan -->
-        <div class="bg-white rounded-lg shadow-lg p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="font-bold text-gray-900">Pendapatan Desa</h3>
+                <h3 class="font-bold text-gray-900 dark:text-gray-100">Pendapatan Desa</h3>
                 @php
                     $totalIncome = $budgetSummary->where('budget_type', 'pendapatan')->sum('total_allocated');
                 @endphp
@@ -91,8 +91,8 @@
             
             <div class="space-y-3">
                 @foreach($budgetSummary->where('budget_type', 'pendapatan') as $income)
-                <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                    <span class="text-sm text-gray-700">{{ $income->category }}</span>
+                <div class="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-800">
+                    <span class="text-sm text-gray-700 dark:text-gray-300">{{ $income->category }}</span>
                     <span class="font-medium">Rp {{ number_format($income->total_allocated) }}</span>
                 </div>
                 @endforeach
@@ -104,9 +104,9 @@
         </div>
 
         <!-- Belanja -->
-        <div class="bg-white rounded-lg shadow-lg p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="font-bold text-gray-900">Belanja Desa</h3>
+                <h3 class="font-bold text-gray-900 dark:text-gray-100">Belanja Desa</h3>
                 @php
                     $totalExpense = $budgetSummary->where('budget_type', 'belanja')->sum('total_allocated');
                 @endphp
@@ -115,8 +115,8 @@
             
             <div class="space-y-3">
                 @foreach($budgetSummary->where('budget_type', 'belanja') as $expense)
-                <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                    <span class="text-sm text-gray-700">{{ $expense->category }}</span>
+                <div class="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-800">
+                    <span class="text-sm text-gray-700 dark:text-gray-300">{{ $expense->category }}</span>
                     <span class="font-medium">Rp {{ number_format($expense->total_allocated) }}</span>
                 </div>
                 @endforeach
@@ -129,8 +129,8 @@
     </div>
 
     <!-- Progress Chart -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-        <h3 class="font-bold text-gray-900 mb-4">Realisasi Anggaran per Bidang</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+        <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-4">Realisasi Anggaran per Bidang</h3>
         
         <div class="space-y-4">
             @php
@@ -148,8 +148,8 @@
                 @endphp
                 <div>
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm font-medium text-gray-700">{{ $budget->category }}</span>
-                        <span class="text-sm text-gray-600">{{ $realizationPercentage }}% (Rp {{ number_format($realizationAmount / 1000000, 1) }} Juta)</span>
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $budget->category }}</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">{{ $realizationPercentage }}% (Rp {{ number_format($realizationAmount / 1000000, 1) }} Juta)</span>
                     </div>
                     <div class="w-full bg-gray-200 rounded-full h-3">
                         <div class="bg-{{ $currentColor }} h-3 rounded-full" style="width: {{ $realizationPercentage }}%"></div>
@@ -158,7 +158,7 @@
             @endforeach
             
             @if($budgetSummary->where('budget_type', 'belanja')->isEmpty())
-                <div class="text-center py-8 text-gray-500">
+                <div class="text-center py-8 text-gray-500 dark:text-gray-400 dark:text-gray-500">
                     <i class="fas fa-chart-bar text-4xl mb-4"></i>
                     <p>Belum ada data anggaran belanja</p>
                 </div>
@@ -167,9 +167,9 @@
     </div>
 
     <!-- Recent Activities -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
         <div class="flex items-center justify-between mb-4">
-            <h3 class="font-bold text-gray-900">Aktivitas Keuangan Terbaru</h3>
+            <h3 class="font-bold text-gray-900 dark:text-gray-100">Aktivitas Keuangan Terbaru</h3>
             <button class="text-emerald-600 hover:text-emerald-700 text-sm font-medium">
                 Lihat Semua <i class="fas fa-arrow-right ml-1"></i>
             </button>
@@ -177,7 +177,7 @@
         
         <div class="space-y-4">
             @forelse($recentTransactions as $transaction)
-            <div class="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg">
+            <div class="flex items-start space-x-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
                 <div class="w-10 h-10 {{ $transaction->transaction_type == 'income' ? 'bg-green-100' : 'bg-red-100' }} rounded-full flex items-center justify-center flex-shrink-0">
                     @if($transaction->transaction_type == 'income')
                         <i class="fas fa-plus text-green-600"></i>
@@ -186,9 +186,9 @@
                     @endif
                 </div>
                 <div class="flex-1">
-                    <h4 class="font-medium text-gray-900">{{ $transaction->description }}</h4>
-                    <p class="text-sm text-gray-600">{{ $transaction->budget->category ?? 'Kategori tidak diketahui' }}</p>
-                    <span class="text-xs text-gray-500">{{ $transaction->transaction_date->format('d F Y') }}</span>
+                    <h4 class="font-medium text-gray-900 dark:text-gray-100">{{ $transaction->description }}</h4>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">{{ $transaction->budget->category ?? 'Kategori tidak diketahui' }}</p>
+                    <span class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">{{ $transaction->transaction_date->format('d F Y') }}</span>
                 </div>
                 <div class="text-right">
                     <div class="text-sm font-medium {{ $transaction->transaction_type == 'income' ? 'text-green-600' : 'text-red-600' }}">
@@ -197,7 +197,7 @@
                 </div>
             </div>
             @empty
-            <div class="text-center py-8 text-gray-500">
+            <div class="text-center py-8 text-gray-500 dark:text-gray-400 dark:text-gray-500">
                 <i class="fas fa-receipt text-4xl mb-4"></i>
                 <p>Belum ada aktivitas keuangan terbaru</p>
             </div>
@@ -206,20 +206,20 @@
     </div>
 
     <!-- Transparency & Documentation -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <h3 class="font-bold text-gray-900 mb-4">Transparansi & Dokumentasi</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+        <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-4">Transparansi & Dokumentasi</h3>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Documents -->
             <div>
-                <h4 class="font-medium text-gray-900 mb-3">Dokumen APBDes</h4>
+                <h4 class="font-medium text-gray-900 dark:text-gray-100 mb-3">Dokumen APBDes</h4>
                 <div class="space-y-3">
-                    <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
+                    <div class="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-900">
                         <div class="flex items-center">
                             <i class="fas fa-file-pdf text-red-500 mr-3"></i>
                             <div>
-                                <div class="font-medium text-gray-900">APBDes 2025</div>
-                                <div class="text-sm text-gray-600">2.3 MB</div>
+                                <div class="font-medium text-gray-900 dark:text-gray-100">APBDes 2025</div>
+                                <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">2.3 MB</div>
                             </div>
                         </div>
                         <button class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded hover:bg-emerald-200 text-sm">
@@ -227,12 +227,12 @@
                         </button>
                     </div>
 
-                    <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
+                    <div class="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-900">
                         <div class="flex items-center">
                             <i class="fas fa-file-excel text-green-500 mr-3"></i>
                             <div>
-                                <div class="font-medium text-gray-900">Realisasi Q3 2025</div>
-                                <div class="text-sm text-gray-600">1.8 MB</div>
+                                <div class="font-medium text-gray-900 dark:text-gray-100">Realisasi Q3 2025</div>
+                                <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">1.8 MB</div>
                             </div>
                         </div>
                         <button class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded hover:bg-emerald-200 text-sm">
@@ -240,12 +240,12 @@
                         </button>
                     </div>
 
-                    <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
+                    <div class="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-900">
                         <div class="flex items-center">
                             <i class="fas fa-file-pdf text-red-500 mr-3"></i>
                             <div>
-                                <div class="font-medium text-gray-900">Laporan Semester I</div>
-                                <div class="text-sm text-gray-600">3.1 MB</div>
+                                <div class="font-medium text-gray-900 dark:text-gray-100">Laporan Semester I</div>
+                                <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">3.1 MB</div>
                             </div>
                         </div>
                         <button class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded hover:bg-emerald-200 text-sm">
@@ -257,9 +257,9 @@
 
             <!-- Key Information -->
             <div>
-                <h4 class="font-medium text-gray-900 mb-3">Informasi Penting</h4>
+                <h4 class="font-medium text-gray-900 dark:text-gray-100 mb-3">Informasi Penting</h4>
                 <div class="space-y-4">
-                    <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div class="p-4 bg-blue-50 dark:bg-blue-900/40 border border-blue-200 rounded-lg">
                         <div class="flex items-center mb-2">
                             <i class="fas fa-info-circle text-blue-600 mr-2"></i>
                             <h5 class="font-medium text-blue-900">Musyawarah APBDes</h5>
@@ -270,7 +270,7 @@
                         </p>
                     </div>
 
-                    <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <div class="p-4 bg-green-50 dark:bg-green-900/40 border border-green-200 rounded-lg">
                         <div class="flex items-center mb-2">
                             <i class="fas fa-check-circle text-green-600 mr-2"></i>
                             <h5 class="font-medium text-green-900">Audit BPK</h5>
@@ -281,7 +281,7 @@
                         </p>
                     </div>
 
-                    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <div class="p-4 bg-yellow-50 dark:bg-yellow-900/40 border border-yellow-200 rounded-lg">
                         <div class="flex items-center mb-2">
                             <i class="fas fa-eye text-yellow-600 mr-2"></i>
                             <h5 class="font-medium text-yellow-900">Transparansi</h5>
@@ -296,7 +296,7 @@
         </div>
 
         <div class="mt-6 pt-6 border-t text-center">
-            <p class="text-gray-600 mb-4">
+            <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">
                 Komitmen transparansi dan akuntabilitas pengelolaan keuangan desa
             </p>
             <div class="flex flex-col sm:flex-row gap-3 justify-center">

@@ -8,10 +8,10 @@
 @section('content')
 <div class="xl:col-span-3">
     <!-- Calendar View Toggle -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div class="flex items-center space-x-4">
-                <h2 class="text-xl font-bold text-gray-900">Kalender Kegiatan</h2>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Kalender Kegiatan</h2>
                 <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
                     September 2025
                 </span>
@@ -20,7 +20,7 @@
                 <button id="listView" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-200">
                     <i class="fas fa-list mr-2"></i>List
                 </button>
-                <button id="calendarView" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-200">
+                <button id="calendarView" class="px-4 py-2 bg-gray-200 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 transition duration-200">
                     <i class="fas fa-calendar mr-2"></i>Kalender
                 </button>
             </div>
@@ -89,7 +89,7 @@
         </div>
         <div class="space-y-3">
             @forelse($todayEvents as $event)
-            <div class="bg-white/10 rounded-lg p-4">
+            <div class="bg-white dark:bg-gray-800/10 rounded-lg p-4">
                 <div class="flex items-start justify-between">
                     <div>
                         <h3 class="font-bold mb-1">{{ $event->title }}</h3>
@@ -112,7 +112,7 @@
                 </div>
             </div>
             @empty
-            <div class="bg-white/10 rounded-lg p-4 text-center">
+            <div class="bg-white dark:bg-gray-800/10 rounded-lg p-4 text-center">
                 <p class="text-sm opacity-90">Tidak ada kegiatan hari ini</p>
             </div>
             @endforelse
@@ -122,22 +122,22 @@
     <!-- Upcoming Events -->
     <div class="space-y-4 mb-6" id="eventsList">
         @forelse($upcomingEvents as $event)
-        <div class="bg-white rounded-lg shadow-lg p-6 border-l-4 border-{{ $event->category_color }}-500">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 border-l-4 border-{{ $event->category_color }}-500">
             <div class="flex items-start justify-between">
                 <div class="flex-1">
                     <div class="flex items-center mb-3">
                         <span class="bg-{{ $event->category_color }}-100 text-{{ $event->category_color }}-800 text-xs font-medium px-2.5 py-0.5 rounded-full mr-3">
                             {{ $event->category_label }}
                         </span>
-                        <span class="text-sm text-gray-500">{{ $event->formatted_date }}</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">{{ $event->formatted_date }}</span>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-900 mb-2">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2">
                         {{ $event->title }}
                     </h3>
-                    <p class="text-gray-700 mb-3">
+                    <p class="text-gray-700 dark:text-gray-300 mb-3">
                         {{ $event->description }}
                     </p>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm text-gray-600">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                         <div class="flex items-center">
                             <i class="fas fa-clock mr-2 text-{{ $event->category_color }}-500"></i>
                             <span>{{ $event->formatted_time }}</span>
@@ -166,8 +166,8 @@
             </div>
         </div>
         @empty
-        <div class="bg-white rounded-lg shadow-lg p-6 text-center">
-            <p class="text-gray-500">Belum ada kegiatan yang akan datang</p>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 text-center">
+            <p class="text-gray-500 dark:text-gray-400 dark:text-gray-500">Belum ada kegiatan yang akan datang</p>
         </div>
         @endforelse
 
@@ -175,25 +175,25 @@
     </div>
 
     <!-- Calendar View (Hidden by default) -->
-    <div id="calendarContainer" class="bg-white rounded-lg shadow-lg p-6 hidden">
+    <div id="calendarContainer" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hidden">
         <div class="calendar-header flex items-center justify-between mb-6">
-            <button id="prevMonth" class="p-2 hover:bg-gray-100 rounded-lg">
+            <button id="prevMonth" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
                 <i class="fas fa-chevron-left"></i>
             </button>
-            <h3 id="currentMonth" class="text-xl font-bold text-gray-900">September 2025</h3>
-            <button id="nextMonth" class="p-2 hover:bg-gray-100 rounded-lg">
+            <h3 id="currentMonth" class="text-xl font-bold text-gray-900 dark:text-gray-100">September 2025</h3>
+            <button id="nextMonth" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
                 <i class="fas fa-chevron-right"></i>
             </button>
         </div>
         
         <div class="grid grid-cols-7 gap-1 mb-4">
-            <div class="p-2 text-center font-medium text-gray-500">Min</div>
-            <div class="p-2 text-center font-medium text-gray-500">Sen</div>
-            <div class="p-2 text-center font-medium text-gray-500">Sel</div>
-            <div class="p-2 text-center font-medium text-gray-500">Rab</div>
-            <div class="p-2 text-center font-medium text-gray-500">Kam</div>
-            <div class="p-2 text-center font-medium text-gray-500">Jum</div>
-            <div class="p-2 text-center font-medium text-gray-500">Sab</div>
+            <div class="p-2 text-center font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500">Min</div>
+            <div class="p-2 text-center font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500">Sen</div>
+            <div class="p-2 text-center font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500">Sel</div>
+            <div class="p-2 text-center font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500">Rab</div>
+            <div class="p-2 text-center font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500">Kam</div>
+            <div class="p-2 text-center font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500">Jum</div>
+            <div class="p-2 text-center font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500">Sab</div>
         </div>
         
         <div id="calendarGrid" class="grid grid-cols-7 gap-1">
@@ -202,11 +202,11 @@
     </div>
 
     <!-- Filters and Actions -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div class="flex flex-col md:flex-row gap-4">
                 <!-- Category Filter -->
-                <select id="categoryFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                <select id="categoryFilter" class="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                     <option value="">Semua Kategori</option>
                     <option value="rapat">Rapat</option>
                     <option value="pelayanan">Pelayanan</option>
@@ -216,7 +216,7 @@
                 </select>
                 
                 <!-- Month Filter -->
-                <select id="monthFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                <select id="monthFilter" class="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                     <option value="">Bulan Ini</option>
                     <option value="09">September 2025</option>
                     <option value="10">Oktober 2025</option>
@@ -240,27 +240,27 @@
         
         <!-- Statistics -->
         <div class="mt-6 pt-6 border-t">
-            <h3 class="font-bold text-gray-900 mb-4">Statistik Kegiatan</h3>
+            <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-4">Statistik Kegiatan</h3>
             <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-                <div class="text-center p-3 bg-indigo-50 rounded-lg">
+                <div class="text-center p-3 bg-indigo-50 dark:bg-indigo-900/40 rounded-lg">
                     <div class="text-2xl font-bold text-indigo-600">12</div>
-                    <div class="text-sm text-gray-600">Bulan Ini</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Bulan Ini</div>
                 </div>
-                <div class="text-center p-3 bg-green-50 rounded-lg">
+                <div class="text-center p-3 bg-green-50 dark:bg-green-900/40 rounded-lg">
                     <div class="text-2xl font-bold text-green-600">8</div>
-                    <div class="text-sm text-gray-600">Terlaksana</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Terlaksana</div>
                 </div>
-                <div class="text-center p-3 bg-yellow-50 rounded-lg">
+                <div class="text-center p-3 bg-yellow-50 dark:bg-yellow-900/40 rounded-lg">
                     <div class="text-2xl font-bold text-yellow-600">3</div>
-                    <div class="text-sm text-gray-600">Mendatang</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Mendatang</div>
                 </div>
-                <div class="text-center p-3 bg-red-50 rounded-lg">
+                <div class="text-center p-3 bg-red-50 dark:bg-red-900/40 rounded-lg">
                     <div class="text-2xl font-bold text-red-600">1</div>
-                    <div class="text-sm text-gray-600">Dibatalkan</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Dibatalkan</div>
                 </div>
-                <div class="text-center p-3 bg-purple-50 rounded-lg">
+                <div class="text-center p-3 bg-purple-50 dark:bg-purple-900/40 rounded-lg">
                     <div class="text-2xl font-bold text-purple-600">89%</div>
-                    <div class="text-sm text-gray-600">Partisipasi</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Partisipasi</div>
                 </div>
             </div>
         </div>
@@ -270,10 +270,10 @@
 <!-- Event Detail Modal -->
 <div id="eventModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
     <div class="flex items-center justify-center min-h-screen px-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between p-4 border-b">
-                <h3 class="text-lg font-semibold text-gray-900" id="modalTitle">Detail Event</h3>
-                <button id="closeModal" class="text-gray-400 hover:text-gray-600">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100" id="modalTitle">Detail Event</h3>
+                <button id="closeModal" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:text-gray-400 dark:text-gray-500">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -300,9 +300,9 @@
         
         // Update button states
         listViewBtn.classList.add('bg-indigo-600', 'text-white');
-        listViewBtn.classList.remove('bg-gray-200', 'text-gray-700');
+        listViewBtn.classList.remove('bg-gray-200', 'text-gray-700 dark:text-gray-300');
         calendarViewBtn.classList.remove('bg-indigo-600', 'text-white');
-        calendarViewBtn.classList.add('bg-gray-200', 'text-gray-700');
+        calendarViewBtn.classList.add('bg-gray-200', 'text-gray-700 dark:text-gray-300');
     });
 
     calendarViewBtn.addEventListener('click', function() {
@@ -312,9 +312,9 @@
         
         // Update button states
         calendarViewBtn.classList.add('bg-indigo-600', 'text-white');
-        calendarViewBtn.classList.remove('bg-gray-200', 'text-gray-700');
+        calendarViewBtn.classList.remove('bg-gray-200', 'text-gray-700 dark:text-gray-300');
         listViewBtn.classList.remove('bg-indigo-600', 'text-white');
-        listViewBtn.classList.add('bg-gray-200', 'text-gray-700');
+        listViewBtn.classList.add('bg-gray-200', 'text-gray-700 dark:text-gray-300');
         
         // Generate calendar
         generateCalendar();
@@ -401,11 +401,11 @@
             // Add days of the month
             for (let day = 1; day <= daysInMonth; day++) {
                 const dayElement = document.createElement('div');
-                dayElement.className = 'p-2 h-20 border border-gray-200 hover:bg-gray-50 cursor-pointer relative';
+                dayElement.className = 'p-2 h-20 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-900 cursor-pointer relative';
                 dayElement.dataset.date = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 
                 const dayNumber = document.createElement('div');
-                dayNumber.className = 'font-medium text-gray-900';
+                dayNumber.className = 'font-medium text-gray-900 dark:text-gray-100';
                 dayNumber.textContent = day;
                 dayElement.appendChild(dayNumber);
                 
@@ -447,9 +447,9 @@
             'olahraga': 'bg-purple-100 text-purple-800',
             'gotong-royong': 'bg-yellow-100 text-yellow-800',
             'keagamaan': 'bg-red-100 text-red-800',
-            'lainnya': 'bg-gray-100 text-gray-800'
+            'lainnya': 'bg-gray-100 text-gray-800 dark:text-gray-200'
         };
-        return colors[type] || 'bg-gray-100 text-gray-800';
+        return colors[type] || 'bg-gray-100 text-gray-800 dark:text-gray-200';
     }
 
     // Modal functionality
@@ -476,15 +476,15 @@
                             ${event.type.toUpperCase()}
                         </span>
                     </div>
-                    <h4 class="font-bold text-gray-900 mb-1">${event.title}</h4>
-                    <p class="text-gray-600 text-sm">${event.description || 'Tidak ada deskripsi'}</p>
+                    <h4 class="font-bold text-gray-900 dark:text-gray-100 mb-1">${event.title}</h4>
+                    <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500 text-sm">${event.description || 'Tidak ada deskripsi'}</p>
                 </div>
             `).join('');
         } else {
             modalContent.innerHTML = `
                 <div class="text-center py-8">
-                    <i class="fas fa-calendar-times text-4xl text-gray-400 mb-4"></i>
-                    <p class="text-gray-600">Tidak ada event pada tanggal ini</p>
+                    <i class="fas fa-calendar-times text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
+                    <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500">Tidak ada event pada tanggal ini</p>
                     <button class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
                         <i class="fas fa-plus mr-2"></i>Tambah Event
                     </button>

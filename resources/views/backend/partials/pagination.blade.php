@@ -24,7 +24,7 @@
                 </div>
 
                 <!-- Pagination Links -->
-                <ul class="pagination pagination-sm m-0 d-inline-block">
+                <ul class="pagination pagination-sm m-0 d-inline-flex">
                     {{-- Previous Page Link --}}
                     @if ($paginator->onFirstPage())
                         <li class="page-item disabled"><span class="page-link">‹</span></li>

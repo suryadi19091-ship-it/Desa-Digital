@@ -12,7 +12,7 @@
     <div class="bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-lg shadow-lg p-6 mb-6">
         <div class="flex items-start space-x-4">
             <div class="flex-shrink-0">
-                <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                <div class="w-12 h-12 bg-white dark:bg-gray-800/20 rounded-full flex items-center justify-center">
                     <i class="fas fa-exclamation-triangle text-2xl"></i>
                 </div>
             </div>
@@ -35,25 +35,25 @@
     @endif
 
     <!-- Search and Filter Section -->
-    <div class="bg-white rounded-lg shadow-lg p-4 mb-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 mb-6">
         <div class="flex flex-col md:flex-row gap-4">
             <div class="flex-1">
                 <form method="GET" action="{{ route('announcements.index') }}" class="flex">
                     <input type="text" name="search" value="{{ request('search') }}" 
                            placeholder="Cari pengumuman..." 
-                           class="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
+                           class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-l-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
                     <button type="submit" class="px-6 py-2 bg-yellow-600 text-white rounded-r-lg hover:bg-yellow-700">
                         <i class="fas fa-search"></i>
                     </button>
                 </form>
             </div>
             <div class="flex flex-wrap gap-2">
-                <a href="{{ route('announcements.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium {{ !request('category') ? 'bg-yellow-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
+                <a href="{{ route('announcements.index') }}" class="px-3 py-2 rounded-lg text-sm font-medium {{ !request('category') ? 'bg-yellow-600 text-white' : 'bg-gray-200 text-gray-700 dark:text-gray-300 hover:bg-gray-300' }}">
                     Semua
                 </a>
                 @foreach($categories as $category)
                     <a href="{{ route('announcements.index', ['category' => $category]) }}" 
-                       class="px-3 py-2 rounded-lg text-sm font-medium {{ request('category') === $category ? 'bg-yellow-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
+                       class="px-3 py-2 rounded-lg text-sm font-medium {{ request('category') === $category ? 'bg-yellow-600 text-white' : 'bg-gray-200 text-gray-700 dark:text-gray-300 hover:bg-gray-300' }}">
                         {{ ucfirst($category) }}
                     </a>
                 @endforeach
@@ -89,7 +89,7 @@
                 ];
                 $icon = $typeIcons[$announcement->category ?? 'default'] ?? $typeIcons['default'];
             @endphp
-            <div class="bg-white rounded-lg shadow-lg p-6 border-l-4 border-{{ $color }}-500">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 border-l-4 border-{{ $color }}-500">
                 <div class="flex items-start justify-between">
                     <div class="flex-1">
                         <div class="flex items-center mb-2">
@@ -101,17 +101,17 @@
                                     MENDESAK
                                 </span>
                             @endif
-                            <span class="text-sm text-gray-500">{{ $announcement->created_at->format('d F Y') }}</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">{{ $announcement->created_at->format('d F Y') }}</span>
                         </div>
-                        <h3 class="text-lg font-bold text-gray-900 mb-2">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2">
                             <a href="{{ route('announcements.show', $announcement->id) }}" class="hover:text-{{ $color }}-600">
                                 {{ $announcement->title }}
                             </a>
                         </h3>
-                        <p class="text-gray-700 mb-3">
+                        <p class="text-gray-700 dark:text-gray-300 mb-3">
                             {{ Str::limit($announcement->content, 200) }}
                         </p>
-                        <div class="flex flex-wrap gap-4 text-sm text-gray-600">
+                        <div class="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                             <div class="flex items-center">
                                 <i class="fas fa-calendar mr-2"></i>
                                 <span>Dipublikasikan: {{ $announcement->created_at->format('d M Y') }}</span>
@@ -136,10 +136,10 @@
                 </div>
             </div>
         @empty
-            <div class="bg-white rounded-lg shadow-lg p-8 text-center">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
                 <i class="fas fa-bullhorn text-5xl text-gray-300 mb-4"></i>
-                <h3 class="text-xl font-semibold text-gray-600 mb-2">Belum Ada Pengumuman</h3>
-                <p class="text-gray-500">
+                <h3 class="text-xl font-semibold text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-2">Belum Ada Pengumuman</h3>
+                <p class="text-gray-500 dark:text-gray-400 dark:text-gray-500">
                     @if(request('search') || request('category'))
                         Tidak ada pengumuman yang sesuai dengan pencarian Anda.
                     @else
@@ -157,9 +157,9 @@
 
     <!-- Pagination -->
     @if($announcements->hasPages())
-        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div class="text-sm text-gray-600">
+                <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                     Menampilkan {{ $announcements->firstItem() }} sampai {{ $announcements->lastItem() }} dari {{ $announcements->total() }} pengumuman
                 </div>
                 <div class="flex justify-center">
@@ -170,27 +170,27 @@
     @endif
 
     <!-- Statistics -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <h3 class="font-bold text-gray-900 mb-4 flex items-center">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+        <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
             <i class="fas fa-chart-bar mr-2 text-yellow-600"></i>
             Statistik Pengumuman
         </h3>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="text-center p-3 bg-yellow-50 rounded-lg">
+            <div class="text-center p-3 bg-yellow-50 dark:bg-yellow-900/40 rounded-lg">
                 <div class="text-2xl font-bold text-yellow-600">{{ $announcementStats['this_month'] ?? 0 }}</div>
-                <div class="text-sm text-gray-600">Bulan Ini</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Bulan Ini</div>
             </div>
-            <div class="text-center p-3 bg-blue-50 rounded-lg">
+            <div class="text-center p-3 bg-blue-50 dark:bg-blue-900/40 rounded-lg">
                 <div class="text-2xl font-bold text-blue-600">{{ $announcementStats['this_year'] ?? 0 }}</div>
-                <div class="text-sm text-gray-600">Tahun Ini</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Tahun Ini</div>
             </div>
-            <div class="text-center p-3 bg-green-50 rounded-lg">
+            <div class="text-center p-3 bg-green-50 dark:bg-green-900/40 rounded-lg">
                 <div class="text-2xl font-bold text-green-600">{{ $announcementStats['read_percentage'] ?? 0 }}%</div>
-                <div class="text-sm text-gray-600">Dibaca</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Dibaca</div>
             </div>
-            <div class="text-center p-3 bg-purple-50 rounded-lg">
+            <div class="text-center p-3 bg-purple-50 dark:bg-purple-900/40 rounded-lg">
                 <div class="text-2xl font-bold text-purple-600">{{ $announcementStats['rating'] ?? 0 }}</div>
-                <div class="text-sm text-gray-600">Rating</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Rating</div>
             </div>
         </div>
     </div>

@@ -77,31 +77,31 @@
     </div>
 
     <!-- Category Filter -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div class="flex flex-wrap gap-2" id="categoryFilters">
                 <button data-category="" 
-                        class="category-filter px-4 py-2 rounded-lg text-sm font-medium transition duration-200 {{ !request('category') ? 'bg-orange-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
+                        class="category-filter px-4 py-2 rounded-lg text-sm font-medium transition duration-200 {{ !request('category') ? 'bg-orange-600 text-white' : 'bg-gray-200 text-gray-700 dark:text-gray-300 hover:bg-gray-300' }}">
                     Semua UMKM
                 </button>
                 <button data-category="makanan" 
-                        class="category-filter px-4 py-2 rounded-lg text-sm font-medium transition duration-200 {{ request('category') == 'makanan' ? 'bg-orange-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
+                        class="category-filter px-4 py-2 rounded-lg text-sm font-medium transition duration-200 {{ request('category') == 'makanan' ? 'bg-orange-600 text-white' : 'bg-gray-200 text-gray-700 dark:text-gray-300 hover:bg-gray-300' }}">
                     Makanan
                 </button>
                 <button data-category="kerajinan" 
-                        class="category-filter px-4 py-2 rounded-lg text-sm font-medium transition duration-200 {{ request('category') == 'kerajinan' ? 'bg-orange-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
+                        class="category-filter px-4 py-2 rounded-lg text-sm font-medium transition duration-200 {{ request('category') == 'kerajinan' ? 'bg-orange-600 text-white' : 'bg-gray-200 text-gray-700 dark:text-gray-300 hover:bg-gray-300' }}">
                     Kerajinan
                 </button>
                 <button data-category="pertanian" 
-                        class="category-filter px-4 py-2 rounded-lg text-sm font-medium transition duration-200 {{ request('category') == 'pertanian' ? 'bg-orange-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
+                        class="category-filter px-4 py-2 rounded-lg text-sm font-medium transition duration-200 {{ request('category') == 'pertanian' ? 'bg-orange-600 text-white' : 'bg-gray-200 text-gray-700 dark:text-gray-300 hover:bg-gray-300' }}">
                     Pertanian
                 </button>
                 <button data-category="jasa" 
-                        class="category-filter px-4 py-2 rounded-lg text-sm font-medium transition duration-200 {{ request('category') == 'jasa' ? 'bg-orange-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
+                        class="category-filter px-4 py-2 rounded-lg text-sm font-medium transition duration-200 {{ request('category') == 'jasa' ? 'bg-orange-600 text-white' : 'bg-gray-200 text-gray-700 dark:text-gray-300 hover:bg-gray-300' }}">
                     Jasa
                 </button>
                 <button data-category="tekstil" 
-                        class="category-filter px-4 py-2 rounded-lg text-sm font-medium transition duration-200 {{ request('category') == 'tekstil' ? 'bg-orange-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
+                        class="category-filter px-4 py-2 rounded-lg text-sm font-medium transition duration-200 {{ request('category') == 'tekstil' ? 'bg-orange-600 text-white' : 'bg-gray-200 text-gray-700 dark:text-gray-300 hover:bg-gray-300' }}">
                     Tekstil
                 </button>
             </div>
@@ -111,9 +111,9 @@
                     <div class="relative">
                         <input type="text" id="searchInput" value="{{ request('search') }}" 
                                placeholder="Cari UMKM..." 
-                               class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                               class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fas fa-search text-gray-400"></i>
+                            <i class="fas fa-search text-gray-400 dark:text-gray-500"></i>
                         </div>
                     </div>
                     <button id="searchBtn" type="button" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-200">
@@ -131,7 +131,7 @@
     <!-- UMKM Directory -->
     <div id="umkmContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         @forelse($umkms as $umkm)
-        <div class="umkm-card {{ $umkm->category }} bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
+        <div class="umkm-card {{ $umkm->category }} bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
             <div class="relative">
                 @php
                     $photos = $umkm->photos ? (is_string($umkm->photos) ? json_decode($umkm->photos) : $umkm->photos) : [];
@@ -162,28 +162,28 @@
                 </div>
             </div>
             <div class="p-4">
-                <h3 class="font-bold text-gray-900 mb-2">{{ $umkm->business_name }}</h3>
-                <p class="text-gray-600 text-sm mb-3">
+                <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2">{{ $umkm->business_name }}</h3>
+                <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500 text-sm mb-3">
                     {{ Str::limit($umkm->description, 100) }}
                 </p>
                 
                 <div class="space-y-2 mb-4">
-                    <div class="flex items-center text-sm text-gray-600">
+                    <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                         <i class="fas fa-user mr-2 text-orange-500"></i>
                         <span>{{ $umkm->owner_name }}</span>
                     </div>
-                    <div class="flex items-center text-sm text-gray-600">
+                    <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                         <i class="fas fa-map-marker-alt mr-2 text-orange-500"></i>
                         <span>{{ $umkm->address }}</span>
                     </div>
                     @if($umkm->phone)
-                    <div class="flex items-center text-sm text-gray-600">
+                    <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                         <i class="fas fa-phone mr-2 text-orange-500"></i>
                         <span>{{ $umkm->phone }}</span>
                     </div>
                     @endif
                     @if($umkm->operating_hours)
-                    <div class="flex items-center text-sm text-gray-600">
+                    <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                         <i class="fas fa-clock mr-2 text-orange-500"></i>
                         <span>{{ $umkm->operating_hours }}</span>
                     </div>
@@ -211,7 +211,7 @@
                                 <i class="far fa-star"></i>
                             @endfor
                         </div>
-                        <span class="text-sm text-gray-600 ml-2">{{ number_format($umkm->rating, 1) }} ({{ $umkm->total_reviews }} ulasan)</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 ml-2">{{ number_format($umkm->rating, 1) }} ({{ $umkm->total_reviews }} ulasan)</span>
                     </div>
                     <a href="{{ route('umkm.show', $umkm->slug) }}" 
                        class="px-3 py-1 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200 text-sm transition duration-200">
@@ -223,16 +223,16 @@
         @empty
         <div class="col-span-full text-center py-12">
             <i class="fas fa-store text-6xl text-gray-300 mb-4"></i>
-            <h3 class="text-xl font-semibold text-gray-500 mb-2">Belum Ada UMKM</h3>
-            <p class="text-gray-400">Belum ada data UMKM yang tersedia saat ini.</p>
+            <h3 class="text-xl font-semibold text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-2">Belum Ada UMKM</h3>
+            <p class="text-gray-400 dark:text-gray-500">Belum ada data UMKM yang tersedia saat ini.</p>
         </div>
         @endforelse
     </div>
 
     <!-- Pagination & Statistics -->
-    <div id="paginationContainer" class="bg-white rounded-lg shadow-lg p-6 mb-6">
+    <div id="paginationContainer" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-            <h3 id="paginationInfo" class="text-lg font-bold text-gray-900">
+            <h3 id="paginationInfo" class="text-lg font-bold text-gray-900 dark:text-gray-100">
                 Menampilkan {{ $umkms->firstItem() ?? 0 }} - {{ $umkms->lastItem() ?? 0 }} dari {{ $umkms->total() }} UMKM
             </h3>
             @if($umkms->hasPages())
@@ -242,26 +242,26 @@
         
         <!-- UMKM Statistics -->
         <div class="pt-6 border-t">
-            <h3 class="font-bold text-gray-900 mb-4">Statistik UMKM Desa</h3>
+            <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-4">Statistik UMKM Desa</h3>
             <div id="categoryStats" class="grid grid-cols-2 md:grid-cols-6 gap-4">
                 @php
                     $categoryColors = [
-                        'makanan' => ['bg' => 'bg-yellow-50', 'text' => 'text-yellow-600'],
-                        'kerajinan' => ['bg' => 'bg-purple-50', 'text' => 'text-purple-600'],
-                        'pertanian' => ['bg' => 'bg-green-50', 'text' => 'text-green-600'],
-                        'jasa' => ['bg' => 'bg-blue-50', 'text' => 'text-blue-600'],
-                        'tekstil' => ['bg' => 'bg-pink-50', 'text' => 'text-pink-600'],
-                        'lainnya' => ['bg' => 'bg-orange-50', 'text' => 'text-orange-600']
+                        'makanan' => ['bg' => 'bg-yellow-50 dark:bg-yellow-900/40', 'text' => 'text-yellow-600'],
+                        'kerajinan' => ['bg' => 'bg-purple-50 dark:bg-purple-900/40', 'text' => 'text-purple-600'],
+                        'pertanian' => ['bg' => 'bg-green-50 dark:bg-green-900/40', 'text' => 'text-green-600'],
+                        'jasa' => ['bg' => 'bg-blue-50 dark:bg-blue-900/40', 'text' => 'text-blue-600'],
+                        'tekstil' => ['bg' => 'bg-pink-50 dark:bg-pink-900/40', 'text' => 'text-pink-600'],
+                        'lainnya' => ['bg' => 'bg-orange-50 dark:bg-orange-900/40', 'text' => 'text-orange-600']
                     ];
                 @endphp
                 
                 @foreach($categoryStats as $stat)
                     @php
-                        $colors = $categoryColors[$stat->category] ?? ['bg' => 'bg-gray-50', 'text' => 'text-gray-600'];
+                        $colors = $categoryColors[$stat->category] ?? ['bg' => 'bg-gray-50 dark:bg-gray-900', 'text' => 'text-gray-600 dark:text-gray-400 dark:text-gray-500'];
                     @endphp
                     <div class="text-center p-3 {{ $colors['bg'] }} rounded-lg">
                         <div class="text-xl font-bold {{ $colors['text'] }}">{{ $stat->count }}</div>
-                        <div class="text-sm text-gray-600">{{ ucfirst($stat->category) }}</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">{{ ucfirst($stat->category) }}</div>
                     </div>
                 @endforeach
             </div>
@@ -269,21 +269,21 @@
     </div>
 
     <!-- UMKM Support Programs -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <h3 class="font-bold text-gray-900 mb-4">Program Pemberdayaan UMKM</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+        <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-4">Program Pemberdayaan UMKM</h3>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="border border-gray-200 rounded-lg p-4">
+            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                 <div class="flex items-center mb-3">
                     <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-3">
                         <i class="fas fa-graduation-cap text-orange-600 text-xl"></i>
                     </div>
                     <div>
-                        <h4 class="font-bold text-gray-900">Pelatihan Kewirausahaan</h4>
-                        <p class="text-sm text-gray-600">Program pelatihan rutin setiap bulan</p>
+                        <h4 class="font-bold text-gray-900 dark:text-gray-100">Pelatihan Kewirausahaan</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Program pelatihan rutin setiap bulan</p>
                     </div>
                 </div>
-                <ul class="space-y-1 text-sm text-gray-600">
+                <ul class="space-y-1 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                     <li>• Digital Marketing & E-commerce</li>
                     <li>• Manajemen Keuangan Usaha</li>
                     <li>• Pengemasan & Branding Produk</li>
@@ -291,17 +291,17 @@
                 </ul>
             </div>
 
-            <div class="border border-gray-200 rounded-lg p-4">
+            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                 <div class="flex items-center mb-3">
                     <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-3">
                         <i class="fas fa-handshake text-green-600 text-xl"></i>
                     </div>
                     <div>
-                        <h4 class="font-bold text-gray-900">Akses Permodalan</h4>
-                        <p class="text-sm text-gray-600">Bantuan modal usaha terpadu</p>
+                        <h4 class="font-bold text-gray-900 dark:text-gray-100">Akses Permodalan</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Bantuan modal usaha terpadu</p>
                     </div>
                 </div>
-                <ul class="space-y-1 text-sm text-gray-600">
+                <ul class="space-y-1 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                     <li>• Program Kredit Mikro Desa</li>
                     <li>• Bantuan Hibah UMKM</li>
                     <li>• Kemitraan dengan Bank Daerah</li>
@@ -309,17 +309,17 @@
                 </ul>
             </div>
 
-            <div class="border border-gray-200 rounded-lg p-4">
+            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                 <div class="flex items-center mb-3">
                     <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
                         <i class="fas fa-store text-blue-600 text-xl"></i>
                     </div>
                     <div>
-                        <h4 class="font-bold text-gray-900">Pasar & Promosi</h4>
-                        <p class="text-sm text-gray-600">Bantuan pemasaran dan promosi</p>
+                        <h4 class="font-bold text-gray-900 dark:text-gray-100">Pasar & Promosi</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Bantuan pemasaran dan promosi</p>
                     </div>
                 </div>
-                <ul class="space-y-1 text-sm text-gray-600">
+                <ul class="space-y-1 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                     <li>• Bazar UMKM Bulanan</li>
                     <li>• Festival Produk Lokal</li>
                     <li>• Platform Online Desa</li>
@@ -327,17 +327,17 @@
                 </ul>
             </div>
 
-            <div class="border border-gray-200 rounded-lg p-4">
+            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                 <div class="flex items-center mb-3">
                     <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
                         <i class="fas fa-certificate text-purple-600 text-xl"></i>
                     </div>
                     <div>
-                        <h4 class="font-bold text-gray-900">Sertifikasi & Standardisasi</h4>
-                        <p class="text-sm text-gray-600">Peningkatan kualitas produk</p>
+                        <h4 class="font-bold text-gray-900 dark:text-gray-100">Sertifikasi & Standardisasi</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Peningkatan kualitas produk</p>
                     </div>
                 </div>
-                <ul class="space-y-1 text-sm text-gray-600">
+                <ul class="space-y-1 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                     <li>• Sertifikasi Halal MUI</li>
                     <li>• PIRT (Pangan Industri Rumah Tangga)</li>
                     <li>• SNI (Standar Nasional Indonesia)</li>
@@ -347,7 +347,7 @@
         </div>
 
         <div class="mt-6 pt-6 border-t text-center">
-            <p class="text-gray-600 mb-4">
+            <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">
                 Tertarik bergabung atau ingin informasi lebih lanjut tentang program UMKM?
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
@@ -403,7 +403,7 @@
                 umkmContainer.innerHTML = `
                     <div class="col-span-full text-center py-12">
                         <i class="fas fa-spinner fa-spin text-4xl text-orange-500 mb-4"></i>
-                        <p class="text-gray-600">Memuat data UMKM...</p>
+                        <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500">Memuat data UMKM...</p>
                     </div>
                 `;
             }
@@ -482,7 +482,7 @@
                         umkmContainer.innerHTML = `
                             <div class="col-span-full text-center py-12">
                                 <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
-                                <p class="text-gray-600">Terjadi kesalahan saat memuat data: ${error.message}</p>
+                                <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500">Terjadi kesalahan saat memuat data: ${error.message}</p>
                                 <button onclick="location.reload()" class="mt-4 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700">
                                     <i class="fas fa-refresh mr-2"></i>Muat Ulang
                                 </button>
@@ -529,10 +529,10 @@
             document.querySelectorAll('.category-filter').forEach(btn => {
                 const category = btn.getAttribute('data-category');
                 btn.classList.remove('bg-orange-600', 'text-white');
-                btn.classList.add('bg-gray-200', 'text-gray-700');
+                btn.classList.add('bg-gray-200', 'text-gray-700 dark:text-gray-300');
                 
                 if (category === activeCategory) {
-                    btn.classList.remove('bg-gray-200', 'text-gray-700');
+                    btn.classList.remove('bg-gray-200', 'text-gray-700 dark:text-gray-300');
                     btn.classList.add('bg-orange-600', 'text-white');
                 }
             });

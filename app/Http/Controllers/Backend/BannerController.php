@@ -11,7 +11,7 @@ class BannerController extends Controller
 {
     public function index()
     {
-        $banners = Banner::orderBy('order')->get();
+        $banners = Banner::orderBy('display_order')->get();
         return view('backend.banners.index', compact('banners'));
     }
     
@@ -38,7 +38,7 @@ class BannerController extends Controller
             $imagePath = $request->file('image')->store('banners', 'public');
         }
         
-        $order = $request->order ?? (Banner::max('order') + 1);
+        $order = $request->order ?? (Banner::max('display_order') + 1);
         
         Banner::create([
             'title' => $request->title,
@@ -47,7 +47,7 @@ class BannerController extends Controller
             'button_text' => $request->button_text,
             'button_link' => $request->button_link,
             'image_path' => $imagePath,
-            'order' => $order,
+            'display_order' => $order,
             'is_active' => $request->boolean('is_active', true),
             'user_id' => auth()->id()
         ]);
@@ -95,7 +95,7 @@ class BannerController extends Controller
             'button_text' => $request->button_text,
             'button_link' => $request->button_link,
             'image_path' => $imagePath,
-            'order' => $request->order ?? $banner->order,
+            'display_order' => $request->order ?? $banner->display_order,
             'is_active' => $request->boolean('is_active', true)
         ]);
         
@@ -139,7 +139,7 @@ class BannerController extends Controller
         ]);
         
         foreach ($request->banners as $bannerData) {
-            Banner::where('id', $bannerData['id'])->update(['order' => $bannerData['order']]);
+            Banner::where('id', $bannerData['id'])->update(['display_order' => $bannerData['order']]);
         }
         
         return response()->json([

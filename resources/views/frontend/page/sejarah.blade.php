@@ -8,14 +8,14 @@
 @section('content')
 <div class="xl:col-span-3">
     <!-- Timeline Header -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
         <div class="text-center mb-6">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Sejarah Desa Krandegan</h1>
-            <p class="text-gray-600">Perjalanan panjang pembentukan dan perkembangan desa</p>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Sejarah Desa Krandegan</h1>
+            <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500">Perjalanan panjang pembentukan dan perkembangan desa</p>
         </div>
         
         <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-4 border-l-4 border-amber-500">
-            <p class="text-gray-700 leading-relaxed">
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
                 Desa Krandegan memiliki sejarah yang panjang dan kaya akan nilai-nilai budaya Jawa. 
                 Nama "Krandegan" sendiri berasal dari kata dalam bahasa Jawa yang memiliki makna mendalam 
                 terkait dengan karakteristik wilayah dan kehidupan masyarakatnya.
@@ -24,8 +24,8 @@
     </div>
 
     <!-- Historical Timeline -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-        <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
             <i class="fas fa-clock text-amber-600 mr-2"></i>
             Kronologi Sejarah
         </h2>
@@ -43,8 +43,8 @@
                     </div>
                     <div class="ml-6">
                         <div class="bg-amber-50 rounded-lg p-4">
-                            <h3 class="font-bold text-gray-900 mb-2">Era Kerajaan (Abad 15-16)</h3>
-                            <p class="text-gray-700 text-sm mb-2">
+                            <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Era Kerajaan (Abad 15-16)</h3>
+                            <p class="text-gray-700 dark:text-gray-300 text-sm mb-2">
                                 Wilayah yang sekarang menjadi Desa Krandegan pada masa ini merupakan bagian dari 
                                 Kerajaan Sumedang Larang. Daerah ini masih berupa hutan lebat dan rawa-rawa yang 
                                 dihuni oleh beberapa keluarga perintis.
@@ -61,8 +61,8 @@
                     </div>
                     <div class="ml-6">
                         <div class="bg-amber-50 rounded-lg p-4">
-                            <h3 class="font-bold text-gray-900 mb-2">Masa Kolonial Belanda (1800-1945)</h3>
-                            <p class="text-gray-700 text-sm mb-2">
+                            <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Masa Kolonial Belanda (1800-1945)</h3>
+                            <p class="text-gray-700 dark:text-gray-300 text-sm mb-2">
                                 Pembukaan lahan pertanian secara besar-besaran dimulai oleh pemerintah kolonial Belanda. 
                                 Sistem irigasi mulai dibangun dan penduduk mulai berdatangan untuk membuka lahan pertanian. 
                                 Nama "Krandegan" mulai dikenal pada periode ini.
@@ -79,8 +79,8 @@
                     </div>
                     <div class="ml-6">
                         <div class="bg-amber-50 rounded-lg p-4">
-                            <h3 class="font-bold text-gray-900 mb-2">Masa Kemerdekaan (1945-1950)</h3>
-                            <p class="text-gray-700 text-sm mb-2">
+                            <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Masa Kemerdekaan (1945-1950)</h3>
+                            <p class="text-gray-700 dark:text-gray-300 text-sm mb-2">
                                 Setelah proklamasi kemerdekaan, wilayah ini mengalami reorganisasi pemerintahan. 
                                 Krandegan ditetapkan sebagai desa definitif dengan struktur pemerintahan yang jelas. 
                                 Kepala desa pertama adalah Bapak Kartawiria.
@@ -97,8 +97,8 @@
                     </div>
                     <div class="ml-6">
                         <div class="bg-amber-50 rounded-lg p-4">
-                            <h3 class="font-bold text-gray-900 mb-2">Era Pembangunan (1970-1998)</h3>
-                            <p class="text-gray-700 text-sm mb-2">
+                            <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Era Pembangunan (1970-1998)</h3>
+                            <p class="text-gray-700 dark:text-gray-300 text-sm mb-2">
                                 Masa pembangunan infrastruktur besar-besaran. Jalan beraspal, sekolah, puskesmas, 
                                 dan fasilitas umum lainnya mulai dibangun. Program transmigrasi juga membawa 
                                 penduduk baru yang memperkaya keragaman budaya desa.
@@ -115,8 +115,8 @@
                     </div>
                     <div class="ml-6">
                         <div class="bg-amber-50 rounded-lg p-4">
-                            <h3 class="font-bold text-gray-900 mb-2">Era Reformasi & Modern (1998-Sekarang)</h3>
-                            <p class="text-gray-700 text-sm mb-2">
+                            <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Era Reformasi & Modern (1998-Sekarang)</h3>
+                            <p class="text-gray-700 dark:text-gray-300 text-sm mb-2">
                                 Implementasi otonomi daerah memberikan keleluasaan lebih besar dalam pengelolaan desa. 
                                 Program-program pemberdayaan masyarakat, teknologi informasi, dan inovasi desa mulai 
                                 dikembangkan untuk meningkatkan kesejahteraan masyarakat.
@@ -130,43 +130,43 @@
     </div>
 
     <!-- Historical Figures -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
             <i class="fas fa-users text-blue-600 mr-2"></i>
             Tokoh Bersejarah
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-gray-50 rounded-lg p-4">
-                <h3 class="font-bold text-gray-900 mb-2">Bapak Kartawiria</h3>
-                <p class="text-sm text-gray-600 mb-2">Kepala Desa Pertama (1945-1965)</p>
-                <p class="text-sm text-gray-700">
+            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Bapak Kartawiria</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-2">Kepala Desa Pertama (1945-1965)</p>
+                <p class="text-sm text-gray-700 dark:text-gray-300">
                     Pelopor pembentukan struktur pemerintahan desa dan pencetus nama "Krandegan". 
                     Beliau juga yang memimpin pembangunan infrastruktur dasar desa.
                 </p>
             </div>
             
-            <div class="bg-gray-50 rounded-lg p-4">
-                <h3 class="font-bold text-gray-900 mb-2">Bapak Sukarjo</h3>
-                <p class="text-sm text-gray-600 mb-2">Tokoh Pendidikan (1960-1990)</p>
-                <p class="text-sm text-gray-700">
+            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Bapak Sukarjo</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-2">Tokoh Pendidikan (1960-1990)</p>
+                <p class="text-sm text-gray-700 dark:text-gray-300">
                     Guru pertama di desa yang mendirikan sekolah dasar dan mengembangkan 
                     pendidikan masyarakat. Berjasa dalam memberantas buta huruf.
                 </p>
             </div>
             
-            <div class="bg-gray-50 rounded-lg p-4">
-                <h3 class="font-bold text-gray-900 mb-2">Ibu Siti Rohayati</h3>
-                <p class="text-sm text-gray-600 mb-2">Pelopor Kesehatan (1970-2000)</p>
-                <p class="text-sm text-gray-700">
+            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Ibu Siti Rohayati</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-2">Pelopor Kesehatan (1970-2000)</p>
+                <p class="text-sm text-gray-700 dark:text-gray-300">
                     Bidan desa pertama yang mengembangkan layanan kesehatan ibu dan anak. 
                     Pendiri posyandu dan program KB di desa.
                 </p>
             </div>
             
-            <div class="bg-gray-50 rounded-lg p-4">
-                <h3 class="font-bold text-gray-900 mb-2">H. Ahmad Sobari</h3>
-                <p class="text-sm text-gray-600 mb-2">Tokoh Agama (1980-2010)</p>
-                <p class="text-sm text-gray-700">
+            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2">H. Ahmad Sobari</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-2">Tokoh Agama (1980-2010)</p>
+                <p class="text-sm text-gray-700 dark:text-gray-300">
                     Pemimpin spiritual yang membangun masjid besar dan mengembangkan 
                     pendidikan agama di desa melalui pengajian dan madrasah.
                 </p>
@@ -175,61 +175,61 @@
     </div>
 
     <!-- Cultural Heritage -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
             <i class="fas fa-scroll text-purple-600 mr-2"></i>
             Warisan Budaya
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-                <h3 class="font-semibold text-gray-800 mb-3">Tradisi & Upacara</h3>
+                <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-3">Tradisi & Upacara</h3>
                 <ul class="space-y-2 text-sm">
                     <li class="flex items-start">
                         <span class="text-purple-500 mr-2">•</span>
                         <div>
                             <span class="font-medium">Seren Taun:</span>
-                            <span class="text-gray-600"> Upacara syukuran panen raya yang diadakan setiap tahun</span>
+                            <span class="text-gray-600 dark:text-gray-400 dark:text-gray-500"> Upacara syukuran panen raya yang diadakan setiap tahun</span>
                         </div>
                     </li>
                     <li class="flex items-start">
                         <span class="text-purple-500 mr-2">•</span>
                         <div>
                             <span class="font-medium">Rajaban:</span>
-                            <span class="text-gray-600"> Tradisi keagamaan di bulan Rajab</span>
+                            <span class="text-gray-600 dark:text-gray-400 dark:text-gray-500"> Tradisi keagamaan di bulan Rajab</span>
                         </div>
                     </li>
                     <li class="flex items-start">
                         <span class="text-purple-500 mr-2">•</span>
                         <div>
                             <span class="font-medium">Gotong Royong:</span>
-                            <span class="text-gray-600"> Kerja bakti bersama setiap hari Minggu</span>
+                            <span class="text-gray-600 dark:text-gray-400 dark:text-gray-500"> Kerja bakti bersama setiap hari Minggu</span>
                         </div>
                     </li>
                 </ul>
             </div>
             
             <div>
-                <h3 class="font-semibold text-gray-800 mb-3">Kesenian Tradisional</h3>
+                <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-3">Kesenian Tradisional</h3>
                 <ul class="space-y-2 text-sm">
                     <li class="flex items-start">
                         <span class="text-purple-500 mr-2">•</span>
                         <div>
                             <span class="font-medium">Tari Topeng:</span>
-                            <span class="text-gray-600"> Tarian khas untuk menyambut tamu kehormatan</span>
+                            <span class="text-gray-600 dark:text-gray-400 dark:text-gray-500"> Tarian khas untuk menyambut tamu kehormatan</span>
                         </div>
                     </li>
                     <li class="flex items-start">
                         <span class="text-purple-500 mr-2">•</span>
                         <div>
                             <span class="font-medium">Wayang Golek:</span>
-                            <span class="text-gray-600"> Pertunjukan tradisional saat acara besar</span>
+                            <span class="text-gray-600 dark:text-gray-400 dark:text-gray-500"> Pertunjukan tradisional saat acara besar</span>
                         </div>
                     </li>
                     <li class="flex items-start">
                         <span class="text-purple-500 mr-2">•</span>
                         <div>
                             <span class="font-medium">Angklung:</span>
-                            <span class="text-gray-600"> Grup musik tradisional desa</span>
+                            <span class="text-gray-600 dark:text-gray-400 dark:text-gray-500"> Grup musik tradisional desa</span>
                         </div>
                     </li>
                 </ul>

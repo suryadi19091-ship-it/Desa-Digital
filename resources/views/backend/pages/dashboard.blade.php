@@ -499,6 +499,10 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        const gridColor  = isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)';
+        const textColor  = isDarkMode ? '#8b9ab1' : '#6b7280';
+
         // Initialize monthly stats chart
         const ctx = document.getElementById('monthlyStatsChart').getContext('2d');
         const monthlyStatsChart = new Chart(ctx, {
@@ -542,26 +546,22 @@
                 plugins: {
                     legend: {
                         position: 'top',
+                        labels: { color: textColor }
                     }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                        }
+                        ticks: { color: textColor },
+                        grid: { color: gridColor }
                     },
                     x: {
-                        grid: {
-                            display: false
-                        }
+                        ticks: { color: textColor },
+                        grid: { display: false }
                     }
                 },
                 elements: {
-                    point: {
-                        radius: 4,
-                        hoverRadius: 6
-                    }
+                    point: { radius: 4, hoverRadius: 6 }
                 }
             }
         });

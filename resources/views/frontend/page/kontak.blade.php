@@ -10,17 +10,17 @@
     <!-- Contact Information -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <!-- Office Info -->
-        <div class="bg-white rounded-lg shadow-lg p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
             <div class="flex items-center mb-4">
                 <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
                     <i class="fas fa-building text-blue-600 text-xl"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-gray-900">Kantor Desa</h3>
-                    <p class="text-sm text-gray-600">Jam Pelayanan</p>
+                    <h3 class="font-bold text-gray-900 dark:text-gray-100">Kantor Desa</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Jam Pelayanan</p>
                 </div>
             </div>
-            <div class="space-y-2 text-sm text-gray-700">
+            <div class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                 <div class="flex items-center">
                     <i class="fas fa-map-marker-alt text-blue-500 mr-3 w-4"></i>
                     <span>{{ $villageProfile->address ?? 'Alamat belum diatur' }}</span>
@@ -33,20 +33,20 @@
         </div>
 
         <!-- Contact Numbers -->
-        <div class="bg-white rounded-lg shadow-lg p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
             <div class="flex items-center mb-4">
                 <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
                     <i class="fas fa-phone text-green-600 text-xl"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-gray-900">Telepon & WhatsApp</h3>
-                    <p class="text-sm text-gray-600">Hubungi Kami</p>
+                    <h3 class="font-bold text-gray-900 dark:text-gray-100">Telepon & WhatsApp</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Hubungi Kami</p>
                 </div>
             </div>
             <div class="space-y-3">
                 @if($villageProfile->phone)
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center text-sm text-gray-700">
+                    <div class="flex items-center text-sm text-gray-700 dark:text-gray-300">
                         <i class="fas fa-phone text-green-500 mr-3 w-4"></i>
                         <span>{{ $villageProfile->phone }}</span>
                     </div>
@@ -57,7 +57,7 @@
                 @endif
                 @if($villageProfile->whatsapp)
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center text-sm text-gray-700">
+                    <div class="flex items-center text-sm text-gray-700 dark:text-gray-300">
                         <i class="fab fa-whatsapp text-green-500 mr-3 w-4"></i>
                         <span>{{ $villageProfile->whatsapp }}</span>
                     </div>
@@ -68,31 +68,31 @@
                 @endif
                 @if($villageProfile->fax)
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center text-sm text-gray-700">
+                    <div class="flex items-center text-sm text-gray-700 dark:text-gray-300">
                         <i class="fas fa-fax text-green-500 mr-3 w-4"></i>
                         <span>{{ $villageProfile->fax }}</span>
                     </div>
-                    <span class="text-xs text-gray-500">Fax</span>
+                    <span class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Fax</span>
                 </div>
                 @endif
             </div>
         </div>
 
         <!-- Digital Contact -->
-        <div class="bg-white rounded-lg shadow-lg p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
             <div class="flex items-center mb-4">
                 <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
                     <i class="fas fa-envelope text-purple-600 text-xl"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-gray-900">Email & Media Sosial</h3>
-                    <p class="text-sm text-gray-600">Kontak Digital</p>
+                    <h3 class="font-bold text-gray-900 dark:text-gray-100">Email & Media Sosial</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Kontak Digital</p>
                 </div>
             </div>
             <div class="space-y-3">
                 @if($villageProfile->email)
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center text-sm text-gray-700">
+                    <div class="flex items-center text-sm text-gray-700 dark:text-gray-300">
                         <i class="fas fa-envelope text-purple-500 mr-3 w-4"></i>
                         <span>{{ $villageProfile->email }}</span>
                     </div>
@@ -103,7 +103,7 @@
                 @endif
                 @if($villageProfile->facebook)
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center text-sm text-gray-700">
+                    <div class="flex items-center text-sm text-gray-700 dark:text-gray-300">
                         <i class="fab fa-facebook text-blue-500 mr-3 w-4"></i>
                         <span>{{ $villageProfile->facebook }}</span>
                     </div>
@@ -114,7 +114,7 @@
                 @endif
                 @if($villageProfile->instagram)
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center text-sm text-gray-700">
+                    <div class="flex items-center text-sm text-gray-700 dark:text-gray-300">
                         <i class="fab fa-instagram text-pink-500 mr-3 w-4"></i>
                         <span>{{ $villageProfile->instagram }}</span>
                     </div>
@@ -130,14 +130,14 @@
     <!-- Contact Form -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <!-- Form -->
-        <div class="bg-white rounded-lg shadow-lg p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
             <div class="flex items-center mb-6">
                 <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
-                    <i class="fas fa-paper-plane text-gray-600 text-xl"></i>
+                    <i class="fas fa-paper-plane text-gray-600 dark:text-gray-400 dark:text-gray-500 text-xl"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-gray-900">Kirim Pesan</h3>
-                    <p class="text-sm text-gray-600">Sampaikan pertanyaan atau saran Anda</p>
+                    <h3 class="font-bold text-gray-900 dark:text-gray-100">Kirim Pesan</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Sampaikan pertanyaan atau saran Anda</p>
                 </div>
             </div>
 
@@ -163,18 +163,18 @@
                 @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap *</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Lengkap *</label>
                         <input type="text" name="name" required value="{{ old('name') }}"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 @error('name') border-red-300 @enderror"
+                               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 @error('name') border-red-300 @enderror"
                                placeholder="Masukkan nama lengkap">
                         @error('name')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">No. Telepon</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">No. Telepon</label>
                         <input type="tel" name="phone" value="{{ old('phone') }}"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 @error('phone') border-red-300 @enderror"
+                               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 @error('phone') border-red-300 @enderror"
                                placeholder="Contoh: 081234567890">
                         @error('phone')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -183,9 +183,9 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email *</label>
                     <input type="email" name="email" required value="{{ old('email') }}"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 @error('email') border-red-300 @enderror"
+                           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 @error('email') border-red-300 @enderror"
                            placeholder="email@example.com">
                     @error('email')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -193,8 +193,8 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Kategori Pesan *</label>
-                    <select name="subject" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 @error('subject') border-red-300 @enderror">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kategori Pesan *</label>
+                    <select name="subject" required class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 @error('subject') border-red-300 @enderror">
                         <option value="">Pilih kategori...</option>
                         <option value="Informasi Umum" {{ old('subject') == 'Informasi Umum' ? 'selected' : '' }}>Informasi Umum</option>
                         <option value="Keluhan Pelayanan" {{ old('subject') == 'Keluhan Pelayanan' ? 'selected' : '' }}>Keluhan Pelayanan</option>
@@ -209,9 +209,9 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Pesan *</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pesan *</label>
                     <textarea name="message" required rows="4" 
-                              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 resize-none @error('message') border-red-300 @enderror"
+                              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 resize-none @error('message') border-red-300 @enderror"
                               placeholder="Tuliskan pesan Anda dengan jelas...">{{ old('message') }}</textarea>
                     @error('message')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -220,10 +220,10 @@
 
                 <div class="flex items-start">
                     <input type="checkbox" required 
-                           class="mt-1 h-4 w-4 text-gray-600 focus:ring-gray-500 border-gray-300 rounded">
-                    <label class="ml-2 text-sm text-gray-700">
+                           class="mt-1 h-4 w-4 text-gray-600 dark:text-gray-400 dark:text-gray-500 focus:ring-gray-500 border-gray-300 dark:border-gray-700 rounded">
+                    <label class="ml-2 text-sm text-gray-700 dark:text-gray-300">
                         Saya menyetujui bahwa data yang saya berikan akan diproses sesuai dengan 
-                        <button type="button" class="text-gray-600 hover:text-gray-800 underline">kebijakan privasi</button>
+                        <button type="button" class="text-gray-600 dark:text-gray-400 dark:text-gray-500 hover:text-gray-800 dark:text-gray-200 underline">kebijakan privasi</button>
                     </label>
                 </div>
 
@@ -238,7 +238,7 @@
         <!-- Emergency Contacts & FAQ -->
         <div class="space-y-6">
             <!-- Emergency -->
-            <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+            <div class="bg-red-50 dark:bg-red-900/40 border border-red-200 rounded-lg p-6">
                 <div class="flex items-center mb-4">
                     <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3">
                         <i class="fas fa-exclamation-triangle text-red-600"></i>
@@ -277,52 +277,52 @@
             </div>
 
             <!-- FAQ -->
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <h3 class="font-bold text-gray-900 mb-4">Pertanyaan Umum</h3>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-4">Pertanyaan Umum</h3>
                 <div class="space-y-4">
-                    <div class="border-b border-gray-200 pb-3">
-                        <button class="faq-question flex items-center justify-between w-full text-left text-sm font-medium text-gray-900 hover:text-gray-700"
+                    <div class="border-b border-gray-200 dark:border-gray-700 pb-3">
+                        <button class="faq-question flex items-center justify-between w-full text-left text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:text-gray-300"
                                 data-target="faq1">
                             <span>Bagaimana cara mengurus surat keterangan?</span>
                             <i class="fas fa-chevron-down transform transition-transform duration-200"></i>
                         </button>
-                        <div id="faq1" class="faq-answer hidden mt-2 text-sm text-gray-600">
+                        <div id="faq1" class="faq-answer hidden mt-2 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                             Surat keterangan dapat diurus di kantor desa pada jam kerja. Bawa KTP, KK, dan dokumen pendukung lainnya. 
                             Atau gunakan layanan online melalui menu "Layanan Surat" di website ini.
                         </div>
                     </div>
 
-                    <div class="border-b border-gray-200 pb-3">
-                        <button class="faq-question flex items-center justify-between w-full text-left text-sm font-medium text-gray-900 hover:text-gray-700"
+                    <div class="border-b border-gray-200 dark:border-gray-700 pb-3">
+                        <button class="faq-question flex items-center justify-between w-full text-left text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:text-gray-300"
                                 data-target="faq2">
                             <span>Kapan jadwal pasar desa?</span>
                             <i class="fas fa-chevron-down transform transition-transform duration-200"></i>
                         </button>
-                        <div id="faq2" class="faq-answer hidden mt-2 text-sm text-gray-600">
+                        <div id="faq2" class="faq-answer hidden mt-2 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                             Pasar desa beroperasi setiap hari Minggu pukul 06:00 - 12:00 WIB di lapangan desa. 
                             Tersedia berbagai produk segar dan makanan tradisional.
                         </div>
                     </div>
 
-                    <div class="border-b border-gray-200 pb-3">
-                        <button class="faq-question flex items-center justify-between w-full text-left text-sm font-medium text-gray-900 hover:text-gray-700"
+                    <div class="border-b border-gray-200 dark:border-gray-700 pb-3">
+                        <button class="faq-question flex items-center justify-between w-full text-left text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:text-gray-300"
                                 data-target="faq3">
                             <span>Bagaimana cara mendaftar UMKM?</span>
                             <i class="fas fa-chevron-down transform transition-transform duration-200"></i>
                         </button>
-                        <div id="faq3" class="faq-answer hidden mt-2 text-sm text-gray-600">
+                        <div id="faq3" class="faq-answer hidden mt-2 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                             Kunjungi kantor desa atau hubungi bagian ekonomi desa. Siapkan dokumen identitas, 
                             deskripsi usaha, dan foto produk. Pendaftaran gratis dan mendapat pembinaan rutin.
                         </div>
                     </div>
 
                     <div class="pb-3">
-                        <button class="faq-question flex items-center justify-between w-full text-left text-sm font-medium text-gray-900 hover:text-gray-700"
+                        <button class="faq-question flex items-center justify-between w-full text-left text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:text-gray-300"
                                 data-target="faq4">
                             <span>Adakah program bantuan untuk warga?</span>
                             <i class="fas fa-chevron-down transform transition-transform duration-200"></i>
                         </button>
-                        <div id="faq4" class="faq-answer hidden mt-2 text-sm text-gray-600">
+                        <div id="faq4" class="faq-answer hidden mt-2 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                             Ya, tersedia berbagai program seperti BLT Dana Desa, bantuan sembako, beasiswa, 
                             dan program kesehatan gratis. Informasi lengkap dapat dilihat di menu "Pengumuman".
                         </div>
@@ -333,11 +333,11 @@
     </div>
 
     <!-- Map & Location -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
         <div class="flex items-center justify-between mb-6">
             <div>
-                <h3 class="font-bold text-gray-900">Peta Lokasi</h3>
-                <p class="text-sm text-gray-600">Kantor {{ $villageProfile->village_name ?? 'Desa Krandegan' }}</p>
+                <h3 class="font-bold text-gray-900 dark:text-gray-100">Peta Lokasi</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Kantor {{ $villageProfile->village_name ?? 'Desa Krandegan' }}</p>
             </div>
             <button class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 text-sm transition duration-200">
                 <i class="fas fa-directions mr-2"></i>
@@ -351,8 +351,8 @@
             <div id="contact-map" class="w-full h-96 bg-gray-200 rounded-lg overflow-hidden relative">
                 <div class="absolute inset-0 flex items-center justify-center">
                     <div class="text-center">
-                        <i class="fas fa-spinner fa-spin text-2xl text-gray-400 mb-2"></i>
-                        <p class="text-gray-500 text-sm">Memuat peta lokasi...</p>
+                        <i class="fas fa-spinner fa-spin text-2xl text-gray-400 dark:text-gray-500 mb-2"></i>
+                        <p class="text-gray-500 dark:text-gray-400 dark:text-gray-500 text-sm">Memuat peta lokasi...</p>
                     </div>
                 </div>
             </div>
@@ -377,45 +377,45 @@
         <!-- Location Details -->
         <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div class="flex items-center">
-                <i class="fas fa-car text-gray-500 mr-2"></i>
-                <span class="text-gray-700">15 menit dari Stasiun Telagasari</span>
+                <i class="fas fa-car text-gray-500 dark:text-gray-400 dark:text-gray-500 mr-2"></i>
+                <span class="text-gray-700 dark:text-gray-300">15 menit dari Stasiun Telagasari</span>
             </div>
             <div class="flex items-center">
-                <i class="fas fa-bus text-gray-500 mr-2"></i>
-                <span class="text-gray-700">Dilalui angkot jurusan Telagasari</span>
+                <i class="fas fa-bus text-gray-500 dark:text-gray-400 dark:text-gray-500 mr-2"></i>
+                <span class="text-gray-700 dark:text-gray-300">Dilalui angkot jurusan Telagasari</span>
             </div>
             <div class="flex items-center">
-                <i class="fas fa-parking text-gray-500 mr-2"></i>
-                <span class="text-gray-700">Tersedia area parkir gratis</span>
+                <i class="fas fa-parking text-gray-500 dark:text-gray-400 dark:text-gray-500 mr-2"></i>
+                <span class="text-gray-700 dark:text-gray-300">Tersedia area parkir gratis</span>
             </div>
         </div>
     </div>
 
     <!-- Response Time & Statistics -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <h3 class="font-bold text-gray-900 mb-4">Statistik Layanan Kontak</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+        <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-4">Statistik Layanan Kontak</h3>
         
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div class="text-center p-4 bg-blue-50 rounded-lg">
+            <div class="text-center p-4 bg-blue-50 dark:bg-blue-900/40 rounded-lg">
                 <div class="text-2xl font-bold text-blue-600">< 24 Jam</div>
-                <div class="text-sm text-gray-600">Respon Email</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Respon Email</div>
             </div>
-            <div class="text-center p-4 bg-green-50 rounded-lg">
+            <div class="text-center p-4 bg-green-50 dark:bg-green-900/40 rounded-lg">
                 <div class="text-2xl font-bold text-green-600">< 1 Jam</div>
-                <div class="text-sm text-gray-600">Respon WhatsApp</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Respon WhatsApp</div>
             </div>
-            <div class="text-center p-4 bg-yellow-50 rounded-lg">
+            <div class="text-center p-4 bg-yellow-50 dark:bg-yellow-900/40 rounded-lg">
                 <div class="text-2xl font-bold text-yellow-600">98%</div>
-                <div class="text-sm text-gray-600">Tingkat Kepuasan</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Tingkat Kepuasan</div>
             </div>
-            <div class="text-center p-4 bg-purple-50 rounded-lg">
+            <div class="text-center p-4 bg-purple-50 dark:bg-purple-900/40 rounded-lg">
                 <div class="text-2xl font-bold text-purple-600">450+</div>
-                <div class="text-sm text-gray-600">Pesan/Bulan</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Pesan/Bulan</div>
             </div>
         </div>
 
         <div class="text-center">
-            <p class="text-gray-600 mb-4">
+            <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">
                 Kami berkomitmen memberikan pelayanan terbaik untuk seluruh warga dan pengunjung {{ $villageProfile->village_name ?? 'Desa Krandegan' }}
             </p>
             <div class="flex flex-col sm:flex-row gap-3 justify-center">
@@ -683,10 +683,10 @@
         input.addEventListener('blur', function() {
             if (this.hasAttribute('required') && !this.value.trim()) {
                 this.classList.add('border-red-300', 'focus:border-red-500', 'focus:ring-red-500');
-                this.classList.remove('border-gray-300', 'focus:border-gray-500', 'focus:ring-gray-500');
+                this.classList.remove('border-gray-300 dark:border-gray-700', 'focus:border-gray-500', 'focus:ring-gray-500');
             } else {
                 this.classList.remove('border-red-300', 'focus:border-red-500', 'focus:ring-red-500');
-                this.classList.add('border-gray-300', 'focus:border-gray-500', 'focus:ring-gray-500');
+                this.classList.add('border-gray-300 dark:border-gray-700', 'focus:border-gray-500', 'focus:ring-gray-500');
             }
         });
     });

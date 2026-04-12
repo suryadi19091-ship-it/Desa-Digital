@@ -3,7 +3,7 @@
 @section('title', 'Wisata Desa - ' . strtoupper($villageProfile->village_name ?? 'Desa Krandegan'))
 @section('page_title', 'WISATA DESA')
 @section('header_icon', 'fas fa-mountain')
-@section('header_bg_color', 'bg-teal-600')
+@section('header_bg_color', 'bg-teal-600 dark:bg-gray-800')
 
 @section('content')
 <div class="xl:col-span-3">
@@ -52,7 +52,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <!-- Main Featured -->
             @php $featured = $featuredTourism->first(); @endphp
-            <div class="lg:col-span-2 relative bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="lg:col-span-2 relative bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
                 @php 
                     $images = is_string($featured->images) ? json_decode($featured->images, true) : $featured->images;
                     $firstImage = (is_array($images) && count($images) > 0) ? $images[0] : 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=400&fit=crop';
@@ -79,7 +79,7 @@
                                 @endif
                             </div>
                         </div>
-                        <button class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition duration-200">
+                        <button class="px-4 py-2 bg-teal-600 dark:bg-gray-800 text-white rounded-lg hover:bg-teal-700 dark:bg-gray-700 transition duration-200">
                             <i class="fas fa-info-circle mr-2"></i>Detail
                         </button>
                     </div>
@@ -89,9 +89,9 @@
     @endif
 
     <!-- Destination Categories -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-            <h3 class="text-xl font-bold text-gray-900">Jelajahi Destinasi</h3>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">Jelajahi Destinasi</h3>
             <div class="flex flex-wrap gap-2">
                 <button class="dest-filter active px-4 py-2 rounded-lg text-sm font-medium transition duration-200" data-filter="all">
                     Semua
@@ -138,7 +138,7 @@
                     $categoryColor = $categoryColors[$item->category] ?? 'bg-gray-500';
                 @endphp
                 
-                <div class="destination-card {{ $item->category }} bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
+                <div class="destination-card {{ $item->category }} bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition duration-300">
                     <div class="relative">
                         <img src="{{ $firstImage }}" 
                              alt="{{ $item->name }}" class="w-full h-48 object-cover">
@@ -157,24 +157,24 @@
                         @endif
                     </div>
                     <div class="p-4">
-                        <h3 class="font-bold text-gray-900 mb-2">{{ $item->name }}</h3>
-                        <p class="text-gray-600 text-sm mb-3">
+                        <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2">{{ $item->name }}</h3>
+                        <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500 text-sm mb-3">
                             {{ Str::limit($item->description, 100) }}
                         </p>
                         
                         <div class="space-y-2 mb-4">
-                            <div class="flex items-center text-sm text-gray-600">
+                            <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                                 <i class="fas fa-map-marker-alt mr-2 text-teal-500"></i>
                                 <span>{{ $item->address }}</span>
                             </div>
                             @if($item->operating_hours)
-                                <div class="flex items-center text-sm text-gray-600">
+                                <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                                     <i class="fas fa-clock mr-2 text-teal-500"></i>
                                     <span>{{ $item->operating_hours }}</span>
                                 </div>
                             @endif
                             @if($item->ticket_price !== null)
-                                <div class="flex items-center text-sm text-gray-600">
+                                <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                                     <i class="fas fa-ticket-alt mr-2 text-teal-500"></i>
                                     <span>
                                         @if($item->ticket_price > 0)
@@ -209,50 +209,50 @@
             @endforeach
         @else
             <div class="col-span-3 text-center py-12">
-                <div class="text-gray-400 mb-4">
+                <div class="text-gray-400 dark:text-gray-500 mb-4">
                     <i class="fas fa-map-marked-alt text-6xl"></i>
                 </div>
-                <h3 class="text-lg font-medium text-gray-500 mb-2">Belum Ada Destinasi Wisata</h3>
-                <p class="text-gray-400">Data destinasi wisata akan segera ditambahkan</p>
+                <h3 class="text-lg font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-2">Belum Ada Destinasi Wisata</h3>
+                <p class="text-gray-400 dark:text-gray-500">Data destinasi wisata akan segera ditambahkan</p>
             </div>
         @endif
     </div>
 
     <!-- Tourism Services -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-        <h3 class="font-bold text-gray-900 mb-6">Layanan Wisata</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+        <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-6">Layanan Wisata</h3>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Homestay -->
-            <div class="text-center p-6 border border-gray-200 rounded-lg hover:shadow-md transition duration-200">
+            <div class="text-center p-6 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-md transition duration-200">
                 <div class="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-home text-teal-600 text-2xl"></i>
                 </div>
-                <h4 class="font-bold text-gray-900 mb-2">Homestay</h4>
-                <p class="text-gray-600 text-sm mb-4">
+                <h4 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Homestay</h4>
+                <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500 text-sm mb-4">
                     15 homestay bersertifikat dengan fasilitas lengkap dan pelayanan ramah
                 </p>
-                <div class="space-y-1 text-sm text-gray-600 mb-4">
+                <div class="space-y-1 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">
                     <div>• AC & Air Panas</div>
                     <div>• WiFi Gratis</div>
                     <div>• Sarapan Tradisional</div>
                     <div>• Mulai Rp 150k/malam</div>
                 </div>
-                <button class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 text-sm transition duration-200">
+                <button class="px-4 py-2 bg-teal-600 dark:bg-gray-800 text-white rounded-lg hover:bg-teal-700 dark:bg-gray-700 text-sm transition duration-200">
                     Lihat Homestay
                 </button>
             </div>
 
             <!-- Tour Guide -->
-            <div class="text-center p-6 border border-gray-200 rounded-lg hover:shadow-md transition duration-200">
+            <div class="text-center p-6 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-md transition duration-200">
                 <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-user-tie text-blue-600 text-2xl"></i>
                 </div>
-                <h4 class="font-bold text-gray-900 mb-2">Pemandu Wisata</h4>
-                <p class="text-gray-600 text-sm mb-4">
+                <h4 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Pemandu Wisata</h4>
+                <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500 text-sm mb-4">
                     Pemandu lokal berpengalaman yang menguasai sejarah dan budaya desa
                 </p>
-                <div class="space-y-1 text-sm text-gray-600 mb-4">
+                <div class="space-y-1 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">
                     <div>• Bersertifikat Resmi</div>
                     <div>• Bahasa Indonesia & Jawa</div>
                     <div>• Paket Tur Harian</div>
@@ -264,15 +264,15 @@
             </div>
 
             <!-- Transportation -->
-            <div class="text-center p-6 border border-gray-200 rounded-lg hover:shadow-md transition duration-200">
+            <div class="text-center p-6 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-md transition duration-200">
                 <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-car text-green-600 text-2xl"></i>
                 </div>
-                <h4 class="font-bold text-gray-900 mb-2">Transportasi</h4>
-                <p class="text-gray-600 text-sm mb-4">
+                <h4 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Transportasi</h4>
+                <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500 text-sm mb-4">
                     Layanan antar-jemput dan rental kendaraan untuk kemudahan wisatawan
                 </p>
-                <div class="space-y-1 text-sm text-gray-600 mb-4">
+                <div class="space-y-1 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">
                     <div>• Mobil & Motor</div>
                     <div>• Sopir Berpengalaman</div>
                     <div>• Antar-Jemput Bandara</div>
@@ -286,9 +286,9 @@
     </div>
 
     <!-- Tourism Packages -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="font-bold text-gray-900">Paket Wisata</h3>
+            <h3 class="font-bold text-gray-900 dark:text-gray-100">Paket Wisata</h3>
             <button class="text-teal-600 hover:text-teal-700 text-sm font-medium">
                 Lihat Semua Paket <i class="fas fa-arrow-right ml-1"></i>
             </button>
@@ -296,13 +296,13 @@
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Package 1 -->
-            <div class="border border-gray-200 rounded-lg p-6">
+            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h4 class="font-bold text-gray-900">Paket Alam 2D1N</h4>
+                    <h4 class="font-bold text-gray-900 dark:text-gray-100">Paket Alam 2D1N</h4>
                     <span class="text-xl font-bold text-teal-600">Rp 450K</span>
                 </div>
                 
-                <div class="space-y-2 text-sm text-gray-600 mb-4">
+                <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">
                     <div class="flex items-center">
                         <i class="fas fa-check text-green-500 mr-2"></i>
                         <span>Puncak Krandegan + Telaga Hijau</span>
@@ -322,21 +322,21 @@
                 </div>
                 
                 <div class="flex items-center justify-between text-sm">
-                    <span class="text-gray-600">Min. 2 orang</span>
-                    <button class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition duration-200">
+                    <span class="text-gray-600 dark:text-gray-400 dark:text-gray-500">Min. 2 orang</span>
+                    <button class="px-4 py-2 bg-teal-600 dark:bg-gray-800 text-white rounded-lg hover:bg-teal-700 dark:bg-gray-700 transition duration-200">
                         Pesan Sekarang
                     </button>
                 </div>
             </div>
 
             <!-- Package 2 -->
-            <div class="border border-gray-200 rounded-lg p-6">
+            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h4 class="font-bold text-gray-900">Paket Edukasi 1 Hari</h4>
+                    <h4 class="font-bold text-gray-900 dark:text-gray-100">Paket Edukasi 1 Hari</h4>
                     <span class="text-xl font-bold text-teal-600">Rp 125K</span>
                 </div>
                 
-                <div class="space-y-2 text-sm text-gray-600 mb-4">
+                <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">
                     <div class="flex items-center">
                         <i class="fas fa-check text-green-500 mr-2"></i>
                         <span>Agrowisata Organik + Rumah Budaya</span>
@@ -356,8 +356,8 @@
                 </div>
                 
                 <div class="flex items-center justify-between text-sm">
-                    <span class="text-gray-600">Min. 10 orang</span>
-                    <button class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition duration-200">
+                    <span class="text-gray-600 dark:text-gray-400 dark:text-gray-500">Min. 10 orang</span>
+                    <button class="px-4 py-2 bg-teal-600 dark:bg-gray-800 text-white rounded-lg hover:bg-teal-700 dark:bg-gray-700 transition duration-200">
                         Pesan Sekarang
                     </button>
                 </div>
@@ -365,7 +365,7 @@
         </div>
 
         <div class="mt-6 pt-6 border-t text-center">
-            <p class="text-gray-600 mb-4">
+            <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">
                 Ingin paket wisata yang disesuaikan dengan kebutuhan Anda?
             </p>
             <button class="px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition duration-200">
@@ -387,13 +387,13 @@
         button.addEventListener('click', function() {
             // Remove active class from all buttons
             destFilters.forEach(btn => {
-                btn.classList.remove('active', 'bg-teal-600', 'text-white');
-                btn.classList.add('bg-gray-200', 'text-gray-700');
+                btn.classList.remove('active', 'bg-teal-600 dark:bg-gray-800', 'text-white');
+                btn.classList.add('bg-gray-200', 'text-gray-700 dark:text-gray-300');
             });
             
             // Add active class to clicked button
-            this.classList.add('active', 'bg-teal-600', 'text-white');
-            this.classList.remove('bg-gray-200', 'text-gray-700');
+            this.classList.add('active', 'bg-teal-600 dark:bg-gray-800', 'text-white');
+            this.classList.remove('bg-gray-200', 'text-gray-700 dark:text-gray-300');
             
             const filter = this.getAttribute('data-filter');
             
@@ -411,9 +411,9 @@
     // Initialize filter buttons
     destFilters.forEach(button => {
         if (button.classList.contains('active')) {
-            button.classList.add('bg-teal-600', 'text-white');
+            button.classList.add('bg-teal-600 dark:bg-gray-800', 'text-white');
         } else {
-            button.classList.add('bg-gray-200', 'text-gray-700');
+            button.classList.add('bg-gray-200', 'text-gray-700 dark:text-gray-300');
         }
     });
 
@@ -429,7 +429,7 @@
     });
 
     // Tourism service buttons
-    document.querySelectorAll('button[class*="bg-teal-600"], button[class*="bg-blue-600"], button[class*="bg-green-600"]').forEach(button => {
+    document.querySelectorAll('button[class*="bg-teal-600 dark:bg-gray-800"], button[class*="bg-blue-600"], button[class*="bg-green-600"]').forEach(button => {
         if (button.textContent.includes('Homestay') || button.textContent.includes('Guide') || button.textContent.includes('Kendaraan')) {
             button.addEventListener('click', function() {
                 const service = this.textContent.trim();
@@ -440,7 +440,7 @@
     });
 
     // Package booking buttons
-    document.querySelectorAll('button[class*="bg-teal-600"]:not([class*="bg-teal-100"])').forEach(button => {
+    document.querySelectorAll('button[class*="bg-teal-600 dark:bg-gray-800"]:not([class*="bg-teal-100"])').forEach(button => {
         if (button.textContent.includes('Pesan Sekarang')) {
             button.addEventListener('click', function() {
                 const packageCard = this.closest('.border');

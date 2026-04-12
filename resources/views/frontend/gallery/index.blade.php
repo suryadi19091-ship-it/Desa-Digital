@@ -8,16 +8,16 @@
 @section('content')
 <div class="xl:col-span-3">
     <!-- Gallery Filter -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div class="flex items-center space-x-4">
-                <h2 class="text-xl font-bold text-gray-900">Galeri Kegiatan Desa</h2>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Galeri Kegiatan Desa</h2>
                 <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
                     {{ $galleries->count() ?? 0 }} Foto
                 </span>
             </div>
             <div class="flex items-center space-x-2">
-                <select id="categoryFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                <select id="categoryFilter" class="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
                     <option value="">Semua Kategori</option>
                     <option value="kegiatan">Kegiatan</option>
                     <option value="infrastruktur">Infrastruktur</option>
@@ -33,7 +33,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6" id="galleryGrid">
         @if(isset($galleries) && $galleries->count() > 0)
             @foreach($galleries as $gallery)
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden group hover:shadow-xl transition-shadow duration-300">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden group hover:shadow-xl transition-shadow duration-300">
                 <div class="relative overflow-hidden">
                     <img src="{{ $gallery->image_path ? asset('storage/' . $gallery->image_path) : '/images/placeholder-gallery.jpg' }}" 
                          alt="{{ $gallery->alt_text ?? $gallery->title }}" 
@@ -53,11 +53,11 @@
                     @endif
                 </div>
                 <div class="p-4">
-                    <h3 class="font-bold text-gray-900 mb-2">{{ $gallery->title ?? 'Foto Kegiatan' }}</h3>
-                    <p class="text-gray-600 text-sm mb-3">
+                    <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2">{{ $gallery->title ?? 'Foto Kegiatan' }}</h3>
+                    <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500 text-sm mb-3">
                         {{ Str::limit($gallery->description ?? 'Dokumentasi kegiatan desa', 80) }}
                     </p>
-                    <div class="flex items-center justify-between text-sm text-gray-500">
+                    <div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
                         <span><i class="fas fa-eye mr-1"></i>{{ $gallery->views_count ?? 0 }} views</span>
                         <span><i class="fas fa-heart mr-1"></i>{{ $gallery->likes_count ?? 0 }} likes</span>
                     </div>
@@ -68,15 +68,15 @@
             <!-- Empty State -->
             <div class="col-span-full text-center py-12">
                 <i class="fas fa-images text-6xl text-gray-300 mb-4"></i>
-                <h3 class="text-xl font-bold text-gray-600 mb-2">Belum Ada Foto</h3>
-                <p class="text-gray-500 mb-4">Galeri foto akan ditampilkan di sini setelah admin mengunggah foto kegiatan desa</p>
+                <h3 class="text-xl font-bold text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-2">Belum Ada Foto</h3>
+                <p class="text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-4">Galeri foto akan ditampilkan di sini setelah admin mengunggah foto kegiatan desa</p>
             </div>
         @endif
     </div>
 
     <!-- Pagination -->
     @if(isset($galleries) && method_exists($galleries, 'links'))
-    <div class="bg-white rounded-lg shadow-lg p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
         {{ $galleries->links() }}
     </div>
     @endif
@@ -92,9 +92,9 @@
     <div class="flex items-center justify-center min-h-screen px-4">
         <div class="relative max-w-4xl w-full">
             <img id="lightboxImage" src="" alt="" class="w-full h-auto rounded-lg shadow-2xl">
-            <div class="bg-white rounded-b-lg p-4">
-                <h3 id="lightboxTitle" class="font-bold text-gray-900 mb-2"></h3>
-                <p id="lightboxDescription" class="text-gray-600"></p>
+            <div class="bg-white dark:bg-gray-800 rounded-b-lg p-4">
+                <h3 id="lightboxTitle" class="font-bold text-gray-900 dark:text-gray-100 mb-2"></h3>
+                <p id="lightboxDescription" class="text-gray-600 dark:text-gray-400 dark:text-gray-500"></p>
             </div>
         </div>
     </div>

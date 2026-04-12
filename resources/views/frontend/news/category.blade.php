@@ -8,9 +8,9 @@
 @section('content')
 <div class="xl:col-span-3">
     <!-- Category Header -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-        <h2 class="text-2xl font-bold text-gray-900 mb-2">Kategori: {{ $categoryName }}</h2>
-        <p class="text-gray-600">Menampilkan {{ $news->total() }} berita dalam kategori {{ strtolower($categoryName) }}</p>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Kategori: {{ $categoryName }}</h2>
+        <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500">Menampilkan {{ $news->total() }} berita dalam kategori {{ strtolower($categoryName) }}</p>
     </div>
 
     <!-- News Grid -->
@@ -30,7 +30,7 @@
                 ];
                 $color = $categoryColors[$item->category] ?? $categoryColors['default'];
             @endphp
-            <article class="bg-white rounded-lg shadow-lg overflow-hidden group hover:shadow-xl transition-shadow duration-300">
+            <article class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden group hover:shadow-xl transition-shadow duration-300">
                 <div class="relative">
                     @if($item->featured_image)
                         <img src="{{ asset('storage/' . $item->featured_image) }}" alt="{{ $item->title }}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
@@ -46,13 +46,13 @@
                     </div>
                 </div>
                 <div class="p-4">
-                    <h3 class="font-bold text-gray-900 text-lg mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                    <h3 class="font-bold text-gray-900 dark:text-gray-100 text-lg mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
                         <a href="{{ route('news.show', $item->slug) }}">{{ $item->title }}</a>
                     </h3>
-                    <p class="text-gray-600 text-sm mb-3 line-clamp-3">
+                    <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500 text-sm mb-3 line-clamp-3">
                         {{ $item->excerpt }}
                     </p>
-                    <div class="flex items-center justify-between text-xs text-gray-500 mb-2">
+                    <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-2">
                         <div class="flex items-center">
                             <i class="fas fa-calendar mr-1"></i>
                             <span>{{ $item->published_at->format('d M Y') }}</span>
@@ -66,7 +66,7 @@
                     </div>
                     <div class="flex items-center justify-between">
                         @if($item->user)
-                            <div class="flex items-center text-xs text-gray-500">
+                            <div class="flex items-center text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
                                 <i class="fas fa-user mr-1"></i>
                                 <span>{{ $item->user->name }}</span>
                             </div>
@@ -79,10 +79,10 @@
             </article>
         @empty
             <div class="col-span-full">
-                <div class="bg-white rounded-lg shadow-lg p-8 text-center">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
                     <i class="fas fa-newspaper text-5xl text-gray-300 mb-4"></i>
-                    <h3 class="text-xl font-semibold text-gray-600 mb-2">Belum Ada Berita</h3>
-                    <p class="text-gray-500">Tidak ada berita dalam kategori {{ strtolower($categoryName) }}.</p>
+                    <h3 class="text-xl font-semibold text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-2">Belum Ada Berita</h3>
+                    <p class="text-gray-500 dark:text-gray-400 dark:text-gray-500">Tidak ada berita dalam kategori {{ strtolower($categoryName) }}.</p>
                     <a href="{{ route('news.index') }}" class="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                         Lihat Semua Berita
                     </a>
@@ -93,9 +93,9 @@
 
     <!-- Pagination -->
     @if($news->hasPages())
-        <div class="bg-white rounded-lg shadow-lg p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div class="text-sm text-gray-600">
+                <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                     Menampilkan {{ $news->firstItem() }} sampai {{ $news->lastItem() }} dari {{ $news->total() }} berita
                 </div>
                 <div class="flex justify-center">

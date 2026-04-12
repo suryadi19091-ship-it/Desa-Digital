@@ -4,10 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Banner extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->dontLogIfAttributesChangedOnly(['click_count']);
+    }
 
     protected $fillable = [
         'title',
@@ -17,7 +28,7 @@ class Banner extends Model
         'is_active',
         'start_date',
         'end_date',
-        'sort_order',
+        'display_order',
         'click_count',
     ];
 
@@ -25,7 +36,7 @@ class Banner extends Model
         'is_active' => 'boolean',
         'start_date' => 'date',
         'end_date' => 'date',
-        'sort_order' => 'integer',
+        'display_order' => 'integer',
         'click_count' => 'integer',
     ];
 }

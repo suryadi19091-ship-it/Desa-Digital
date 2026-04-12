@@ -14,7 +14,7 @@
         </div>
     </a>
     
-    <a href="{{ route('population.data') }}" class="block bg-teal-500 hover:bg-teal-600 text-white rounded-lg p-3 sm:p-4 transition-colors">
+    <a href="{{ route('population.data') }}" class="block bg-teal-500 hover:bg-teal-600 dark:bg-gray-800 text-white rounded-lg p-3 sm:p-4 transition-colors">
         <div class="flex items-center justify-between">
             <div class="flex items-center">
                 <i class="fas fa-home mr-2 sm:mr-3 text-sm sm:text-base"></i>
@@ -119,47 +119,47 @@
     </div>
 
     <!-- Articles Section -->
-    <div class="bg-teal-600 text-white rounded-lg p-4">
+    <div class="bg-teal-600 dark:bg-gray-800 text-white rounded-lg p-4">
         <h3 class="font-semibold mb-3">ARSIP ARTIKEL</h3>
         <div class="space-y-3">
             <div class="text-sm">
                 <p class="font-medium">Populer</p>
                 @if($sidebarData['popular_article'])
-                    <a href="{{ route('news.show', $sidebarData['popular_article']->slug) }}" class="text-xs text-teal-100 hover:text-white transition-colors">
+                    <a href="{{ route('news.show', $sidebarData['popular_article']->slug) }}" class="text-xs text-teal-100 dark:text-gray-400 hover:text-white transition-colors">
                         {{ Str::limit($sidebarData['popular_article']->title, 40) }}
                         <br><small>{{ number_format($sidebarData['popular_article']->views_count ?? 0) }} kali dibaca</small>
                     </a>
                 @else
-                    <p class="text-xs text-teal-100">Belum ada artikel</p>
+                    <p class="text-xs text-teal-100 dark:text-gray-400">Belum ada artikel</p>
                 @endif
             </div>
             <div class="text-sm">
                 <p class="font-medium">Terbaru</p>
                 @if($sidebarData['latest_article'])
-                    <a href="{{ route('news.show', $sidebarData['latest_article']->slug) }}" class="text-xs text-teal-100 hover:text-white transition-colors">
+                    <a href="{{ route('news.show', $sidebarData['latest_article']->slug) }}" class="text-xs text-teal-100 dark:text-gray-400 hover:text-white transition-colors">
                         {{ Str::limit($sidebarData['latest_article']->title, 40) }}
                         <br><small>{{ $sidebarData['latest_article']->created_at->format('d M Y') }}</small>
                     </a>
                 @else
-                    <p class="text-xs text-teal-100">Belum ada artikel</p>
+                    <p class="text-xs text-teal-100 dark:text-gray-400">Belum ada artikel</p>
                 @endif
             </div>
         </div>
     </div>
 
     <!-- Agenda Section -->
-    <div class="bg-teal-600 text-white rounded-lg p-4">
+    <div class="bg-teal-600 dark:bg-gray-800 text-white rounded-lg p-4">
         <h3 class="font-semibold mb-3">AGENDA</h3>
         <div class="space-y-2">
             @if($sidebarData['upcoming_agenda']->count() > 0)
                 @foreach($sidebarData['upcoming_agenda'] as $agenda)
-                <div class="bg-teal-700 rounded p-2">
+                <div class="bg-teal-700 dark:bg-gray-700 rounded p-2">
                     <div class="text-sm font-medium">{{ Str::limit($agenda->title, 30) }}</div>
-                    <div class="text-xs text-teal-200 flex items-center mt-1">
+                    <div class="text-xs text-teal-200 dark:text-gray-400 flex items-center mt-1">
                         <i class="fas fa-calendar-alt mr-1"></i>
                         {{ \Carbon\Carbon::parse($agenda->event_date)->format('d M Y') }}
                     </div>
-                    <div class="text-xs text-teal-200 flex items-center">
+                    <div class="text-xs text-teal-200 dark:text-gray-400 flex items-center">
                         <i class="fas fa-map-marker-alt mr-1"></i>
                         {{ Str::limit($agenda->location ?? 'Balai Desa', 20) }}
                     </div>
@@ -167,14 +167,14 @@
                 @endforeach
                 @if($sidebarData['other_stats']['agenda_count'] > 3)
                 <div class="text-center pt-2">
-                    <a href="{{ route('agenda.index') }}" class="text-xs text-teal-200 hover:text-white">
+                    <a href="{{ route('agenda.index') }}" class="text-xs text-teal-200 dark:text-gray-400 hover:text-white">
                         Lihat {{ $sidebarData['other_stats']['agenda_count'] - 3 }} agenda lainnya
                     </a>
                 </div>
                 @endif
             @else
                 <div class="text-center">
-                    <i class="fas fa-calendar-times text-4xl text-teal-200 mb-2"></i>
+                    <i class="fas fa-calendar-times text-4xl text-teal-200 dark:text-gray-400 mb-2"></i>
                     <p class="text-sm">Belum ada agenda terdaftar</p>
                 </div>
             @endif
@@ -182,7 +182,7 @@
     </div>
 
     <!-- Programs Section -->
-    <div class="bg-teal-600 text-white rounded-lg p-4">
+    <div class="bg-teal-600 dark:bg-gray-800 text-white rounded-lg p-4">
         <h3 class="font-semibold mb-3">SINERGI PROGRAM</h3>
         <div class="flex justify-center space-x-4">
             <a href="#" class="text-2xl hover:text-blue-300 transition-colors">
@@ -406,8 +406,8 @@
             '11n': { iconClass: 'fas fa-bolt', iconColor: 'text-yellow-400' },
             '13d': { iconClass: 'fas fa-snowflake', iconColor: 'text-white' }, // snow
             '13n': { iconClass: 'fas fa-snowflake', iconColor: 'text-white' },
-            '50d': { iconClass: 'fas fa-smog', iconColor: 'text-gray-400' }, // mist
-            '50n': { iconClass: 'fas fa-smog', iconColor: 'text-gray-400' }
+            '50d': { iconClass: 'fas fa-smog', iconColor: 'text-gray-400 dark:text-gray-500' }, // mist
+            '50n': { iconClass: 'fas fa-smog', iconColor: 'text-gray-400 dark:text-gray-500' }
         };
         
         return iconMap[iconCode] || { iconClass: 'fas fa-cloud', iconColor: 'text-gray-200' };

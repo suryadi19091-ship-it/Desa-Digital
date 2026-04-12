@@ -37,8 +37,8 @@
     </div>
 
     <!-- Revenue Breakdown -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-        <h3 class="font-bold text-gray-900 mb-6 text-xl">Sumber Pendapatan Desa</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+        <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-6 text-xl">Sumber Pendapatan Desa</h3>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <!-- Chart Area -->
@@ -49,81 +49,81 @@
             <!-- Legend & Details -->
             <div class="space-y-4">
                 @if($revenueBreakdown['dana_desa'] > 0)
-                <div class="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
+                <div class="flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-900/40 rounded-lg">
                     <div class="flex items-center">
                         <div class="w-4 h-4 bg-blue-500 rounded mr-3"></div>
                         <div>
-                            <div class="font-medium text-gray-900">Dana Desa</div>
-                            <div class="text-sm text-gray-600">Dari APBN</div>
+                            <div class="font-medium text-gray-900 dark:text-gray-100">Dana Desa</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Dari APBN</div>
                         </div>
                     </div>
                     <div class="text-right">
                         <div class="font-bold text-blue-600">Rp {{ number_format($revenueBreakdown['dana_desa'] / 1000000, 1) }} M</div>
-                        <div class="text-sm text-gray-600">{{ $totalRevenue > 0 ? round(($revenueBreakdown['dana_desa'] / $totalRevenue) * 100, 1) : 0 }}%</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">{{ $totalRevenue > 0 ? round(($revenueBreakdown['dana_desa'] / $totalRevenue) * 100, 1) : 0 }}%</div>
                     </div>
                 </div>
                 @endif
 
                 @if($revenueBreakdown['add'] > 0)
-                <div class="flex items-center justify-between p-4 bg-green-50 rounded-lg">
+                <div class="flex items-center justify-between p-4 bg-green-50 dark:bg-green-900/40 rounded-lg">
                     <div class="flex items-center">
                         <div class="w-4 h-4 bg-green-500 rounded mr-3"></div>
                         <div>
-                            <div class="font-medium text-gray-900">ADD</div>
-                            <div class="text-sm text-gray-600">Alokasi Dana Desa</div>
+                            <div class="font-medium text-gray-900 dark:text-gray-100">ADD</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Alokasi Dana Desa</div>
                         </div>
                     </div>
                     <div class="text-right">
                         <div class="font-bold text-green-600">Rp {{ number_format($revenueBreakdown['add'] / 1000000, 1) }} M</div>
-                        <div class="text-sm text-gray-600">{{ $totalRevenue > 0 ? round(($revenueBreakdown['add'] / $totalRevenue) * 100, 1) : 0 }}%</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">{{ $totalRevenue > 0 ? round(($revenueBreakdown['add'] / $totalRevenue) * 100, 1) : 0 }}%</div>
                     </div>
                 </div>
                 @endif
 
                 @if($revenueBreakdown['dana_bantuan'] > 0)
-                <div class="flex items-center justify-between p-4 bg-yellow-50 rounded-lg">
+                <div class="flex items-center justify-between p-4 bg-yellow-50 dark:bg-yellow-900/40 rounded-lg">
                     <div class="flex items-center">
                         <div class="w-4 h-4 bg-yellow-500 rounded mr-3"></div>
                         <div>
-                            <div class="font-medium text-gray-900">Dana Bantuan</div>
-                            <div class="text-sm text-gray-600">APBD Kabupaten/Provinsi</div>
+                            <div class="font-medium text-gray-900 dark:text-gray-100">Dana Bantuan</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">APBD Kabupaten/Provinsi</div>
                         </div>
                     </div>
                     <div class="text-right">
                         <div class="font-bold text-yellow-600">Rp {{ number_format($revenueBreakdown['dana_bantuan'] / 1000000, 1) }} M</div>
-                        <div class="text-sm text-gray-600">{{ $totalRevenue > 0 ? round(($revenueBreakdown['dana_bantuan'] / $totalRevenue) * 100, 1) : 0 }}%</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">{{ $totalRevenue > 0 ? round(($revenueBreakdown['dana_bantuan'] / $totalRevenue) * 100, 1) : 0 }}%</div>
                     </div>
                 </div>
                 @endif
 
                 @if($revenueBreakdown['pades'] > 0)
-                <div class="flex items-center justify-between p-4 bg-purple-50 rounded-lg">
+                <div class="flex items-center justify-between p-4 bg-purple-50 dark:bg-purple-900/40 rounded-lg">
                     <div class="flex items-center">
                         <div class="w-4 h-4 bg-purple-500 rounded mr-3"></div>
                         <div>
-                            <div class="font-medium text-gray-900">PADes</div>
-                            <div class="text-sm text-gray-600">Pendapatan Asli Desa</div>
+                            <div class="font-medium text-gray-900 dark:text-gray-100">PADes</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Pendapatan Asli Desa</div>
                         </div>
                     </div>
                     <div class="text-right">
                         <div class="font-bold text-purple-600">Rp {{ number_format($revenueBreakdown['pades'] / 1000000, 1) }} M</div>
-                        <div class="text-sm text-gray-600">{{ $totalRevenue > 0 ? round(($revenueBreakdown['pades'] / $totalRevenue) * 100, 1) : 0 }}%</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">{{ $totalRevenue > 0 ? round(($revenueBreakdown['pades'] / $totalRevenue) * 100, 1) : 0 }}%</div>
                     </div>
                 </div>
                 @endif
 
                 @if($revenueBreakdown['lain_lain'] > 0)
-                <div class="flex items-center justify-between p-4 bg-indigo-50 rounded-lg">
+                <div class="flex items-center justify-between p-4 bg-indigo-50 dark:bg-indigo-900/40 rounded-lg">
                     <div class="flex items-center">
                         <div class="w-4 h-4 bg-indigo-500 rounded mr-3"></div>
                         <div>
-                            <div class="font-medium text-gray-900">Lain-lain</div>
-                            <div class="text-sm text-gray-600">Pendapatan Lainnya</div>
+                            <div class="font-medium text-gray-900 dark:text-gray-100">Lain-lain</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Pendapatan Lainnya</div>
                         </div>
                     </div>
                     <div class="text-right">
                         <div class="font-bold text-indigo-600">Rp {{ number_format($revenueBreakdown['lain_lain'] / 1000000, 1) }} M</div>
-                        <div class="text-sm text-gray-600">{{ $totalRevenue > 0 ? round(($revenueBreakdown['lain_lain'] / $totalRevenue) * 100, 1) : 0 }}%</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">{{ $totalRevenue > 0 ? round(($revenueBreakdown['lain_lain'] / $totalRevenue) * 100, 1) : 0 }}%</div>
                     </div>
                 </div>
                 @endif
@@ -132,8 +132,8 @@
     </div>
 
     <!-- Expenditure by Sector -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-        <h3 class="font-bold text-gray-900 mb-6 text-xl">Alokasi Belanja per Bidang</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+        <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-6 text-xl">Alokasi Belanja per Bidang</h3>
         
         <div class="space-y-6">
             @php
@@ -161,22 +161,22 @@
                 $description = $categoryDescriptions[$category] ?? 'Program dan kegiatan lainnya';
                 $colorIndex++;
             @endphp
-            <div class="border border-gray-200 rounded-lg p-6">
+            <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center">
                         <div class="w-12 h-12 bg-{{ $iconData['color'] }}-100 rounded-lg flex items-center justify-center mr-4">
                             <i class="{{ $iconData['icon'] }} text-{{ $iconData['color'] }}-600 text-xl"></i>
                         </div>
                         <div>
-                            <h4 class="font-bold text-gray-900">{{ $category }}</h4>
-                            <p class="text-sm text-gray-600">{{ $description }}</p>
+                            <h4 class="font-bold text-gray-900 dark:text-gray-100">{{ $category }}</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">{{ $description }}</p>
                         </div>
                     </div>
                     <div class="text-right">
                         <div class="text-2xl font-bold text-{{ $iconData['color'] }}-600">
                             Rp {{ number_format($data['planned_amount'] / 1000000, 1) }} M
                         </div>
-                        <div class="text-sm text-gray-600">
+                        <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                             {{ $totalExpenditure > 0 ? round(($data['planned_amount'] / $totalExpenditure) * 100, 1) : 0 }}%
                         </div>
                     </div>
@@ -185,18 +185,18 @@
                 @if(count($data['items']) > 0)
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     @foreach(array_slice($data['items'], 0, 3) as $item)
-                    <div class="text-center p-3 bg-gray-50 rounded">
-                        <div class="font-bold text-gray-900">
+                    <div class="text-center p-3 bg-gray-50 dark:bg-gray-900 rounded">
+                        <div class="font-bold text-gray-900 dark:text-gray-100">
                             Rp {{ number_format($item['planned_amount'] / 1000000, 1) }} M
                         </div>
-                        <div class="text-sm text-gray-600">{{ Str::limit($item['description'], 30) }}</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">{{ Str::limit($item['description'], 30) }}</div>
                     </div>
                     @endforeach
                     
                     @if(count($data['items']) > 3)
-                    <div class="text-center p-3 bg-gray-100 rounded border-2 border-dashed border-gray-300">
-                        <div class="font-bold text-gray-600">+{{ count($data['items']) - 3 }}</div>
-                        <div class="text-sm text-gray-600">Program Lainnya</div>
+                    <div class="text-center p-3 bg-gray-100 rounded border-2 border-dashed border-gray-300 dark:border-gray-700">
+                        <div class="font-bold text-gray-600 dark:text-gray-400 dark:text-gray-500">+{{ count($data['items']) - 3 }}</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Program Lainnya</div>
                     </div>
                     @endif
                 </div>
@@ -207,8 +207,8 @@
     </div>
 
     <!-- Timeline & Milestones -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-        <h3 class="font-bold text-gray-900 mb-6 text-xl">Timeline Pelaksanaan Anggaran</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+        <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-6 text-xl">Timeline Pelaksanaan Anggaran</h3>
         
         <div class="relative">
             <!-- Timeline Line -->
@@ -259,7 +259,7 @@
                     </div>
                     <div class="ml-4 text-right">
                         <div class="font-bold text-{{ $bgColor }}-600">Rp {{ number_format($progress['realized'] / 1000000, 0) }} Jt</div>
-                        <div class="text-sm text-gray-600">
+                        <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                             @if($isCompleted)
                                 {{ round($progress['percentage'], 0) }}% Terealisasi
                             @elseif($isCurrent)
@@ -276,18 +276,18 @@
     </div>
 
     <!-- Budget Comparison -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <h3 class="font-bold text-gray-900 mb-6 text-xl">Perbandingan Anggaran</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+        <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-6 text-xl">Perbandingan Anggaran</h3>
         
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead>
-                    <tr class="bg-gray-50">
-                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Bidang</th>
-                        <th class="px-4 py-3 text-right text-sm font-medium text-gray-700">{{ $currentYear - 2 }}</th>
-                        <th class="px-4 py-3 text-right text-sm font-medium text-gray-700">{{ $currentYear - 1 }}</th>
-                        <th class="px-4 py-3 text-right text-sm font-medium text-gray-700">{{ $currentYear }}</th>
-                        <th class="px-4 py-3 text-center text-sm font-medium text-gray-700">Trend</th>
+                    <tr class="bg-gray-50 dark:bg-gray-900">
+                        <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Bidang</th>
+                        <th class="px-4 py-3 text-right text-sm font-medium text-gray-700 dark:text-gray-300">{{ $currentYear - 2 }}</th>
+                        <th class="px-4 py-3 text-right text-sm font-medium text-gray-700 dark:text-gray-300">{{ $currentYear - 1 }}</th>
+                        <th class="px-4 py-3 text-right text-sm font-medium text-gray-700 dark:text-gray-300">{{ $currentYear }}</th>
+                        <th class="px-4 py-3 text-center text-sm font-medium text-gray-700 dark:text-gray-300">Trend</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
@@ -314,10 +314,10 @@
                         $trendColor = $trend > 0 ? 'green' : ($trend < 0 ? 'red' : 'gray');
                     @endphp
                     <tr>
-                        <td class="px-4 py-3 text-sm text-gray-900">{{ $category }}</td>
-                        <td class="px-4 py-3 text-sm text-right text-gray-700">Rp {{ number_format($prevYear2Amount / 1000000, 0) }} Jt</td>
-                        <td class="px-4 py-3 text-sm text-right text-gray-700">Rp {{ number_format($prevYear1Amount / 1000000, 0) }} Jt</td>
-                        <td class="px-4 py-3 text-sm text-right font-medium text-gray-900">Rp {{ number_format($currentAmount / 1000000, 0) }} Jt</td>
+                        <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">{{ $category }}</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-700 dark:text-gray-300">Rp {{ number_format($prevYear2Amount / 1000000, 0) }} Jt</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-700 dark:text-gray-300">Rp {{ number_format($prevYear1Amount / 1000000, 0) }} Jt</td>
+                        <td class="px-4 py-3 text-sm text-right font-medium text-gray-900 dark:text-gray-100">Rp {{ number_format($currentAmount / 1000000, 0) }} Jt</td>
                         <td class="px-4 py-3 text-center">
                             <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-{{ $trendColor }}-100 text-{{ $trendColor }}-800">
                                 <i class="{{ $trendIcon }} mr-1"></i>{{ $trend >= 0 ? '+' : '' }}{{ number_format($trend, 1) }}%
@@ -326,11 +326,11 @@
                     </tr>
                     @endforeach
                     
-                    <tr class="bg-gray-50 font-medium">
-                        <td class="px-4 py-3 text-sm text-gray-900">Total</td>
-                        <td class="px-4 py-3 text-sm text-right text-gray-700">Rp {{ number_format($previousTotalYear2 / 1000000, 1) }} M</td>
-                        <td class="px-4 py-3 text-sm text-right text-gray-700">Rp {{ number_format($previousTotalYear1 / 1000000, 1) }} M</td>
-                        <td class="px-4 py-3 text-sm text-right text-gray-900">Rp {{ number_format($currentTotal / 1000000, 1) }} M</td>
+                    <tr class="bg-gray-50 dark:bg-gray-900 font-medium">
+                        <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">Total</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-700 dark:text-gray-300">Rp {{ number_format($previousTotalYear2 / 1000000, 1) }} M</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-700 dark:text-gray-300">Rp {{ number_format($previousTotalYear1 / 1000000, 1) }} M</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100">Rp {{ number_format($currentTotal / 1000000, 1) }} M</td>
                         <td class="px-4 py-3 text-center">
                             @php
                                 $totalTrend = $previousTotalYear1 > 0 ? (($currentTotal - $previousTotalYear1) / $previousTotalYear1) * 100 : 0;
@@ -354,17 +354,17 @@
                 $perCapita = $currentTotal / $estimatedPopulation;
             @endphp
             
-            <div class="text-center p-4 bg-blue-50 rounded-lg">
+            <div class="text-center p-4 bg-blue-50 dark:bg-blue-900/40 rounded-lg">
                 <div class="text-lg font-bold text-blue-600">{{ $twoYearGrowth >= 0 ? '+' : '' }}{{ number_format($twoYearGrowth, 1) }}%</div>
-                <div class="text-sm text-gray-600">Peningkatan dari {{ $currentYear - 2 }}</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Peningkatan dari {{ $currentYear - 2 }}</div>
             </div>
-            <div class="text-center p-4 bg-green-50 rounded-lg">
+            <div class="text-center p-4 bg-green-50 dark:bg-green-900/40 rounded-lg">
                 <div class="text-lg font-bold text-green-600">{{ $oneYearGrowth >= 0 ? '+' : '' }}{{ number_format($oneYearGrowth, 1) }}%</div>
-                <div class="text-sm text-gray-600">Peningkatan dari {{ $currentYear - 1 }}</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Peningkatan dari {{ $currentYear - 1 }}</div>
             </div>
-            <div class="text-center p-4 bg-purple-50 rounded-lg">
+            <div class="text-center p-4 bg-purple-50 dark:bg-purple-900/40 rounded-lg">
                 <div class="text-lg font-bold text-purple-600">Rp {{ number_format($perCapita / 1000, 0) }}k</div>
-                <div class="text-sm text-gray-600">Per kapita (estimasi)</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Per kapita (estimasi)</div>
             </div>
         </div>
     </div>
@@ -465,7 +465,7 @@
     });
 
     // Hover effects for budget cards
-    document.querySelectorAll('.border.border-gray-200').forEach(card => {
+    document.querySelectorAll('.border.border-gray-200 dark:border-gray-700').forEach(card => {
         card.addEventListener('mouseenter', function() {
             this.classList.add('shadow-lg', 'transform', 'scale-105');
         });
@@ -503,11 +503,11 @@
     // Table row hover effects
     document.querySelectorAll('tbody tr').forEach(row => {
         row.addEventListener('mouseenter', function() {
-            this.classList.add('bg-gray-50');
+            this.classList.add('bg-gray-50 dark:bg-gray-900');
         });
         
         row.addEventListener('mouseleave', function() {
-            this.classList.remove('bg-gray-50');
+            this.classList.remove('bg-gray-50 dark:bg-gray-900');
         });
     });
 </script>

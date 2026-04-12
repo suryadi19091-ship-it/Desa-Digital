@@ -79,7 +79,7 @@
                                 <div class="flex items-center space-x-4">
                                     <div class="flex-shrink-0">
                                         <img id="logo-preview" class="h-16 w-16 rounded-lg object-cover border-2 border-gray-300" 
-                                             src="{{ $settings['site_logo'] ? Storage::url($settings['site_logo']) : 'https://via.placeholder.com/64x64/e5e7eb/6b7280?text=LOGO' }}" 
+                                             src="{{ !empty($settings['site_logo']) ? Storage::url($settings['site_logo']) : 'https://via.placeholder.com/64x64/e5e7eb/6b7280?text=LOGO' }}" 
                                              alt="Logo Preview">
                                     </div>
                                     <div>
@@ -99,7 +99,7 @@
                                 <div class="flex items-center space-x-4">
                                     <div class="flex-shrink-0">
                                         <img id="favicon-preview" class="h-8 w-8 rounded object-cover border-2 border-gray-300" 
-                                             src="{{ $settings['site_favicon'] ? Storage::url($settings['site_favicon']) : 'https://via.placeholder.com/32x32/e5e7eb/6b7280?text=F' }}" 
+                                             src="{{ !empty($settings['site_favicon']) ? Storage::url($settings['site_favicon']) : 'https://via.placeholder.com/32x32/e5e7eb/6b7280?text=F' }}" 
                                              alt="Favicon Preview">
                                     </div>
                                     <div>

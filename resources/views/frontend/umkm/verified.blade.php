@@ -41,40 +41,40 @@
     </div>
 
     <!-- Verification Benefits -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-        <h3 class="font-bold text-gray-900 mb-4">Keuntungan UMKM Terverifikasi</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+        <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-4">Keuntungan UMKM Terverifikasi</h3>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div class="text-center p-4 bg-green-50 rounded-lg">
+            <div class="text-center p-4 bg-green-50 dark:bg-green-900/40 rounded-lg">
                 <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
                     <i class="fas fa-shield-alt text-green-600 text-2xl"></i>
                 </div>
-                <h4 class="font-bold text-gray-900 mb-2">Terpercaya</h4>
-                <p class="text-sm text-gray-600">Telah melewati proses verifikasi ketat</p>
+                <h4 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Terpercaya</h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Telah melewati proses verifikasi ketat</p>
             </div>
             
-            <div class="text-center p-4 bg-blue-50 rounded-lg">
+            <div class="text-center p-4 bg-blue-50 dark:bg-blue-900/40 rounded-lg">
                 <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
                     <i class="fas fa-star text-blue-600 text-2xl"></i>
                 </div>
-                <h4 class="font-bold text-gray-900 mb-2">Kualitas Terjamin</h4>
-                <p class="text-sm text-gray-600">Produk dan layanan berkualitas tinggi</p>
+                <h4 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Kualitas Terjamin</h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Produk dan layanan berkualitas tinggi</p>
             </div>
             
-            <div class="text-center p-4 bg-purple-50 rounded-lg">
+            <div class="text-center p-4 bg-purple-50 dark:bg-purple-900/40 rounded-lg">
                 <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
                     <i class="fas fa-certificate text-purple-600 text-2xl"></i>
                 </div>
-                <h4 class="font-bold text-gray-900 mb-2">Sertifikat Legal</h4>
-                <p class="text-sm text-gray-600">Memiliki legalitas dan sertifikasi</p>
+                <h4 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Sertifikat Legal</h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Memiliki legalitas dan sertifikasi</p>
             </div>
             
-            <div class="text-center p-4 bg-orange-50 rounded-lg">
+            <div class="text-center p-4 bg-orange-50 dark:bg-orange-900/40 rounded-lg">
                 <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
                     <i class="fas fa-handshake text-orange-600 text-2xl"></i>
                 </div>
-                <h4 class="font-bold text-gray-900 mb-2">Partner Resmi</h4>
-                <p class="text-sm text-gray-600">Bermitra dengan pemerintah desa</p>
+                <h4 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Partner Resmi</h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Bermitra dengan pemerintah desa</p>
             </div>
         </div>
     </div>
@@ -82,7 +82,7 @@
     <!-- Verified UMKM Directory -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         @forelse($verifiedUmkms as $umkm)
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition duration-300 border-2 border-green-200">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition duration-300 border-2 border-green-200">
             <!-- Verified Badge -->
             <div class="relative">
                 @php
@@ -127,31 +127,31 @@
             </div>
             
             <div class="p-4">
-                <h3 class="font-bold text-gray-900 mb-2 flex items-center">
+                <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2 flex items-center">
                     {{ $umkm->business_name }}
                     <i class="fas fa-check-circle text-green-500 ml-2"></i>
                 </h3>
-                <p class="text-gray-600 text-sm mb-3">
+                <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500 text-sm mb-3">
                     {{ Str::limit($umkm->description, 100) }}
                 </p>
                 
                 <div class="space-y-2 mb-4">
-                    <div class="flex items-center text-sm text-gray-600">
+                    <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                         <i class="fas fa-user mr-2 text-green-500"></i>
                         <span>{{ $umkm->owner_name }}</span>
                     </div>
-                    <div class="flex items-center text-sm text-gray-600">
+                    <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                         <i class="fas fa-map-marker-alt mr-2 text-green-500"></i>
                         <span>{{ $umkm->address }}</span>
                     </div>
                     @if($umkm->phone)
-                    <div class="flex items-center text-sm text-gray-600">
+                    <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                         <i class="fas fa-phone mr-2 text-green-500"></i>
                         <span>{{ $umkm->phone }}</span>
                     </div>
                     @endif
                     @if($umkm->operating_hours)
-                    <div class="flex items-center text-sm text-gray-600">
+                    <div class="flex items-center text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                         <i class="fas fa-clock mr-2 text-green-500"></i>
                         <span>{{ $umkm->operating_hours }}</span>
                     </div>
@@ -159,7 +159,7 @@
                 </div>
 
                 <!-- Verification Details -->
-                <div class="bg-green-50 p-3 rounded-lg mb-4">
+                <div class="bg-green-50 dark:bg-green-900/40 p-3 rounded-lg mb-4">
                     <h4 class="font-semibold text-green-800 text-sm mb-2">Sertifikasi & Legalitas</h4>
                     <div class="grid grid-cols-2 gap-2 text-xs">
                         <div class="flex items-center text-green-700">
@@ -202,7 +202,7 @@
                                 <i class="far fa-star"></i>
                             @endfor
                         </div>
-                        <span class="text-sm text-gray-600 ml-2">{{ number_format($umkm->rating, 1) }}</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 ml-2">{{ number_format($umkm->rating, 1) }}</span>
                     </div>
                     <a href="{{ route('umkm.show', $umkm->slug) }}" 
                        class="px-3 py-1 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 text-sm transition duration-200">
@@ -214,56 +214,56 @@
         @empty
         <div class="col-span-full text-center py-12">
             <i class="fas fa-certificate text-6xl text-gray-300 mb-4"></i>
-            <h3 class="text-xl font-semibold text-gray-500 mb-2">Belum Ada UMKM Terverifikasi</h3>
-            <p class="text-gray-400">Belum ada UMKM yang telah melalui proses verifikasi.</p>
+            <h3 class="text-xl font-semibold text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-2">Belum Ada UMKM Terverifikasi</h3>
+            <p class="text-gray-400 dark:text-gray-500">Belum ada UMKM yang telah melalui proses verifikasi.</p>
         </div>
         @endforelse
     </div>
 
     <!-- Verification Process -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-        <h3 class="font-bold text-gray-900 mb-6">Proses Verifikasi UMKM</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+        <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-6">Proses Verifikasi UMKM</h3>
         
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div class="text-center">
                 <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span class="text-2xl font-bold text-blue-600">1</span>
                 </div>
-                <h4 class="font-bold text-gray-900 mb-2">Pendaftaran</h4>
-                <p class="text-sm text-gray-600">Daftar dan lengkapi data UMKM Anda</p>
+                <h4 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Pendaftaran</h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Daftar dan lengkapi data UMKM Anda</p>
             </div>
             
             <div class="text-center">
                 <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span class="text-2xl font-bold text-yellow-600">2</span>
                 </div>
-                <h4 class="font-bold text-gray-900 mb-2">Verifikasi Dokumen</h4>
-                <p class="text-sm text-gray-600">Upload dokumen legalitas dan sertifikat</p>
+                <h4 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Verifikasi Dokumen</h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Upload dokumen legalitas dan sertifikat</p>
             </div>
             
             <div class="text-center">
                 <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span class="text-2xl font-bold text-purple-600">3</span>
                 </div>
-                <h4 class="font-bold text-gray-900 mb-2">Survei Lapangan</h4>
-                <p class="text-sm text-gray-600">Tim melakukan survei dan evaluasi</p>
+                <h4 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Survei Lapangan</h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Tim melakukan survei dan evaluasi</p>
             </div>
             
             <div class="text-center">
                 <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span class="text-2xl font-bold text-green-600">4</span>
                 </div>
-                <h4 class="font-bold text-gray-900 mb-2">Sertifikat</h4>
-                <p class="text-sm text-gray-600">Terima sertifikat UMKM terverifikasi</p>
+                <h4 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Sertifikat</h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Terima sertifikat UMKM terverifikasi</p>
             </div>
         </div>
         
         <div class="mt-8 pt-6 border-t text-center">
-            <h4 class="font-bold text-gray-900 mb-4">Syarat Verifikasi UMKM</h4>
+            <h4 class="font-bold text-gray-900 dark:text-gray-100 mb-4">Syarat Verifikasi UMKM</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
                 <div>
-                    <h5 class="font-semibold text-gray-800 mb-3">Dokumen Legal:</h5>
-                    <ul class="space-y-2 text-sm text-gray-600">
+                    <h5 class="font-semibold text-gray-800 dark:text-gray-200 mb-3">Dokumen Legal:</h5>
+                    <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                         <li class="flex items-center">
                             <i class="fas fa-check text-green-500 mr-2"></i>
                             NIB (Nomor Induk Berusaha)
@@ -283,8 +283,8 @@
                     </ul>
                 </div>
                 <div>
-                    <h5 class="font-semibold text-gray-800 mb-3">Standar Kualitas:</h5>
-                    <ul class="space-y-2 text-sm text-gray-600">
+                    <h5 class="font-semibold text-gray-800 dark:text-gray-200 mb-3">Standar Kualitas:</h5>
+                    <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">
                         <li class="flex items-center">
                             <i class="fas fa-check text-green-500 mr-2"></i>
                             Operasional minimal 6 bulan
@@ -315,7 +315,7 @@
                 Tingkatkan kredibilitas dan kepercayaan pelanggan dengan menjadi UMKM terverifikasi
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button class="px-6 py-3 bg-white text-green-600 rounded-lg hover:bg-gray-100 font-semibold transition duration-200">
+                <button class="px-6 py-3 bg-white dark:bg-gray-800 text-green-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 font-semibold transition duration-200">
                     <i class="fas fa-file-alt mr-2"></i>
                     Ajukan Verifikasi
                 </button>
@@ -334,7 +334,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Verification application button
-        const verificationBtn = document.querySelector('button[class*="bg-white"][class*="text-green-600"]');
+        const verificationBtn = document.querySelector('button[class*="bg-white dark:bg-gray-800"][class*="text-green-600"]');
         if (verificationBtn) {
             verificationBtn.addEventListener('click', function() {
                 alert('Membuka formulir pengajuan verifikasi UMKM...');

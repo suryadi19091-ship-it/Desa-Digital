@@ -27,6 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Register global middleware
         $middleware->web(append: [
             \App\Http\Middleware\MaintenanceModeMiddleware::class,
+            \App\Http\Middleware\LogUserActivityMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

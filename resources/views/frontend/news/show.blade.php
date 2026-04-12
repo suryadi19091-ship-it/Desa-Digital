@@ -8,7 +8,7 @@
 @section('content')
 <div class="xl:col-span-3">
     <!-- News Detail -->
-    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
         @if($news->featured_image)
             <img src="{{ asset('storage/' . $news->featured_image) }}" alt="{{ $news->title }}" class="w-full h-64 md:h-96 object-cover">
         @endif
@@ -19,19 +19,19 @@
                 <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium uppercase">
                     {{ $news->category }}
                 </span>
-                <div class="text-sm text-gray-500">
+                <div class="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
                     <i class="fas fa-eye mr-1"></i>
                     {{ number_format($news->views_count) }} views
                 </div>
             </div>
 
             <!-- Title -->
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
                 {{ $news->title }}
             </h1>
 
             <!-- Meta Info -->
-            <div class="flex items-center text-gray-600 text-sm mb-6 border-b pb-4">
+            <div class="flex items-center text-gray-600 dark:text-gray-400 dark:text-gray-500 text-sm mb-6 border-b pb-4">
                 <div class="flex items-center mr-6">
                     <i class="fas fa-calendar mr-2"></i>
                     <span>{{ $news->published_at->format('d F Y') }}</span>
@@ -50,9 +50,9 @@
             <!-- Tags if available -->
             @if($news->tags)
                 <div class="flex flex-wrap gap-2 mb-6">
-                    <span class="text-sm text-gray-600 mr-2">Tags:</span>
+                    <span class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mr-2">Tags:</span>
                     @foreach($news->tags as $tag)
-                        <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs">
+                        <span class="bg-gray-100 text-gray-700 dark:text-gray-300 px-2 py-1 rounded text-xs">
                             {{ $tag }}
                         </span>
                     @endforeach
@@ -85,8 +85,8 @@
 
     <!-- Related News -->
     @if($relatedNews->count() > 0)
-    <div class="bg-white rounded-lg shadow-lg p-6 mt-6">
-        <h3 class="text-xl font-bold text-gray-900 mb-4">Berita Terkait</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mt-6">
+        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Berita Terkait</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             @foreach($relatedNews as $related)
                 <div class="flex space-x-3">
@@ -96,7 +96,7 @@
                              class="w-20 h-16 object-cover rounded">
                     @else
                         <div class="w-20 h-16 bg-gray-200 rounded flex items-center justify-center">
-                            <i class="fas fa-newspaper text-gray-400"></i>
+                            <i class="fas fa-newspaper text-gray-400 dark:text-gray-500"></i>
                         </div>
                     @endif
                     <div class="flex-1">
@@ -105,7 +105,7 @@
                                 {{ $related->title }}
                             </a>
                         </h4>
-                        <p class="text-xs text-gray-500">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
                             {{ $related->published_at->format('d M Y') }}
                         </p>
                     </div>

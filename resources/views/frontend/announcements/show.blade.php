@@ -11,7 +11,7 @@
 @section('content')
 <div class="xl:col-span-3">
     <!-- Announcement Detail -->
-    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
         <div class="p-6">
             <!-- Priority Badge -->
             <div class="flex items-center justify-between mb-4">
@@ -28,7 +28,7 @@
                         ($announcement->priority === 'important' ? 'PENTING' : 'NORMAL') }}
                 </span>
                 @if($announcement->valid_until)
-                    <div class="text-sm text-gray-500">
+                    <div class="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
                         <i class="fas fa-clock mr-1"></i>
                         Berlaku sampai: {{ \Carbon\Carbon::parse($announcement->valid_until)->format('d F Y') }}
                     </div>
@@ -36,12 +36,12 @@
             </div>
 
             <!-- Title -->
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
                 {{ $announcement->title }}
             </h1>
 
             <!-- Meta Info -->
-            <div class="flex items-center text-gray-600 text-sm mb-6 border-b pb-4">
+            <div class="flex items-center text-gray-600 dark:text-gray-400 dark:text-gray-500 text-sm mb-6 border-b pb-4">
                 <div class="flex items-center">
                     <i class="fas fa-calendar mr-2"></i>
                     <span>{{ $announcement->created_at->format('d F Y, H:i') }} WIB</span>
@@ -55,17 +55,17 @@
 
             <!-- Contact Info if available -->
             @if($announcement->contact_person || $announcement->contact_phone)
-                <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 mb-6">
                     <h3 class="font-semibold mb-2">Informasi Kontak:</h3>
                     @if($announcement->contact_person)
                         <div class="flex items-center mb-1">
-                            <i class="fas fa-user mr-2 text-gray-500"></i>
+                            <i class="fas fa-user mr-2 text-gray-500 dark:text-gray-400 dark:text-gray-500"></i>
                             <span>{{ $announcement->contact_person }}</span>
                         </div>
                     @endif
                     @if($announcement->contact_phone)
                         <div class="flex items-center">
-                            <i class="fas fa-phone mr-2 text-gray-500"></i>
+                            <i class="fas fa-phone mr-2 text-gray-500 dark:text-gray-400 dark:text-gray-500"></i>
                             <span>{{ $announcement->contact_phone }}</span>
                         </div>
                     @endif
@@ -98,8 +98,8 @@
 
     <!-- Related Announcements -->
     @if($relatedAnnouncements->count() > 0)
-    <div class="bg-white rounded-lg shadow-lg p-6 mt-6">
-        <h3 class="text-xl font-bold text-gray-900 mb-4">Pengumuman Terkait</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mt-6">
+        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Pengumuman Terkait</h3>
         <div class="space-y-3">
             @foreach($relatedAnnouncements as $related)
                 <div class="border-l-4 border-blue-500 pl-4">
@@ -108,7 +108,7 @@
                             {{ $related->title }}
                         </a>
                     </h4>
-                    <p class="text-xs text-gray-500">
+                    <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
                         {{ $related->created_at->format('d M Y') }}
                     </p>
                 </div>

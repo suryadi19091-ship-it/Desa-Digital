@@ -10,8 +10,17 @@
     
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        // Check local storage for theme early to avoid FOUC
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen text-gray-900 dark:text-gray-100 transition-colors duration-200">
     <!-- Top Header -->
     <header class="bg-gradient-to-r from-teal-500 to-cyan-500 text-white py-3 px-4">
         <div class="flex justify-between items-center">
@@ -49,26 +58,26 @@
                             <i class="fas fa-chevron-down text-xs"></i>
                         </button>
                         <!-- Dropdown Menu -->
-                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                        <div class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                             <div class="py-2">
-                                <div class="px-4 py-2 text-gray-800 border-b">
+                                <div class="px-4 py-2 text-gray-800 dark:text-gray-200 border-b">
                                     <p class="font-medium text-sm">{{ $currentUser->name }}</p>
-                                    <p class="text-xs text-gray-600">{{ $currentUser->email }}</p>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">{{ $currentUser->email }}</p>
                                 </div>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <i class="fas fa-user mr-2"></i>Profil
                                 </a>
                                 @if($currentUser && $currentUser->role === 'admin')
-                                    {{-- <a href="{{ route('system.dashboard') }}" class="block px-4 py-2 text-sm text-purple-700 hover:bg-purple-50">
+                                    {{-- <a href="{{ route('system.dashboard') }}" class="block px-4 py-2 text-sm text-purple-700 hover:bg-purple-50 dark:bg-purple-900/40">
                                         <i class="fas fa-shield-alt mr-2"></i>System Admin
                                     </a> --}}
                                 @endif
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <i class="fas fa-cog mr-2"></i>Pengaturan
                                 </a>
                                 {{-- <form method="POST" action="{{ route('jwt.logout') }}">
                                     @csrf
-                                    <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-red-700 hover:bg-red-50">
+                                    <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-red-700 hover:bg-red-50 dark:bg-red-900/40">
                                         <i class="fas fa-sign-out-alt mr-2"></i>Keluar
                                     </button>
                                 </form> --}}
@@ -86,6 +95,10 @@
                 <a href="#" class="hover:text-gray-200"><i class="fas fa-search"></i></a>
                 <a href="#" class="hover:text-gray-200 hidden sm:inline"><i class="fas fa-chart-bar"></i></a>
                 <a href="#" class="hover:text-gray-200"><i class="fas fa-cog"></i></a>
+                <button id="theme-toggle" type="button" class="text-white hover:text-gray-200 focus:outline-none rounded-lg text-sm p-1 ml-2 transition-colors">
+                    <i id="theme-toggle-dark-icon" class="hidden fas fa-moon"></i>
+                    <i id="theme-toggle-light-icon" class="hidden fas fa-sun"></i>
+                </button>
             </div>
         </div>
     </header>
@@ -97,7 +110,7 @@
         <!-- Main Content Area -->
         <main class="flex-1 w-full lg:w-auto">
             <!-- Page Header -->
-            <div class="@yield('header_bg_color', 'bg-teal-600') text-white p-3 sm:p-4">
+            <div class="@yield('header_bg_color', 'bg-teal-600 dark:bg-gray-800') text-white p-3 sm:p-4">
                 <div class="flex items-center">
                     <i class="@yield('header_icon', 'fas fa-chart-bar') mr-2 sm:mr-3"></i>
                     <h1 class="text-base sm:text-lg font-semibold">@yield('page_title', 'STATISTIK')</h1>
@@ -206,6 +219,46 @@
                     }, 500);
                 }, 5000);
             });
+
+            // Theme Toggle logic
+            const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+            const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+            const themeToggleBtn = document.getElementById('theme-toggle');
+
+            if (themeToggleDarkIcon && themeToggleLightIcon && themeToggleBtn) {
+                // Set the icons inside the button based on previous settings
+                if (document.documentElement.classList.contains('dark')) {
+                    themeToggleLightIcon.classList.remove('hidden');
+                } else {
+                    themeToggleDarkIcon.classList.remove('hidden');
+                }
+
+                themeToggleBtn.addEventListener('click', function() {
+                    // toggle icons
+                    themeToggleDarkIcon.classList.toggle('hidden');
+                    themeToggleLightIcon.classList.toggle('hidden');
+
+                    // if set via local storage previously
+                    if (localStorage.getItem('color-theme')) {
+                        if (localStorage.getItem('color-theme') === 'light') {
+                            document.documentElement.classList.add('dark');
+                            localStorage.setItem('color-theme', 'dark');
+                        } else {
+                            document.documentElement.classList.remove('dark');
+                            localStorage.setItem('color-theme', 'light');
+                        }
+                    // if NOT set via local storage previously
+                    } else {
+                        if (document.documentElement.classList.contains('dark')) {
+                            document.documentElement.classList.remove('dark');
+                            localStorage.setItem('color-theme', 'light');
+                        } else {
+                            document.documentElement.classList.add('dark');
+                            localStorage.setItem('color-theme', 'dark');
+                        }
+                    }
+                });
+            }
         });
     </script>
     

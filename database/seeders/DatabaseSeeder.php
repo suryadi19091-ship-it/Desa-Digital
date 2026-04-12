@@ -22,9 +22,41 @@ class DatabaseSeeder extends Seeder
         
         // Seed population data
         $this->call([
+            // System & Permissions
+            PermissionSeeder::class,
             PermissionsSeeder::class,
+            SidebarPermissionSeeder::class,
+            VillageOfficialsPermissionSeeder::class,
+            VillageProfilePermissionSeeder::class,
+            SuperAdminUserSeeder::class,
+            AuthSeeder::class,
+
+            // Core Profile & Infrastructure
+            VillageProfileSeeder::class,
+            SettlementSeeder::class,
+            LocationSeeder::class,
+            InfrastructureSeeder::class,
+            // CommunityInstitutionSeeder::class,
+
+            // Users & Demographics
             PopulationDataSeeder::class,
+            UpdatePopulationStatusSeeder::class,
+            VillageOfficialSeeder::class,
+            VillageStatisticsSeeder::class,
+
+            // Business & Budget
             UmkmSeeder::class,
+            VillageBudgetSeeder::class,
+            BudgetTransactionSeeder::class,
+
+            // Public Content
+            NewsAndAgendaSeeder::class,
+            AgendaSeeder::class,
+            AddMoreAgendaSeeder::class,
+            AnnouncementSeeder::class,
+            GallerySeeder::class,
+            TourismDataSeeder::class,
+            TourismObjectSeeder::class,
         ]);
     }
 }

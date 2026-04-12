@@ -8,8 +8,8 @@
 @section('content')
 <div class="xl:col-span-3">
     <!-- Population Growth Chart -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-        <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
             <i class="fas fa-chart-area text-indigo-600 mr-2"></i>
             Pertumbuhan Penduduk (5 Tahun Terakhir)
         </h2>
@@ -20,11 +20,11 @@
         
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
             @foreach($yearlyData as $index => $data)
-            <div class="bg-indigo-50 rounded-lg p-3 {{ $loop->last ? 'bg-indigo-100 border-2 border-indigo-300' : '' }}">
+            <div class="bg-indigo-50 dark:bg-indigo-900/40 rounded-lg p-3 {{ $loop->last ? 'bg-indigo-100 border-2 border-indigo-300' : '' }}">
                 <p class="text-2xl font-bold {{ $loop->last ? 'text-indigo-700' : 'text-indigo-600' }}">
                     {{ number_format($data['total']) }}
                 </p>
-                <p class="text-sm {{ $loop->last ? 'text-indigo-600 font-medium' : 'text-gray-600' }}">
+                <p class="text-sm {{ $loop->last ? 'text-indigo-600 font-medium' : 'text-gray-600 dark:text-gray-400 dark:text-gray-500' }}">
                     {{ $data['year'] }}
                 </p>
             </div>
@@ -35,8 +35,8 @@
     <!-- Demographic Comparison -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <!-- Gender Distribution -->
-        <div class="bg-white rounded-lg shadow-lg p-6">
-            <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
                 <i class="fas fa-venus-mars text-purple-600 mr-2"></i>
                 Distribusi Jenis Kelamin
             </h3>
@@ -44,7 +44,7 @@
                 <div>
                     <div class="flex justify-between mb-2">
                         <span class="text-sm font-medium text-blue-600">Laki-laki</span>
-                        <span class="text-sm font-bold text-gray-900">
+                        <span class="text-sm font-bold text-gray-900 dark:text-gray-100">
                             {{ number_format($genderStats['male_count']) }} jiwa 
                             ({{ number_format($genderStats['male_percentage'], 1) }}%)
                         </span>
@@ -56,7 +56,7 @@
                 <div>
                     <div class="flex justify-between mb-2">
                         <span class="text-sm font-medium text-pink-600">Perempuan</span>
-                        <span class="text-sm font-bold text-gray-900">
+                        <span class="text-sm font-bold text-gray-900 dark:text-gray-100">
                             {{ number_format($genderStats['female_count']) }} jiwa 
                             ({{ number_format($genderStats['female_percentage'], 1) }}%)
                         </span>
@@ -66,7 +66,7 @@
                     </div>
                 </div>
             </div>
-            <div class="mt-4 p-3 bg-purple-50 rounded-lg">
+            <div class="mt-4 p-3 bg-purple-50 dark:bg-purple-900/40 rounded-lg">
                 <p class="text-sm text-purple-700">
                     <i class="fas fa-balance-scale mr-1"></i>
                     Rasio jenis kelamin: {{ $genderStats['ratio'] }}
@@ -75,8 +75,8 @@
         </div>
 
         <!-- Age Pyramid -->
-        <div class="bg-white rounded-lg shadow-lg p-6">
-            <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
                 <i class="fas fa-chart-bar text-green-600 mr-2"></i>
                 Piramida Penduduk
             </h3>
@@ -104,7 +104,7 @@
                     $femaleWidth = ($femaleCount / $maxCount) * 100;
                 @endphp
                 <div class="flex items-center" title="Laki-laki: {{ $maleCount }}, Perempuan: {{ $femaleCount }}">
-                    <span class="w-16 text-xs text-gray-600">{{ $group['label'] }}</span>
+                    <span class="w-16 text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">{{ $group['label'] }}</span>
                     <div class="flex-1 flex">
                         <div class="w-1/2 flex justify-end pr-1">
                             <div class="bg-blue-500 h-4 rounded-l transition-all duration-300" 
@@ -132,8 +132,8 @@
     </div>
 
     <!-- Detailed Statistics -->
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-        <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
             <i class="fas fa-table text-teal-600 mr-2"></i>
             Statistik Detail Kependudukan
         </h2>
@@ -141,7 +141,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- Status Perkawinan -->
             <div>
-                <h3 class="font-bold text-gray-900 mb-3">Status Perkawinan</h3>
+                <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-3">Status Perkawinan</h3>
                 <div class="space-y-2">
                     @php
                         $maritalColors = [
@@ -163,7 +163,7 @@
 
             <!-- Agama -->
             <div>
-                <h3 class="font-bold text-gray-900 mb-3">Agama</h3>
+                <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-3">Agama</h3>
                 <div class="space-y-2">
                     @php
                         $religionColors = [
@@ -186,7 +186,7 @@
 
             <!-- Pekerjaan -->
             <div>
-                <h3 class="font-bold text-gray-900 mb-3">Pekerjaan Utama</h3>
+                <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-3">Pekerjaan Utama</h3>
                 <div class="space-y-2">
                     @php
                         $occupationColors = [
@@ -211,67 +211,67 @@
     </div>
 
     <!-- Birth & Death Statistics -->
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
             <i class="fas fa-heartbeat text-red-600 mr-2"></i>
             Statistik Kelahiran & Kematian (2025)
         </h2>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Birth Statistics -->
-            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+            <div class="bg-green-50 dark:bg-green-900/40 border border-green-200 rounded-lg p-4">
                 <h3 class="font-bold text-green-800 mb-4 flex items-center">
                     <i class="fas fa-baby text-green-600 mr-2"></i>
                     Data Kelahiran
                 </h3>
                 <div class="space-y-3">
                     <div class="flex justify-between">
-                        <span class="text-sm text-gray-700">Total Kelahiran</span>
+                        <span class="text-sm text-gray-700 dark:text-gray-300">Total Kelahiran</span>
                         <span class="font-bold text-green-700">{{ number_format($birthDeathStats['births']['total']) }} bayi</span>
                     </div>
                     <div class="flex justify-between">
-                        <span class="text-sm text-gray-700">Laki-laki</span>
+                        <span class="text-sm text-gray-700 dark:text-gray-300">Laki-laki</span>
                         <span class="font-bold text-blue-600">{{ number_format($birthDeathStats['births']['male']) }} bayi</span>
                     </div>
                     <div class="flex justify-between">
-                        <span class="text-sm text-gray-700">Perempuan</span>
+                        <span class="text-sm text-gray-700 dark:text-gray-300">Perempuan</span>
                         <span class="font-bold text-pink-600">{{ number_format($birthDeathStats['births']['female']) }} bayi</span>
                     </div>
                     <div class="flex justify-between border-t pt-2">
-                        <span class="text-sm font-medium text-gray-700">Angka Kelahiran</span>
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Angka Kelahiran</span>
                         <span class="font-bold text-green-700">{{ $birthDeathStats['births']['rate'] }}‰</span>
                     </div>
                 </div>
             </div>
 
             <!-- Death Statistics -->
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <h3 class="font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-cross text-gray-600 mr-2"></i>
+            <div class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                <h3 class="font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center">
+                    <i class="fas fa-cross text-gray-600 dark:text-gray-400 dark:text-gray-500 mr-2"></i>
                     Data Kematian
                 </h3>
                 <div class="space-y-3">
                     <div class="flex justify-between">
-                        <span class="text-sm text-gray-700">Total Kematian</span>
-                        <span class="font-bold text-gray-700">{{ number_format($birthDeathStats['deaths']['total']) }} orang</span>
+                        <span class="text-sm text-gray-700 dark:text-gray-300">Total Kematian</span>
+                        <span class="font-bold text-gray-700 dark:text-gray-300">{{ number_format($birthDeathStats['deaths']['total']) }} orang</span>
                     </div>
                     <div class="flex justify-between">
-                        <span class="text-sm text-gray-700">Laki-laki</span>
+                        <span class="text-sm text-gray-700 dark:text-gray-300">Laki-laki</span>
                         <span class="font-bold text-blue-600">{{ number_format($birthDeathStats['deaths']['male']) }} orang</span>
                     </div>
                     <div class="flex justify-between">
-                        <span class="text-sm text-gray-700">Perempuan</span>
+                        <span class="text-sm text-gray-700 dark:text-gray-300">Perempuan</span>
                         <span class="font-bold text-pink-600">{{ number_format($birthDeathStats['deaths']['female']) }} orang</span>
                     </div>
                     <div class="flex justify-between border-t pt-2">
-                        <span class="text-sm font-medium text-gray-700">Angka Kematian</span>
-                        <span class="font-bold text-gray-700">{{ $birthDeathStats['deaths']['rate'] }}‰</span>
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Angka Kematian</span>
+                        <span class="font-bold text-gray-700 dark:text-gray-300">{{ $birthDeathStats['deaths']['rate'] }}‰</span>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900/40 border border-blue-200 rounded-lg">
             <div class="flex items-center justify-between">
                 <div>
                     <h4 class="font-bold text-blue-800">Pertumbuhan Alami</h4>
@@ -288,19 +288,19 @@
 
         <!-- Population Status Summary -->
         <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+            <div class="bg-green-50 dark:bg-green-900/40 border border-green-200 rounded-lg p-4 text-center">
                 <i class="fas fa-users text-green-600 text-2xl mb-2"></i>
                 <h4 class="font-bold text-green-800">Penduduk Hidup</h4>
                 <p class="text-2xl font-bold text-green-700">{{ number_format($birthDeathStats['population_status']['living']) }}</p>
                 <p class="text-sm text-green-600">jiwa</p>
             </div>
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
-                <i class="fas fa-cross text-gray-600 text-2xl mb-2"></i>
-                <h4 class="font-bold text-gray-800">Penduduk Meninggal</h4>
-                <p class="text-2xl font-bold text-gray-700">{{ number_format($birthDeathStats['population_status']['deceased']) }}</p>
-                <p class="text-sm text-gray-600">jiwa</p>
+            <div class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 text-center">
+                <i class="fas fa-cross text-gray-600 dark:text-gray-400 dark:text-gray-500 text-2xl mb-2"></i>
+                <h4 class="font-bold text-gray-800 dark:text-gray-200">Penduduk Meninggal</h4>
+                <p class="text-2xl font-bold text-gray-700 dark:text-gray-300">{{ number_format($birthDeathStats['population_status']['deceased']) }}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">jiwa</p>
             </div>
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+            <div class="bg-blue-50 dark:bg-blue-900/40 border border-blue-200 rounded-lg p-4 text-center">
                 <i class="fas fa-clipboard-list text-blue-600 text-2xl mb-2"></i>
                 <h4 class="font-bold text-blue-800">Total Terdaftar</h4>
                 <p class="text-2xl font-bold text-blue-700">{{ number_format($birthDeathStats['population_status']['total']) }}</p>

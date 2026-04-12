@@ -478,33 +478,33 @@ class DashboardController extends Controller
             abort(403, 'You do not have permission to view activity logs.');
         }
 
-        // In a real application, you would have an ActivityLog model
-        // For now, we'll return a simple view with mock data
-        $activities = collect([
-            [
-                'id' => 1,
-                'user' => 'Admin User',
-                'action' => 'User Login',
-                'description' => 'Admin logged into the system',
-                'ip_address' => '127.0.0.1',
-                'user_agent' => 'Mozilla/5.0...',
-                'created_at' => now()->subMinutes(10),
-            ],
-            [
-                'id' => 2,
-                'user' => 'Super Admin',
-                'action' => 'News Created',
-                'description' => 'Created new news article: "Village Development Update"',
-                'ip_address' => '127.0.0.1',
-                'user_agent' => 'Mozilla/5.0...',
-                'created_at' => now()->subHour(),
-            ],
-        ]);
+        $query = \Spatie\Activitylog\Models\Activity::with('causer')->latest();
+
+        if ($request->filled('search')) {
+            $search = $request->get('search');
+            $query->where(function($q) use ($search) {
+                $q->where('description', 'like', "%{$search}%")
+                  ->orWhere('log_name', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('user')) {
+            $user = $request->get('user');
+            $query->whereHasMorph('causer', [\App\Models\User::class], function($q) use ($user) {
+                $q->where('name', 'like', "%{$user}%");
+            });
+        }
+
+        if ($request->filled('log_name')) {
+            $query->where('log_name', $request->get('log_name'));
+        }
+
+        $activities = $query->paginate(20)->withQueryString();
 
         return view('backend.logs.activity', [
-            'activities' => $activities,
-            'search' => $request->get('search', ''),
-            'user_filter' => $request->get('user', ''),
+            'activities'    => $activities,
+            'search'        => $request->get('search', ''),
+            'user_filter'   => $request->get('user', ''),
             'action_filter' => $request->get('action', ''),
         ]);
     }

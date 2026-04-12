@@ -121,6 +121,13 @@
             </div>
         </li>
 
+        <!-- Dark Mode Toggle -->
+        <li class="nav-item">
+            <a class="nav-link" href="#" id="backend-theme-toggle" role="button">
+                <i class="fas fa-moon" id="backend-theme-icon"></i>
+            </a>
+        </li>
+
         <!-- Control Sidebar -->
         <li class="nav-item">
             <a class="nav-link" data-widget="fullscreen" href="#" role="button">

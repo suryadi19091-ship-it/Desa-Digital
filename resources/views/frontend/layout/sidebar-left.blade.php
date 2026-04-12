@@ -3,7 +3,7 @@
 
 <!-- Left Sidebar -->
 <aside id="sidebar" 
-    class="w-80 bg-white shadow-lg fixed lg:static inset-y-0 left-0 z-50
+    class="w-80 bg-white dark:bg-gray-800 shadow-lg fixed lg:static inset-y-0 left-0 z-50
            transform -translate-x-full lg:translate-x-0 
            transition-transform duration-300 ease-in-out
            lg:h-auto lg:overflow-visible h-screen overflow-y-auto">
@@ -61,7 +61,7 @@
                 <i class="fas fa-newspaper text-lg sm:text-2xl mb-1 sm:mb-2"></i>
                 <p class="text-xs font-medium">Berita Desa</p>
             </a>
-            <a href="/layanan-surat" class="bg-teal-500 hover:bg-teal-600 text-white p-2 sm:p-4 rounded-lg text-center cursor-pointer transition-colors block">
+            <a href="/layanan-surat" class="bg-teal-500 hover:bg-teal-600 dark:bg-gray-800 text-white p-2 sm:p-4 rounded-lg text-center cursor-pointer transition-colors block">
                 <i class="fas fa-file-alt text-lg sm:text-2xl mb-1 sm:mb-2"></i>
                 <p class="text-xs font-medium">Layanan Surat</p>
             </a>
@@ -70,159 +70,159 @@
         <!-- Menu List -->
         <div class="space-y-1">
             <!-- Profil Dropdown -->
-            <div class="border-b border-gray-200">
-                <div class="p-2 sm:p-3 hover:bg-gray-100 cursor-pointer flex justify-between items-center" onclick="toggleDropdown('profil')">
-                    <p class="font-medium text-gray-800 text-sm sm:text-base">Profil</p>
+            <div class="border-b border-gray-200 dark:border-gray-700">
+                <div class="p-2 sm:p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex justify-between items-center" onclick="toggleDropdown('profil')">
+                    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm sm:text-base">Profil</p>
                     <i class="fas fa-chevron-down transform transition-transform duration-200" id="profil-icon"></i>
                 </div>
-                <div class="hidden bg-gray-50 pl-4" id="profil-dropdown">
-                    <a href="/profile-desa" class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer border-b border-gray-300 block">
-                        <p class="text-gray-700 text-xs sm:text-sm">Profile</p>
+                <div class="hidden bg-gray-50 dark:bg-gray-900 pl-4" id="profil-dropdown">
+                    <a href="/profile-desa" class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer border-b border-gray-300 dark:border-gray-700 block">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Profile</p>
                     </a>
-                    <a href="/sejarah" class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer border-b border-gray-300 block">
-                        <p class="text-gray-700 text-xs sm:text-sm">Sejarah Desa</p>
+                    <a href="/sejarah" class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer border-b border-gray-300 dark:border-gray-700 block">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Sejarah Desa</p>
                     </a>
-                    <a href="/visi-misi" class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer border-b border-gray-300 block">
-                        <p class="text-gray-700 text-xs sm:text-sm">Visi & Misi</p>
+                    <a href="/visi-misi" class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer border-b border-gray-300 dark:border-gray-700 block">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Visi & Misi</p>
                     </a>
-                    <a href="/struktur-pemerintahan" class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer block">
-                        <p class="text-gray-700 text-xs sm:text-sm">Struktur Organisasi</p>
+                    <a href="/struktur-pemerintahan" class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer block">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Struktur Organisasi</p>
                     </a>
                 </div>
             </div>
 
             <!-- Statistik -->
-            <a href="/statistik-penduduk" class="p-2 sm:p-3 hover:bg-gray-100 cursor-pointer border-b border-gray-200 block">
-                <p class="font-medium text-gray-800 text-sm sm:text-base">Statistik</p>
+            <a href="/statistik-penduduk" class="p-2 sm:p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-200 dark:border-gray-700 block">
+                <p class="font-medium text-gray-800 dark:text-gray-200 text-sm sm:text-base">Statistik</p>
             </a>
 
             <!-- APBDes Dropdown -->
-            <div class="border-b border-gray-200">
-                <div class="p-2 sm:p-3 hover:bg-gray-100 cursor-pointer flex justify-between items-center" onclick="toggleDropdown('apbdes')">
-                    <p class="font-medium text-gray-800 text-sm sm:text-base">APBDes</p>
+            <div class="border-b border-gray-200 dark:border-gray-700">
+                <div class="p-2 sm:p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex justify-between items-center" onclick="toggleDropdown('apbdes')">
+                    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm sm:text-base">APBDes</p>
                     <i class="fas fa-chevron-down transform transition-transform duration-200" id="apbdes-icon"></i>
                 </div>
-                <div class="hidden bg-gray-50 pl-4" id="apbdes-dropdown">
-                    <a href="{{ route('budget.index') }}" class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer border-b border-gray-300 block">
-                        <p class="text-gray-700 text-xs sm:text-sm">Overview</p>
+                <div class="hidden bg-gray-50 dark:bg-gray-900 pl-4" id="apbdes-dropdown">
+                    <a href="{{ route('budget.index') }}" class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer border-b border-gray-300 dark:border-gray-700 block">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Overview</p>
                     </a>
-                    <a href="{{ route('budget.plan') }}" class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer border-b border-gray-300 block">
-                        <p class="text-gray-700 text-xs sm:text-sm">Anggaran</p>
+                    <a href="{{ route('budget.plan') }}" class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer border-b border-gray-300 dark:border-gray-700 block">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Anggaran</p>
                     </a>
-                    <a href="{{ route('budget.realization') }}" class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer border-b border-gray-300 block">
-                        <p class="text-gray-700 text-xs sm:text-sm">Realisasi</p>
+                    <a href="{{ route('budget.realization') }}" class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer border-b border-gray-300 dark:border-gray-700 block">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Realisasi</p>
                     </a>
-                    <a href="{{ route('budget.report') }}" class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer block">
-                        <p class="text-gray-700 text-xs sm:text-sm">Laporan</p>
+                    <a href="{{ route('budget.report') }}" class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer block">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Laporan</p>
                     </a>
                 </div>
             </div>
 
             <!-- Artikel Dropdown -->
-            <div class="border-b border-gray-200">
-                <div class="p-2 sm:p-3 hover:bg-gray-100 cursor-pointer flex justify-between items-center" onclick="toggleDropdown('artikel')">
-                    <p class="font-medium text-gray-800 text-sm sm:text-base">Artikel</p>
+            <div class="border-b border-gray-200 dark:border-gray-700">
+                <div class="p-2 sm:p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex justify-between items-center" onclick="toggleDropdown('artikel')">
+                    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm sm:text-base">Artikel</p>
                     <i class="fas fa-chevron-down transform transition-transform duration-200" id="artikel-icon"></i>
                 </div>
-                <div class="hidden bg-gray-50 pl-4" id="artikel-dropdown">
-                    <a href="/berita" class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer border-b border-gray-300 block">
-                        <p class="text-gray-700 text-xs sm:text-sm">Berita Desa</p>
+                <div class="hidden bg-gray-50 dark:bg-gray-900 pl-4" id="artikel-dropdown">
+                    <a href="/berita" class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer border-b border-gray-300 dark:border-gray-700 block">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Berita Desa</p>
                     </a>
-                    <a href="/pengumuman" class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer border-b border-gray-300 block">
-                        <p class="text-gray-700 text-xs sm:text-sm">Pengumuman</p>
+                    <a href="/pengumuman" class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer border-b border-gray-300 dark:border-gray-700 block">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Pengumuman</p>
                     </a>
-                    <a href="/agenda" class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer block">
-                        <p class="text-gray-700 text-xs sm:text-sm">Agenda Kegiatan</p>
+                    <a href="/agenda" class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer block">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Agenda Kegiatan</p>
                     </a>
                 </div>
             </div>
 
             <!-- Ekonomi Dropdown -->
-            <div class="border-b border-gray-200">
-                <div class="p-2 sm:p-3 hover:bg-gray-100 cursor-pointer flex justify-between items-center" onclick="toggleDropdown('ekonomi')">
-                    <p class="font-medium text-gray-800 text-sm sm:text-base">Ekonomi</p>
+            <div class="border-b border-gray-200 dark:border-gray-700">
+                <div class="p-2 sm:p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex justify-between items-center" onclick="toggleDropdown('ekonomi')">
+                    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm sm:text-base">Ekonomi</p>
                     <i class="fas fa-chevron-down transform transition-transform duration-200" id="ekonomi-icon"></i>
                 </div>
-                <div class="hidden bg-gray-50 pl-4" id="ekonomi-dropdown">
-                    <a href="/umkm" class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer border-b border-gray-300 block">
-                        <p class="text-gray-700 text-xs sm:text-sm">UMKM</p>
+                <div class="hidden bg-gray-50 dark:bg-gray-900 pl-4" id="ekonomi-dropdown">
+                    <a href="/umkm" class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer border-b border-gray-300 dark:border-gray-700 block">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">UMKM</p>
                     </a>
-                    <a href="/wisata" class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer border-b border-gray-300 block">
-                        <p class="text-gray-700 text-xs sm:text-sm">Wisata Desa</p>
+                    <a href="/wisata" class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer border-b border-gray-300 dark:border-gray-700 block">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Wisata Desa</p>
                     </a>
                 </div>
             </div>
 
             <!-- Informasi Dropdown -->
-            <div class="border-b border-gray-200">
-                <div class="p-2 sm:p-3 hover:bg-gray-100 cursor-pointer flex justify-between items-center" onclick="toggleDropdown('informasi')">
-                    <p class="font-medium text-gray-800 text-sm sm:text-base">Informasi</p>
+            <div class="border-b border-gray-200 dark:border-gray-700">
+                <div class="p-2 sm:p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex justify-between items-center" onclick="toggleDropdown('informasi')">
+                    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm sm:text-base">Informasi</p>
                     <i class="fas fa-chevron-down transform transition-transform duration-200" id="informasi-icon"></i>
                 </div>
-                <div class="hidden bg-gray-50 pl-4" id="informasi-dropdown">
-                    <a href="/layanan-surat" class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer border-b border-gray-300 block">
-                        <p class="text-gray-700 text-xs sm:text-sm">Layanan Surat</p>
+                <div class="hidden bg-gray-50 dark:bg-gray-900 pl-4" id="informasi-dropdown">
+                    <a href="/layanan-surat" class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer border-b border-gray-300 dark:border-gray-700 block">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Layanan Surat</p>
                     </a>
-                    <a href="/pengajuan-surat" class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer border-b border-gray-300 block">
-                        <p class="text-gray-700 text-xs sm:text-sm">Pengajuan Online</p>
+                    <a href="/pengajuan-surat" class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer border-b border-gray-300 dark:border-gray-700 block">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Pengajuan Online</p>
                     </a>
-                    <a href="/kontak" class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer block">
-                        <p class="text-gray-700 text-xs sm:text-sm">Kontak Desa</p>
+                    <a href="/kontak" class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer block">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Kontak Desa</p>
                     </a>
                 </div>
             </div>
 
             <!-- Keamanan Dropdown -->
-            <div class="border-b border-gray-200">
-                <div class="p-2 sm:p-3 hover:bg-gray-100 cursor-pointer flex justify-between items-center" onclick="toggleDropdown('keamanan')">
-                    <p class="font-medium text-gray-800 text-sm sm:text-base">Keamanan</p>
+            <div class="border-b border-gray-200 dark:border-gray-700">
+                <div class="p-2 sm:p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex justify-between items-center" onclick="toggleDropdown('keamanan')">
+                    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm sm:text-base">Keamanan</p>
                     <i class="fas fa-chevron-down transform transition-transform duration-200" id="keamanan-icon"></i>
                 </div>
-                <div class="hidden bg-gray-50 pl-4" id="keamanan-dropdown">
-                    <div class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer border-b border-gray-300">
-                        <p class="text-gray-700 text-xs sm:text-sm">Pos Kamling</p>
+                <div class="hidden bg-gray-50 dark:bg-gray-900 pl-4" id="keamanan-dropdown">
+                    <div class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer border-b border-gray-300 dark:border-gray-700">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Pos Kamling</p>
                     </div>
-                    <div class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer border-b border-gray-300">
-                        <p class="text-gray-700 text-xs sm:text-sm">Hansip</p>
+                    <div class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer border-b border-gray-300 dark:border-gray-700">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Hansip</p>
                     </div>
-                    <div class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer">
-                        <p class="text-gray-700 text-xs sm:text-sm">Laporan Kejadian</p>
+                    <div class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Laporan Kejadian</p>
                     </div>
                 </div>
             </div>
 
             <!-- BUMDes Dropdown -->
-            <div class="border-b border-gray-200">
-                <div class="p-2 sm:p-3 hover:bg-gray-100 cursor-pointer flex justify-between items-center" onclick="toggleDropdown('bumdes')">
-                    <p class="font-medium text-gray-800 text-sm sm:text-base">BUMDes</p>
+            <div class="border-b border-gray-200 dark:border-gray-700">
+                <div class="p-2 sm:p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex justify-between items-center" onclick="toggleDropdown('bumdes')">
+                    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm sm:text-base">BUMDes</p>
                     <i class="fas fa-chevron-down transform transition-transform duration-200" id="bumdes-icon"></i>
                 </div>
-                <div class="hidden bg-gray-50 pl-4" id="bumdes-dropdown">
-                    <div class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer border-b border-gray-300">
-                        <p class="text-gray-700 text-xs sm:text-sm">Unit Usaha</p>
+                <div class="hidden bg-gray-50 dark:bg-gray-900 pl-4" id="bumdes-dropdown">
+                    <div class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer border-b border-gray-300 dark:border-gray-700">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Unit Usaha</p>
                     </div>
-                    <div class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer border-b border-gray-300">
-                        <p class="text-gray-700 text-xs sm:text-sm">Keuangan</p>
+                    <div class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer border-b border-gray-300 dark:border-gray-700">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Keuangan</p>
                     </div>
-                    <div class="p-2 sm:p-3 hover:bg-gray-200 cursor-pointer">
-                        <p class="text-gray-700 text-xs sm:text-sm">Program</p>
+                    <div class="p-2 sm:p-3 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer">
+                        <p class="text-gray-700 dark:text-gray-300 text-xs sm:text-sm">Program</p>
                     </div>
                 </div>
             </div>
 
             <!-- Authentication Section -->
-            <div class="mt-4 pt-4 border-t border-gray-300">
+            <div class="mt-4 pt-4 border-t border-gray-300 dark:border-gray-700">
                 <div class="px-2 mb-2">
-                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Akun Pengguna</p>
+                    <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider">Akun Pengguna</p>
                 </div>
                 <div class="space-y-1">
-                    <a href="{{ route('login') }}" class="flex items-center p-2 sm:p-3 hover:bg-blue-50 cursor-pointer rounded-lg mx-2 transition-colors group">
+                    <a href="{{ route('login') }}" class="flex items-center p-2 sm:p-3 hover:bg-blue-50 dark:bg-blue-900/40 cursor-pointer rounded-lg mx-2 transition-colors group">
                         <div class="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg mr-3 group-hover:bg-blue-200">
                             <i class="fas fa-sign-in-alt text-blue-600 text-sm"></i>
                         </div>
                         <div>
-                            <p class="font-medium text-gray-800 text-sm">Masuk</p>
-                            <p class="text-xs text-gray-600">Login ke akun Anda</p>
+                            <p class="font-medium text-gray-800 dark:text-gray-200 text-sm">Masuk</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">Login ke akun Anda</p>
                         </div>
                     </a>          
                 </div>

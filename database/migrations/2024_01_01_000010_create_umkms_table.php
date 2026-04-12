@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('umkms', function (Blueprint $table) {
             $table->id();
             $table->string('business_name');
+            $table->string('slug')->unique();
             $table->string('owner_name');
             $table->enum('category', ['makanan', 'kerajinan', 'pertanian', 'jasa', 'tekstil', 'lainnya']);
             $table->text('description')->nullable();
