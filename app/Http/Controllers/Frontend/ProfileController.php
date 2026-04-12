@@ -111,8 +111,10 @@ class ProfileController extends Controller
         $officials = VillageOfficial::where('is_active', true)
                                    ->orderBy('order')
                                    ->get();
+                                   
+        $groupedOfficials = $officials->groupBy('position');
         
-        return view('frontend.page.perangkat-desa', compact('officials'));
+        return view('frontend.page.perangkat-desa', compact('officials', 'groupedOfficials'));
     }
     
     public function tourism()

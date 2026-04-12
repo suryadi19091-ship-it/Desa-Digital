@@ -20,52 +20,78 @@
         <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 text-center">Pimpinan Desa</h2>
         
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Kepala Desa -->
+            {{-- Kepala Desa --}}
+            @php $kades = $groupedOfficials->get('kepala_desa')?->first(); @endphp
             <div class="text-center">
                 <div class="w-40 h-40 bg-emerald-100 rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden">
-                    <img src="/images/kepala-desa.jpg" alt="Kepala Desa" class="w-full h-full object-cover" 
-                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-                    <div class="w-full h-full bg-emerald-500 flex items-center justify-center" style="display: none;">
-                        <i class="fas fa-user text-6xl text-white"></i>
-                    </div>
+                    @if($kades && $kades->photo_path)
+                        <img src="{{ asset('storage/' . $kades->photo_path) }}" alt="{{ $kades->name }}" class="w-full h-full object-cover">
+                    @else
+                        <div class="w-full h-full bg-emerald-500 flex items-center justify-center">
+                            <i class="fas fa-user text-6xl text-white"></i>
+                        </div>
+                    @endif
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">H. SUKARNO WIJAYA, S.Sos</h3>
-                <p class="text-emerald-600 font-medium mb-2">Kepala Desa</p>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 text-uppercase">{{ $kades->name ?? 'N/A' }}</h3>
+                <p class="text-emerald-600 font-medium mb-2">{{ $kades->position_title ?? 'Kepala Desa' }}</p>
+                @if($kades)
                 <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 space-y-1 mb-4">
-                    <p>Periode: 2024-2029</p>
-                    <p>Pendidikan: S1 Sosiologi</p>
-                    <p>Pengalaman: 15 tahun di pemerintahan</p>
+                    @if($kades->start_date && $kades->end_date)
+                        <p>Periode: {{ $kades->start_date->format('Y') }}-{{ $kades->end_date->format('Y') }}</p>
+                    @endif
+                    @if($kades->education)
+                        <p>Pendidikan: {{ $kades->education }}</p>
+                    @endif
+                    @if($kades->specialization)
+                        <p>Keahlian: {{ $kades->specialization }}</p>
+                    @endif
                 </div>
                 <div class="flex justify-center space-x-4 text-sm">
+                    @if($kades->email)
                     <div class="flex items-center text-emerald-600">
                         <i class="fas fa-envelope mr-1"></i>
-                        <span>kades@desakrandegan.id</span>
+                        <span>{{ $kades->email }}</span>
                     </div>
+                    @endif
                 </div>
+                @endif
             </div>
             
-            <!-- Sekretaris Desa -->
+            {{-- Sekretaris Desa --}}
+            @php $sekdes = $groupedOfficials->get('sekretaris_desa')?->first(); @endphp
             <div class="text-center">
                 <div class="w-40 h-40 bg-blue-100 rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden">
-                    <img src="/images/sekdes.jpg" alt="Sekretaris Desa" class="w-full h-full object-cover" 
-                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-                    <div class="w-full h-full bg-blue-500 flex items-center justify-center" style="display: none;">
-                        <i class="fas fa-user text-6xl text-white"></i>
-                    </div>
+                    @if($sekdes && $sekdes->photo_path)
+                        <img src="{{ asset('storage/' . $sekdes->photo_path) }}" alt="{{ $sekdes->name }}" class="w-full h-full object-cover">
+                    @else
+                        <div class="w-full h-full bg-blue-500 flex items-center justify-center">
+                            <i class="fas fa-user text-6xl text-white"></i>
+                        </div>
+                    @endif
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100">SITI NURJANAH, S.AP</h3>
-                <p class="text-blue-600 font-medium mb-2">Sekretaris Desa</p>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 text-uppercase">{{ $sekdes->name ?? 'N/A' }}</h3>
+                <p class="text-blue-600 font-medium mb-2">{{ $sekdes->position_title ?? 'Sekretaris Desa' }}</p>
+                @if($sekdes)
                 <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 space-y-1 mb-4">
-                    <p>NIP: 197805152006042009</p>
-                    <p>Pendidikan: S1 Administrasi Publik</p>
-                    <p>Masa Kerja: 18 tahun</p>
+                    @if($sekdes->nip)
+                        <p>NIP: {{ $sekdes->nip }}</p>
+                    @endif
+                    @if($sekdes->education)
+                        <p>Pendidikan: {{ $sekdes->education }}</p>
+                    @endif
+                    @if($sekdes->work_period)
+                        <p>Masa Kerja: {{ $sekdes->work_period }}</p>
+                    @endif
                 </div>
                 <div class="flex justify-center space-x-4 text-sm">
+                    @if($sekdes->email)
                     <div class="flex items-center text-blue-600">
                         <i class="fas fa-envelope mr-1"></i>
-                        <span>sekdes@desakrandegan.id</span>
+                        <span>{{ $sekdes->email }}</span>
                     </div>
+                    @endif
                 </div>
+                @endif
             </div>
         </div>
     </div>
@@ -78,105 +104,58 @@
         </h2>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Kaur Pemerintahan -->
-            <div class="bg-green-50 dark:bg-green-900/40 border border-green-200 rounded-lg p-6">
-                <div class="text-center mb-4">
-                    <div class="w-24 h-24 bg-green-500 rounded-full mx-auto mb-3 flex items-center justify-center overflow-hidden">
-                        <img src="/images/kaur-pemerintahan.jpg" alt="Kaur Pemerintahan" class="w-full h-full object-cover" 
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-                        <div class="w-full h-full bg-green-500 flex items-center justify-center" style="display: none;">
-                            <i class="fas fa-user text-3xl text-white"></i>
+            @php
+                $kaurs = $groupedOfficials->filter(function($value, $key) {
+                    return str_starts_with($key, 'kaur');
+                })->flatten();
+                $colors = [
+                    'green' => ['bg' => 'bg-green-50 dark:bg-green-900/40', 'border' => 'border-green-200', 'text' => 'text-green-600', 'icon-bg' => 'bg-green-500'],
+                    'yellow' => ['bg' => 'bg-yellow-50 dark:bg-yellow-900/40', 'border' => 'border-yellow-200', 'text' => 'text-yellow-600', 'icon-bg' => 'bg-yellow-500'],
+                    'purple' => ['bg' => 'bg-purple-50 dark:bg-purple-900/40', 'border' => 'border-purple-200', 'text' => 'text-purple-600', 'icon-bg' => 'bg-purple-500']
+                ];
+                $colorKeys = array_keys($colors);
+            @endphp
+
+            @foreach($kaurs as $index => $kaur)
+                @php $c = $colors[$colorKeys[$index % 3]]; @endphp
+                <div class="{{ $c['bg'] }} border {{ $c['border'] }} rounded-lg p-6">
+                    <div class="text-center mb-4">
+                        <div class="w-24 h-24 {{ $c['icon-bg'] }} rounded-full mx-auto mb-3 flex items-center justify-center overflow-hidden">
+                            @if($kaur->photo_path)
+                                <img src="{{ asset('storage/' . $kaur->photo_path) }}" alt="{{ $kaur->name }}" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full border-4 border-white rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user text-3xl text-white"></i>
+                                </div>
+                            @endif
                         </div>
+                        <h3 class="font-bold text-gray-900 dark:text-gray-100 uppercase">{{ $kaur->name }}</h3>
+                        <p class="{{ $c['text'] }} text-sm mb-2">{{ $kaur->position_title }}</p>
                     </div>
-                    <h3 class="font-bold text-gray-900 dark:text-gray-100">AHMAD FAUZI, S.H</h3>
-                    <p class="text-green-600 text-sm mb-2">Kaur Pemerintahan</p>
-                </div>
-                
-                <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">
-                    <p><span class="font-medium">Pendidikan:</span> S1 Hukum</p>
-                    <p><span class="font-medium">Masa Kerja:</span> 12 tahun</p>
-                    <p><span class="font-medium">Spesialisasi:</span> Administrasi & Hukum</p>
-                </div>
-                
-                <div class="border-t pt-4">
-                    <h4 class="font-medium text-gray-900 dark:text-gray-100 mb-2">Bidang Tugas:</h4>
-                    <ul class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 space-y-1">
-                        <li>• Administrasi Umum</li>
-                        <li>• Kependudukan & Catatan Sipil</li>
-                        <li>• Pertanahan</li>
-                        <li>• Ketentraman & Ketertiban</li>
-                        <li>• Peraturan Desa</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <!-- Kaur Keuangan -->
-            <div class="bg-yellow-50 dark:bg-yellow-900/40 border border-yellow-200 rounded-lg p-6">
-                <div class="text-center mb-4">
-                    <div class="w-24 h-24 bg-yellow-500 rounded-full mx-auto mb-3 flex items-center justify-center overflow-hidden">
-                        <img src="/images/kaur-keuangan.jpg" alt="Kaur Keuangan" class="w-full h-full object-cover" 
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-                        <div class="w-full h-full bg-yellow-500 flex items-center justify-center" style="display: none;">
-                            <i class="fas fa-user text-3xl text-white"></i>
-                        </div>
+                    
+                    <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">
+                        @if($kaur->education)<p><span class="font-medium">Pendidikan:</span> {{ $kaur->education }}</p>@endif
+                        @if($kaur->work_period)<p><span class="font-medium">Masa Kerja:</span> {{ $kaur->work_period }}</p>@endif
+                        @if($kaur->specialization)<p><span class="font-medium">Spesialisasi:</span> {{ $kaur->specialization }}</p>@endif
                     </div>
-                    <h3 class="font-bold text-gray-900 dark:text-gray-100">RINA SURYANI, S.E</h3>
-                    <p class="text-yellow-600 text-sm mb-2">Kaur Keuangan</p>
-                </div>
-                
-                <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">
-                    <p><span class="font-medium">Pendidikan:</span> S1 Ekonomi</p>
-                    <p><span class="font-medium">Masa Kerja:</span> 10 tahun</p>
-                    <p><span class="font-medium">Spesialisasi:</span> Akuntansi & Keuangan</p>
-                </div>
-                
-                <div class="border-t pt-4">
-                    <h4 class="font-medium text-gray-900 dark:text-gray-100 mb-2">Bidang Tugas:</h4>
-                    <ul class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 space-y-1">
-                        <li>• Pengelolaan Keuangan Desa</li>
-                        <li>• APBDesa & Pelaporan</li>
-                        <li>• Pengelolaan Aset</li>
-                        <li>• Perencanaan Pembangunan</li>
-                        <li>• Administrasi Keuangan</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <!-- Kaur Pelayanan -->
-            <div class="bg-purple-50 dark:bg-purple-900/40 border border-purple-200 rounded-lg p-6">
-                <div class="text-center mb-4">
-                    <div class="w-24 h-24 bg-purple-500 rounded-full mx-auto mb-3 flex items-center justify-center overflow-hidden">
-                        <img src="/images/kaur-pelayanan.jpg" alt="Kaur Pelayanan" class="w-full h-full object-cover" 
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-                        <div class="w-full h-full bg-purple-500 flex items-center justify-center" style="display: none;">
-                            <i class="fas fa-user text-3xl text-white"></i>
-                        </div>
+                    
+                    @if($kaur->specialization)
+                    <div class="border-t pt-4">
+                        <h4 class="font-medium text-gray-900 dark:text-gray-100 mb-2">Bidang Tugas:</h4>
+                        <ul class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 space-y-1">
+                            @foreach($kaur->specialization_list as $task)
+                                <li>• {{ trim($task) }}</li>
+                            @endforeach
+                        </ul>
                     </div>
-                    <h3 class="font-bold text-gray-900 dark:text-gray-100">INDAH PERMATA, S.Sos</h3>
-                    <p class="text-purple-600 text-sm mb-2">Kaur Pelayanan</p>
+                    @endif
                 </div>
-                
-                <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">
-                    <p><span class="font-medium">Pendidikan:</span> S1 Sosiologi</p>
-                    <p><span class="font-medium">Masa Kerja:</span> 8 tahun</p>
-                    <p><span class="font-medium">Spesialisasi:</span> Pelayanan Publik</p>
-                </div>
-                
-                <div class="border-t pt-4">
-                    <h4 class="font-medium text-gray-900 dark:text-gray-100 mb-2">Bidang Tugas:</h4>
-                    <ul class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 space-y-1">
-                        <li>• Pelayanan Umum</li>
-                        <li>• Kesejahteraan Rakyat</li>
-                        <li>• Pemberdayaan Masyarakat</li>
-                        <li>• Kesehatan & Pendidikan</li>
-                        <li>• Sosial & Budaya</li>
-                    </ul>
-                </div>
-            </div>
+            @endforeach
         </div>
     </div>
 
-    <!-- Kepala Dusun -->
+    <!-- Kepala Dusun (Kadus) -->
+    @if($groupedOfficials->has('kadus'))
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
         <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
             <i class="fas fa-map-marked-alt text-orange-600 mr-2"></i>
@@ -184,149 +163,45 @@
         </h2>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Kadus I -->
-            <div class="bg-orange-50 dark:bg-orange-900/40 border border-orange-200 rounded-lg p-6">
-                <div class="flex items-center space-x-4 mb-4">
-                    <div class="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center">
-                        <i class="fas fa-user text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-gray-900 dark:text-gray-100">BAMBANG SUTRISNO</h3>
-                        <p class="text-orange-600 text-sm">Kepala Dusun I</p>
-                        <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">Masa Jabatan: 2022-2028</p>
-                    </div>
-                </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-3 mb-3">
-                    <h4 class="font-medium text-gray-900 dark:text-gray-100 mb-2">Wilayah Kerja:</h4>
-                    <div class="grid grid-cols-3 gap-2 text-xs">
-                        <div class="bg-orange-100 p-2 rounded text-center">
-                            <div class="font-bold">RT 01</div>
-                            <div class="text-gray-600 dark:text-gray-400 dark:text-gray-500">95 KK</div>
+            @php
+                $kadusColors = ['orange', 'green', 'blue', 'purple', 'teal'];
+            @endphp
+            @foreach($groupedOfficials->get('kadus') as $index => $kadus)
+                @php $color = $kadusColors[$index % count($kadusColors)]; @endphp
+                <div class="bg-{{ $color }}-50 dark:bg-{{ $color }}-900/40 border border-{{ $color }}-200 rounded-lg p-6">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="w-16 h-16 bg-{{ $color }}-500 rounded-full flex items-center justify-center overflow-hidden">
+                            @if($kadus->photo_path)
+                                <img src="{{ asset('storage/' . $kadus->photo_path) }}" alt="{{ $kadus->name }}" class="w-full h-full object-cover">
+                            @else
+                                <i class="fas fa-user text-white text-xl"></i>
+                            @endif
                         </div>
-                        <div class="bg-orange-100 p-2 rounded text-center">
-                            <div class="font-bold">RT 02</div>
-                            <div class="text-gray-600 dark:text-gray-400 dark:text-gray-500">98 KK</div>
-                        </div>
-                        <div class="bg-orange-100 p-2 rounded text-center">
-                            <div class="font-bold">RT 03</div>
-                            <div class="text-gray-600 dark:text-gray-400 dark:text-gray-500">92 KK</div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 dark:text-gray-100 uppercase">{{ $kadus->name }}</h3>
+                            <p class="text-{{ $color }}-600 text-sm">{{ $kadus->position_title }}</p>
+                            @if($kadus->work_period)<p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">Masa Jabatan: {{ $kadus->work_period }}</p>@endif
                         </div>
                     </div>
-                </div>
-                <div class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">
-                    <p><strong>Total:</strong> 285 KK • 892 Jiwa</p>
-                    <p><strong>Kontak:</strong> 0821-xxxx-xxxx</p>
-                </div>
-            </div>
-            
-            <!-- Kadus II -->
-            <div class="bg-green-50 dark:bg-green-900/40 border border-green-200 rounded-lg p-6">
-                <div class="flex items-center space-x-4 mb-4">
-                    <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
-                        <i class="fas fa-user text-white text-xl"></i>
+                    @if($kadus->work_area)
+                    <div class="bg-white dark:bg-gray-800 rounded-lg p-3 mb-3">
+                        <h4 class="font-medium text-gray-900 dark:text-gray-100 mb-2">Wilayah Kerja: {{ $kadus->work_area }}</h4>
+                        <!-- Territory details could be fetched from a relationship in a real app, 
+                             for now we show the work_area string -->
                     </div>
-                    <div>
-                        <h3 class="font-bold text-gray-900 dark:text-gray-100">SARTONO WIJAYA</h3>
-                        <p class="text-green-600 text-sm">Kepala Dusun II</p>
-                        <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">Masa Jabatan: 2022-2028</p>
+                    @endif
+                    <div class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">
+                        @if($kadus->phone)<p><strong>Kontak:</strong> {{ $kadus->phone }}</p>@endif
+                        @if($kadus->email)<p><strong>Email:</strong> {{ $kadus->email }}</p>@endif
                     </div>
                 </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-3 mb-3">
-                    <h4 class="font-medium text-gray-900 dark:text-gray-100 mb-2">Wilayah Kerja:</h4>
-                    <div class="grid grid-cols-3 gap-2 text-xs">
-                        <div class="bg-green-100 p-2 rounded text-center">
-                            <div class="font-bold">RT 04</div>
-                            <div class="text-gray-600 dark:text-gray-400 dark:text-gray-500">102 KK</div>
-                        </div>
-                        <div class="bg-green-100 p-2 rounded text-center">
-                            <div class="font-bold">RT 05</div>
-                            <div class="text-gray-600 dark:text-gray-400 dark:text-gray-500">96 KK</div>
-                        </div>
-                        <div class="bg-green-100 p-2 rounded text-center">
-                            <div class="font-bold">RT 06</div>
-                            <div class="text-gray-600 dark:text-gray-400 dark:text-gray-500">100 KK</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">
-                    <p><strong>Total:</strong> 298 KK • 925 Jiwa</p>
-                    <p><strong>Kontak:</strong> 0822-xxxx-xxxx</p>
-                </div>
-            </div>
-            
-            <!-- Kadus III -->
-            <div class="bg-blue-50 dark:bg-blue-900/40 border border-blue-200 rounded-lg p-6">
-                <div class="flex items-center space-x-4 mb-4">
-                    <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center">
-                        <i class="fas fa-user text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-gray-900 dark:text-gray-100">HERI SETIAWAN</h3>
-                        <p class="text-blue-600 text-sm">Kepala Dusun III</p>
-                        <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">Masa Jabatan: 2022-2028</p>
-                    </div>
-                </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-3 mb-3">
-                    <h4 class="font-medium text-gray-900 dark:text-gray-100 mb-2">Wilayah Kerja:</h4>
-                    <div class="grid grid-cols-3 gap-2 text-xs">
-                        <div class="bg-blue-100 p-2 rounded text-center">
-                            <div class="font-bold">RT 07</div>
-                            <div class="text-gray-600 dark:text-gray-400 dark:text-gray-500">88 KK</div>
-                        </div>
-                        <div class="bg-blue-100 p-2 rounded text-center">
-                            <div class="font-bold">RT 08</div>
-                            <div class="text-gray-600 dark:text-gray-400 dark:text-gray-500">94 KK</div>
-                        </div>
-                        <div class="bg-blue-100 p-2 rounded text-center">
-                            <div class="font-bold">RT 09</div>
-                            <div class="text-gray-600 dark:text-gray-400 dark:text-gray-500">90 KK</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">
-                    <p><strong>Total:</strong> 272 KK • 845 Jiwa</p>
-                    <p><strong>Kontak:</strong> 0823-xxxx-xxxx</p>
-                </div>
-            </div>
-            
-            <!-- Kadus IV -->
-            <div class="bg-purple-50 dark:bg-purple-900/40 border border-purple-200 rounded-lg p-6">
-                <div class="flex items-center space-x-4 mb-4">
-                    <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center">
-                        <i class="fas fa-user text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-gray-900 dark:text-gray-100">JOKO PRIYANTO</h3>
-                        <p class="text-purple-600 text-sm">Kepala Dusun IV</p>
-                        <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">Masa Jabatan: 2022-2028</p>
-                    </div>
-                </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-3 mb-3">
-                    <h4 class="font-medium text-gray-900 dark:text-gray-100 mb-2">Wilayah Kerja:</h4>
-                    <div class="grid grid-cols-3 gap-2 text-xs">
-                        <div class="bg-purple-100 p-2 rounded text-center">
-                            <div class="font-bold">RT 10</div>
-                            <div class="text-gray-600 dark:text-gray-400 dark:text-gray-500">45 KK</div>
-                        </div>
-                        <div class="bg-purple-100 p-2 rounded text-center">
-                            <div class="font-bold">RT 11</div>
-                            <div class="text-gray-600 dark:text-gray-400 dark:text-gray-500">42 KK</div>
-                        </div>
-                        <div class="bg-purple-100 p-2 rounded text-center">
-                            <div class="font-bold">RT 12</div>
-                            <div class="text-gray-600 dark:text-gray-400 dark:text-gray-500">44 KK</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">
-                    <p><strong>Total:</strong> 131 KK • 370 Jiwa</p>
-                    <p><strong>Kontak:</strong> 0824-xxxx-xxxx</p>
-                </div>
-            </div>
+            @endforeach
         </div>
     </div>
+    @endif
 
     <!-- Staff Support -->
+    @if($groupedOfficials->has('staff'))
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
         <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
             <i class="fas fa-hands-helping text-teal-600 mr-2"></i>
@@ -334,38 +209,25 @@
         </h2>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-teal-50 border border-teal-200 rounded-lg p-4 text-center">
-                <div class="w-12 h-12 bg-teal-500 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fas fa-user text-white"></i>
+            @php
+                $staffColors = ['teal', 'cyan', 'lime', 'rose', 'indigo', 'orange'];
+            @endphp
+            @foreach($groupedOfficials->get('staff') as $index => $staff)
+                @php $color = $staffColors[$index % count($staffColors)]; @endphp
+                <div class="bg-{{ $color }}-50 border border-{{ $color }}-200 rounded-lg p-4 text-center">
+                    <div class="w-12 h-12 bg-{{ $color }}-500 rounded-full mx-auto mb-2 flex items-center justify-center overflow-hidden">
+                        @if($staff->photo_path)
+                            <img src="{{ asset('storage/' . $staff->photo_path) }}" alt="{{ $staff->name }}" class="w-full h-full object-cover">
+                        @else
+                            <i class="fas fa-user text-white"></i>
+                        @endif
+                    </div>
+                    <h4 class="font-medium text-gray-900 dark:text-gray-100 text-sm uppercase">{{ $staff->name }}</h4>
+                    <p class="text-xs text-{{ $color }}-600">{{ $staff->position_title }}</p>
                 </div>
-                <h4 class="font-medium text-gray-900 dark:text-gray-100 text-sm">DEWI KUSUMA</h4>
-                <p class="text-xs text-teal-600">Operator SISKEUDES</p>
-            </div>
-            
-            <div class="bg-cyan-50 border border-cyan-200 rounded-lg p-4 text-center">
-                <div class="w-12 h-12 bg-cyan-500 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fas fa-user text-white"></i>
-                </div>
-                <h4 class="font-medium text-gray-900 dark:text-gray-100 text-sm">ANDI PRAYOGA</h4>
-                <p class="text-xs text-cyan-600">Staf IT & Website</p>
-            </div>
-            
-            <div class="bg-lime-50 border border-lime-200 rounded-lg p-4 text-center">
-                <div class="w-12 h-12 bg-lime-500 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fas fa-user text-white"></i>
-                </div>
-                <h4 class="font-medium text-gray-900 dark:text-gray-100 text-sm">SARI WULANDARI</h4>
-                <p class="text-xs text-lime-600">Bidan Desa</p>
-            </div>
-            
-            <div class="bg-rose-50 border border-rose-200 rounded-lg p-4 text-center">
-                <div class="w-12 h-12 bg-rose-500 rounded-full mx-auto mb-2 flex items-center justify-center">
-                    <i class="fas fa-user text-white"></i>
-                </div>
-                <h4 class="font-medium text-gray-900 dark:text-gray-100 text-sm">RAHMAN HAKIM</h4>
-                <p class="text-xs text-rose-600">Keamanan Desa</p>
-            </div>
+            @endforeach
         </div>
     </div>
+    @endif
 </div>
 @endsection
