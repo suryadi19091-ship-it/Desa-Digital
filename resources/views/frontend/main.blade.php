@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'DESA CIWULAN')</title>
-    
+
     <!-- Vite Assets -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
+
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <script>
         // Check local storage for theme early to avoid FOUC
         if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -19,7 +20,9 @@
             document.documentElement.classList.remove('dark');
         }
     </script>
+    @yield('styles')
 </head>
+
 <body class="bg-gray-100 dark:bg-gray-900 min-h-screen text-gray-900 dark:text-gray-100 transition-colors duration-200">
     <!-- Top Header -->
     <header class="bg-gradient-to-r from-teal-500 to-cyan-500 text-white py-3 px-4">
@@ -58,26 +61,32 @@
                             <i class="fas fa-chevron-down text-xs"></i>
                         </button>
                         <!-- Dropdown Menu -->
-                        <div class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                        <div
+                            class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                             <div class="py-2">
                                 <div class="px-4 py-2 text-gray-800 dark:text-gray-200 border-b">
                                     <p class="font-medium text-sm">{{ $currentUser->name }}</p>
-                                    <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">{{ $currentUser->email }}</p>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">
+                                        {{ $currentUser->email }}</p>
                                 </div>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <a href="#"
+                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <i class="fas fa-user mr-2"></i>Profil
                                 </a>
                                 @if($currentUser && $currentUser->role === 'admin')
-                                    {{-- <a href="{{ route('system.dashboard') }}" class="block px-4 py-2 text-sm text-purple-700 hover:bg-purple-50 dark:bg-purple-900/40">
+                                    {{-- <a href="{{ route('system.dashboard') }}"
+                                        class="block px-4 py-2 text-sm text-purple-700 hover:bg-purple-50 dark:bg-purple-900/40">
                                         <i class="fas fa-shield-alt mr-2"></i>System Admin
                                     </a> --}}
                                 @endif
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <a href="#"
+                                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <i class="fas fa-cog mr-2"></i>Pengaturan
                                 </a>
                                 {{-- <form method="POST" action="{{ route('jwt.logout') }}">
                                     @csrf
-                                    <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-red-700 hover:bg-red-50 dark:bg-red-900/40">
+                                    <button type="submit"
+                                        class="w-full text-left block px-4 py-2 text-sm text-red-700 hover:bg-red-50 dark:bg-red-900/40">
                                         <i class="fas fa-sign-out-alt mr-2"></i>Keluar
                                     </button>
                                 </form> --}}
@@ -91,11 +100,12 @@
                         <span class="hidden sm:inline">Masuk</span>
                     </a> --}}
                 @endif
-                
+
                 <a href="#" class="hover:text-gray-200"><i class="fas fa-search"></i></a>
                 <a href="#" class="hover:text-gray-200 hidden sm:inline"><i class="fas fa-chart-bar"></i></a>
                 <a href="#" class="hover:text-gray-200"><i class="fas fa-cog"></i></a>
-                <button id="theme-toggle" type="button" class="text-white hover:text-gray-200 focus:outline-none rounded-lg text-sm p-1 ml-2 transition-colors">
+                <button id="theme-toggle" type="button"
+                    class="text-white hover:text-gray-200 focus:outline-none rounded-lg text-sm p-1 ml-2 transition-colors">
                     <i id="theme-toggle-dark-icon" class="hidden fas fa-moon"></i>
                     <i id="theme-toggle-light-icon" class="hidden fas fa-sun"></i>
                 </button>
@@ -121,30 +131,34 @@
             @if(session('success') || session('error') || session('info'))
                 <div class="p-3 sm:p-6 pb-0">
                     @if(session('success'))
-                        <div class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center mb-4 animate-pulse">
+                        <div
+                            class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center mb-4 animate-pulse">
                             <i class="fas fa-check-circle mr-3"></i>
                             <span>{{ session('success') }}</span>
-                            <button onclick="this.parentElement.style.display='none'" class="ml-auto text-white hover:text-gray-200">
+                            <button onclick="this.parentElement.style.display='none'"
+                                class="ml-auto text-white hover:text-gray-200">
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
                     @endif
-                    
+
                     @if(session('error'))
                         <div class="bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center mb-4">
                             <i class="fas fa-exclamation-circle mr-3"></i>
                             <span>{{ session('error') }}</span>
-                            <button onclick="this.parentElement.style.display='none'" class="ml-auto text-white hover:text-gray-200">
+                            <button onclick="this.parentElement.style.display='none'"
+                                class="ml-auto text-white hover:text-gray-200">
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
                     @endif
-                    
+
                     @if(session('info'))
                         <div class="bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center mb-4">
                             <i class="fas fa-info-circle mr-3"></i>
                             <span>{{ session('info') }}</span>
-                            <button onclick="this.parentElement.style.display='none'" class="ml-auto text-white hover:text-gray-200">
+                            <button onclick="this.parentElement.style.display='none'"
+                                class="ml-auto text-white hover:text-gray-200">
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
@@ -168,38 +182,38 @@
 
     <!-- Mobile Menu Script -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
             const sidebar = document.getElementById('sidebar');
             const mobileOverlay = document.getElementById('mobile-overlay');
-            
+
             // Toggle mobile menu
-            mobileMenuToggle.addEventListener('click', function() {
+            mobileMenuToggle.addEventListener('click', function () {
                 sidebar.classList.toggle('-translate-x-full');
                 mobileOverlay.classList.toggle('hidden');
             });
-            
+
             // Close menu when clicking overlay
-            mobileOverlay.addEventListener('click', function() {
+            mobileOverlay.addEventListener('click', function () {
                 sidebar.classList.add('-translate-x-full');
                 mobileOverlay.classList.add('hidden');
             });
-            
+
             // Close menu when clicking outside on larger screens
-            document.addEventListener('click', function(event) {
+            document.addEventListener('click', function (event) {
                 if (window.innerWidth < 1024) {
                     const isClickInsideSidebar = sidebar.contains(event.target);
                     const isClickOnToggle = mobileMenuToggle.contains(event.target);
-                    
+
                     if (!isClickInsideSidebar && !isClickOnToggle && !sidebar.classList.contains('-translate-x-full')) {
                         sidebar.classList.add('-translate-x-full');
                         mobileOverlay.classList.add('hidden');
                     }
                 }
             });
-            
+
             // Handle window resize
-            window.addEventListener('resize', function() {
+            window.addEventListener('resize', function () {
                 if (window.innerWidth >= 1024) {
                     sidebar.classList.remove('-translate-x-full');
                     mobileOverlay.classList.add('hidden');
@@ -208,11 +222,11 @@
 
             // Auto-hide success flash messages after 5 seconds
             const successMessages = document.querySelectorAll('.bg-green-500');
-            successMessages.forEach(function(message) {
-                setTimeout(function() {
+            successMessages.forEach(function (message) {
+                setTimeout(function () {
                     message.style.transition = 'opacity 0.5s ease-out';
                     message.style.opacity = '0';
-                    setTimeout(function() {
+                    setTimeout(function () {
                         if (message.parentElement) {
                             message.parentElement.removeChild(message);
                         }
@@ -233,7 +247,7 @@
                     themeToggleDarkIcon.classList.remove('hidden');
                 }
 
-                themeToggleBtn.addEventListener('click', function() {
+                themeToggleBtn.addEventListener('click', function () {
                     // toggle icons
                     themeToggleDarkIcon.classList.toggle('hidden');
                     themeToggleLightIcon.classList.toggle('hidden');
@@ -247,7 +261,7 @@
                             document.documentElement.classList.remove('dark');
                             localStorage.setItem('color-theme', 'light');
                         }
-                    // if NOT set via local storage previously
+                        // if NOT set via local storage previously
                     } else {
                         if (document.documentElement.classList.contains('dark')) {
                             document.documentElement.classList.remove('dark');
@@ -261,7 +275,8 @@
             }
         });
     </script>
-    
+
     @yield('scripts')
 </body>
+
 </html>

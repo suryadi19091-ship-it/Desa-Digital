@@ -50,7 +50,7 @@
                         <i class="fas fa-phone text-green-500 mr-3 w-4"></i>
                         <span>{{ $villageProfile->phone }}</span>
                     </div>
-                    <button class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200" onclick="window.open('tel:{{ $villageProfile->phone }}')">
+                    <button class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200" data-call="{{ $villageProfile->phone }}">
                         <i class="fas fa-phone mr-1"></i>Call
                     </button>
                 </div>
@@ -61,7 +61,7 @@
                         <i class="fab fa-whatsapp text-green-500 mr-3 w-4"></i>
                         <span>{{ $villageProfile->whatsapp }}</span>
                     </div>
-                    <button class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200" onclick="window.open('https://wa.me/{{ str_replace(['+', '-', ' '], '', $villageProfile->whatsapp) }}')">
+                    <button class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200" data-wa="{{ str_replace(['+', '-', ' '], '', $villageProfile->whatsapp) }}">
                         <i class="fab fa-whatsapp mr-1"></i>WA
                     </button>
                 </div>
@@ -96,7 +96,7 @@
                         <i class="fas fa-envelope text-purple-500 mr-3 w-4"></i>
                         <span>{{ $villageProfile->email }}</span>
                     </div>
-                    <button class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs hover:bg-purple-200" onclick="window.open('mailto:{{ $villageProfile->email }}')">
+                    <button class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs hover:bg-purple-200" data-email="{{ $villageProfile->email }}">
                         <i class="fas fa-envelope mr-1"></i>Email
                     </button>
                 </div>
@@ -159,7 +159,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('contact.submit') }}" method="POST" class="space-y-4">
+            <form id="contactForm" action="{{ route('contact.submit') }}" method="POST" class="space-y-4">
                 @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -419,11 +419,11 @@
                 Kami berkomitmen memberikan pelayanan terbaik untuk seluruh warga dan pengunjung {{ $villageProfile->village_name ?? 'Desa Krandegan' }}
             </p>
             <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                <button class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-200">
+                <button id="btn-wa" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-200">
                     <i class="fab fa-whatsapp mr-2"></i>
                     Chat WhatsApp
                 </button>
-                <button class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
+                <button id="btn-call" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200">
                     <i class="fas fa-phone mr-2"></i>
                     Call Center
                 </button>
@@ -437,259 +437,181 @@
 </div>
 @endsection
 
-<!-- Leaflet CSS and JS for OpenStreetMap -->
+@section('styles')
+<!-- Leaflet CSS for OpenStreetMap -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
       crossorigin="" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
-        crossorigin=""></script>
+@endsection
 
 @section('scripts')
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+
 <script>
-    // Contact form submission loading state
-    const contactForm = document.querySelector('form[action*="contact"]');
+document.addEventListener('DOMContentLoaded', function () {
+
+    // =========================
+    // 📌 CONTACT FORM LOADING
+    // =========================
+    const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', function() {
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            
-            // Show loading state
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Mengirim...';
-            submitBtn.disabled = true;
+            const btn = this.querySelector('button[type="submit"]');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Mengirim...';
+            btn.disabled = true;
         });
     }
 
-    // FAQ accordion functionality
-    document.querySelectorAll('.faq-question').forEach(button => {
-        button.addEventListener('click', function() {
-            const targetId = this.getAttribute('data-target');
-            const answer = document.getElementById(targetId);
+    // =========================
+    // 📌 FAQ ACCORDION
+    // =========================
+    document.querySelectorAll('.faq-question').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const target = document.getElementById(this.dataset.target);
             const icon = this.querySelector('i');
-            
-            // Toggle answer visibility
-            answer.classList.toggle('hidden');
-            
-            // Rotate icon
-            if (answer.classList.contains('hidden')) {
-                icon.classList.remove('rotate-180');
-            } else {
-                icon.classList.add('rotate-180');
-            }
+
+            target.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
         });
     });
 
-    // Contact buttons (phone, WhatsApp, email)
-    document.querySelectorAll('button[class*="bg-green-100"]').forEach(button => {
-        button.addEventListener('click', function() {
-            const type = this.textContent.trim();
-            const contactInfo = this.closest('.flex').querySelector('span').textContent;
-            
-            if (type === 'Call') {
-                window.open(`tel:${contactInfo}`, '_blank');
-            } else if (type === 'WA') {
-                const waNumber = contactInfo.replace(/\D/g, ''); // Remove non-digits
-                window.open(`https://wa.me/${waNumber}`, '_blank');
-            }
+    // =========================
+    // 📌 CONTACT BUTTONS
+    // =========================
+    document.querySelectorAll('[data-call]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            window.open(`tel:${btn.dataset.call}`);
         });
     });
 
-    // Email and social media buttons
-    document.querySelectorAll('button[class*="bg-purple-100"], button[class*="bg-blue-100"], button[class*="bg-pink-100"]').forEach(button => {
-        button.addEventListener('click', function() {
-            const type = this.textContent.trim();
-            
-            if (type === 'Email') {
-                window.open('mailto:desa.krandegan@gmail.com', '_blank');
-            } else if (type === 'FB') {
-                window.open('https://facebook.com/desakrandegan', '_blank');
-            } else if (type === 'IG') {
-                window.open('https://instagram.com/desakrandegan', '_blank');
-            }
+    document.querySelectorAll('[data-wa]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            window.open(`https://wa.me/${btn.dataset.wa}`);
         });
     });
 
-    // Emergency contact buttons
-    document.querySelectorAll('button[class*="bg-red-200"]').forEach(button => {
-        button.addEventListener('click', function() {
-            const number = this.textContent.trim();
-            window.open(`tel:${number}`, '_blank');
+    document.querySelectorAll('[data-email]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            window.open(`mailto:${btn.dataset.email}`);
         });
     });
 
-    // Contact Map Variables
-    let contactMap = null;
-    let isContactSatellite = false;
-    let contactMarker = null;
-    
-    // Village coordinates from database or default
-    const contactCoords = [
+    // =========================
+    // 📌 MAP CONFIG
+    // =========================
+    let map, marker, isSatellite = false;
+
+    const coords = [
         @if($villageProfile && $villageProfile->latitude && $villageProfile->longitude)
             {{ $villageProfile->latitude }}, {{ $villageProfile->longitude }}
         @else
-            -6.258346, 107.435520 // Default coordinates
+            -6.258346, 107.435520
         @endif
     ];
-    
-    function initContactMap() {
-        // Check if map container exists
-        if (!document.getElementById('contact-map')) return;
-        
+
+    function initMap() {
+        const mapEl = document.getElementById('contact-map');
+        if (!mapEl) return;
+
         try {
-            // Initialize map
-            contactMap = L.map('contact-map').setView(contactCoords, 16);
-            
-            // Add OpenStreetMap tile layer
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            map = L.map('contact-map').setView(coords, 16);
+
+            // Default layer
+            const streetLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
-                attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(contactMap);
-            
-            // Add village office marker
-            contactMarker = L.marker(contactCoords).addTo(contactMap)
-                .bindPopup('<b>Kantor {{ $villageProfile->village_name ?? "Desa Krandegan" }}</b><br>{{ $villageProfile->address ?? "Alamat kantor desa" }}<br><small>Kantor Pelayanan Desa</small>')
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            // Marker
+            marker = L.marker(coords).addTo(map)
+                .bindPopup(`
+                    <b>Kantor {{ $villageProfile->village_name ?? 'Desa' }}</b><br>
+                    {{ $villageProfile->address ?? 'Alamat belum tersedia' }}
+                `)
                 .openPopup();
-            
-            console.log('Contact map initialized successfully');
-            
-        } catch (error) {
-            console.error('Error initializing contact map:', error);
-            document.getElementById('contact-map').innerHTML = 
-                '<div class="flex items-center justify-center h-full"><div class="text-center"><i class="fas fa-exclamation-triangle text-2xl text-red-400 mb-2"></i><p class="text-red-500 text-sm">Gagal memuat peta</p></div></div>';
+
+            // 🔥 FIX: remove loading overlay
+            const overlay = mapEl.querySelector('.absolute');
+            if (overlay) overlay.remove();
+
+            // 🔥 FIX: refresh size
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 300);
+
+        } catch (err) {
+            console.error(err);
+            mapEl.innerHTML = '<p class="text-red-500 text-center mt-10">Gagal memuat peta</p>';
         }
     }
-    
-    function centerContactMap() {
-        if (contactMap) {
-            contactMap.setView(contactCoords, 16);
-            if (contactMarker) {
-                contactMarker.openPopup();
-            }
-        }
+
+    // =========================
+    // 📌 MAP CONTROLS
+    // =========================
+    window.centerContactMap = function () {
+        if (map) map.setView(coords, 16);
     }
-    
-    function toggleContactSatellite() {
-        if (!contactMap) return;
-        
-        // Remove all tile layers
-        contactMap.eachLayer(function(layer) {
-            if (layer instanceof L.TileLayer) {
-                contactMap.removeLayer(layer);
-            }
+
+    window.toggleContactSatellite = function () {
+        if (!map) return;
+
+        map.eachLayer(layer => {
+            if (layer instanceof L.TileLayer) map.removeLayer(layer);
         });
-        
-        if (!isContactSatellite) {
-            // Switch to satellite view
-            L.tileLayer('http://{s}.google.com/vt?lyrs=s,h&x={x}&y={y}&z={z}', {
-                maxZoom: 20,
+
+        if (!isSatellite) {
+            L.tileLayer('https://{s}.google.com/vt?lyrs=s,h&x={x}&y={y}&z={z}', {
                 subdomains:['mt0','mt1','mt2','mt3'],
-                attribution: '© Google Maps'
-            }).addTo(contactMap);
-            isContactSatellite = true;
+                maxZoom: 20
+            }).addTo(map);
         } else {
-            // Switch back to street view
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(contactMap);
-            isContactSatellite = false;
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
         }
+
+        isSatellite = !isSatellite;
     }
-    
-    function fullscreenContactMap() {
-        const mapContainer = document.getElementById('contact-map');
-        if (mapContainer) {
-            if (mapContainer.requestFullscreen) {
-                mapContainer.requestFullscreen();
-            } else if (mapContainer.webkitRequestFullscreen) {
-                mapContainer.webkitRequestFullscreen();
-            } else if (mapContainer.msRequestFullscreen) {
-                mapContainer.msRequestFullscreen();
-            }
-            
-            // Handle fullscreen change
-            document.addEventListener('fullscreenchange', function() {
-                if (contactMap) {
-                    setTimeout(() => {
-                        contactMap.invalidateSize();
-                    }, 100);
-                }
-            });
-        }
+
+    window.fullscreenContactMap = function () {
+        const el = document.getElementById('contact-map');
+        if (el.requestFullscreen) el.requestFullscreen();
     }
-    
-    // Function to open Google Maps
-    function openGoogleMaps() {
-        @if($villageProfile && ($villageProfile->latitude && $villageProfile->longitude))
-            window.open('https://maps.google.com/?q={{ $villageProfile->latitude }},{{ $villageProfile->longitude }}', '_blank');
-        @elseif($villageProfile && $villageProfile->address)
-            window.open('https://maps.google.com/?q={{ urlencode($villageProfile->address) }}', '_blank');
+
+    window.openGoogleMaps = function () {
+        @if($villageProfile && $villageProfile->latitude && $villageProfile->longitude)
+            window.open('https://maps.google.com/?q={{ $villageProfile->latitude }},{{ $villageProfile->longitude }}');
         @else
-            window.open('https://maps.google.com/?q={{ urlencode($villageProfile->village_name ?? 'Desa Krandegan') }}', '_blank');
+            window.open('https://maps.google.com/?q={{ urlencode($villageProfile->address ?? "kantor desa") }}');
         @endif
     }
 
-    // Map and directions
-    document.querySelector('button[class*="fas fa-directions"]').addEventListener('click', function() {
-        openGoogleMaps();
-    });
-
-    // Quick action buttons  
-    const whatsappBtn = document.querySelector('button[class*="bg-green-600"]');
-    if (whatsappBtn && whatsappBtn.textContent.includes('Chat WhatsApp')) {
-        whatsappBtn.addEventListener('click', function() {
+    // =========================
+    // 📌 QUICK BUTTONS
+    // =========================
+    const waBtn = document.getElementById('btn-wa');
+    if (waBtn) {
+        waBtn.addEventListener('click', function () {
             @if($villageProfile && $villageProfile->whatsapp)
-                const waNumber = '{{ str_replace(["+", "-", " "], "", $villageProfile->whatsapp) }}';
-                window.open(`https://wa.me/${waNumber}`, '_blank');
-            @else
-                alert('Nomor WhatsApp belum tersedia');
+                window.open('https://wa.me/{{ str_replace(["+", "-", " "], "", $villageProfile->whatsapp) }}');
             @endif
         });
     }
 
-    const callBtn = document.querySelector('button[class*="bg-blue-600"]');
-    if (callBtn && callBtn.textContent.includes('Call Center')) {
-        callBtn.addEventListener('click', function() {
+    const callBtn = document.getElementById('btn-call');
+    if (callBtn) {
+        callBtn.addEventListener('click', function () {
             @if($villageProfile && $villageProfile->phone)
-                window.open('tel:{{ $villageProfile->phone }}', '_blank');
-            @else
-                alert('Nomor telepon belum tersedia');
+                window.open('tel:{{ $villageProfile->phone }}');
             @endif
         });
     }
 
-    document.querySelector('button[class*="bg-gray-600"]:contains("Beri Rating")').addEventListener('click', function() {
-        // In a real application, this would open a rating form
-        alert('Membuka formulir rating pelayanan...');
-    });
-
-    // Initialize contact map when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize map after a short delay to ensure DOM is ready
-        setTimeout(initContactMap, 500);
-    });
-    
-    // Initialize map on window load as fallback
-    window.addEventListener('load', function() {
-        if (!contactMap) {
-            initContactMap();
-        }
-    });
-
-    // Form validation enhancements
-    const form = document.getElementById('contactForm');
-    const inputs = form.querySelectorAll('input, select, textarea');
-    
-    inputs.forEach(input => {
-        input.addEventListener('blur', function() {
-            if (this.hasAttribute('required') && !this.value.trim()) {
-                this.classList.add('border-red-300', 'focus:border-red-500', 'focus:ring-red-500');
-                this.classList.remove('border-gray-300 dark:border-gray-700', 'focus:border-gray-500', 'focus:ring-gray-500');
-            } else {
-                this.classList.remove('border-red-300', 'focus:border-red-500', 'focus:ring-red-500');
-                this.classList.add('border-gray-300 dark:border-gray-700', 'focus:border-gray-500', 'focus:ring-gray-500');
-            }
-        });
-    });
+    // =========================
+    // 📌 INIT MAP
+    // =========================
+    setTimeout(initMap, 500);
+});
 </script>
 @endsection

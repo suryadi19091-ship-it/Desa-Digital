@@ -53,9 +53,9 @@ class SettingsController extends Controller
             'settings.theme' => 'required|string|in:default,blue,green',
             'settings.maintenance_mode' => 'nullable|boolean',
             'settings.mail_driver' => 'required|string|in:smtp,sendmail,mailgun,log',
-            'settings.mail_host' => 'required_if:settings.mail_driver,smtp|string|max:255',
-            'settings.mail_port' => 'required_if:settings.mail_driver,smtp|integer|min:1|max:65535',
-            'settings.mail_username' => 'required_if:settings.mail_driver,smtp|email|max:255',
+            'settings.mail_host' => 'required_if:settings.mail_driver,smtp|nullable|string|max:255',
+            'settings.mail_port' => 'required_if:settings.mail_driver,smtp|nullable|integer|min:1|max:65535',
+            'settings.mail_username' => 'required_if:settings.mail_driver,smtp|nullable|string|max:255',
             'settings.mail_password' => 'nullable|string|max:255',
             'settings.mail_from_address' => 'required|email|max:255',
             'settings.mail_from_name' => 'required|string|max:255',
@@ -295,13 +295,13 @@ class SettingsController extends Controller
      */
     private function getCurrentSettings()
     {
-        // This is a simplified version - in production you'd store these in a settings table
-        return [
-            'site_name' => config('app.name', 'Website Desa Ciuwlan'),
-            'site_description' => 'Website resmi Desa Ciuwlan, Kecamatan Telagsari',
-            'contact_email' => 'info@desaciuwlan.com',
+        // Get defaults
+        $defaults = [
+            'site_name' => config('app.name', 'Website Desa Ciwulan'),
+            'site_description' => 'Website resmi Desa Ciwulan, Kecamatan Telagasari',
+            'contact_email' => 'info@desaciwulan.com',
             'contact_phone' => '+62 xxx xxxx xxxx',
-            'contact_address' => 'Desa Ciuwlan, Kecamatan Telagsari, Kabupaten Cirebon, Jawa Barat',
+            'contact_address' => 'Desa Ciwulan, Kecamatan Telagasari, Kabupaten Karawang, Jawa Barat',
             'social_facebook' => '',
             'social_instagram' => '',
             'theme' => 'default',
@@ -311,8 +311,8 @@ class SettingsController extends Controller
             'mail_port' => config('mail.mailers.smtp.port', '587'),
             'mail_username' => config('mail.mailers.smtp.username', ''),
             'mail_password' => '', // Never show actual password
-            'mail_from_address' => config('mail.from.address', 'noreply@desaciuwlan.com'),
-            'mail_from_name' => config('mail.from.name', 'Website Desa Ciuwlan'),
+            'mail_from_address' => config('mail.from.address', 'noreply@desaciwulan.com'),
+            'mail_from_name' => config('mail.from.name', 'Website Desa Ciwulan'),
             'session_lifetime' => config('session.lifetime', 120),
             'max_login_attempts' => 5,
             'password_require_uppercase' => false,
@@ -323,6 +323,11 @@ class SettingsController extends Controller
             'backup_frequency' => 'daily',
             'backup_retention' => 30,
         ];
+
+        // Merge with cached settings if any
+        $cached = cache()->get('app_settings', []);
+        
+        return array_merge($defaults, $cached);
     }
 
     /**
@@ -357,10 +362,20 @@ class SettingsController extends Controller
         if (isset($settings['mail_password'])) {
             $envUpdates['MAIL_PASSWORD'] = $settings['mail_password'];
         }
+        if (isset($settings['site_name'])) {
+            $envUpdates['APP_NAME'] = '"' . $settings['site_name'] . '"';
+        }
 
-        // Update .env file (simplified - in production use a proper env manager)
+        // Update .env file
         foreach ($envUpdates as $key => $value) {
             $this->updateEnvFile($key, $value);
+        }
+
+        // Clear config cache to apply changes immediately
+        try {
+            Artisan::call('config:clear');
+        } catch (\Exception $e) {
+            \Log::warning('Could not clear config cache: ' . $e->getMessage());
         }
     }
 
@@ -374,7 +389,12 @@ class SettingsController extends Controller
         if (file_exists($path)) {
             $content = file_get_contents($path);
             
-            if (str_contains($content, $key . '=')) {
+            // Handle values with spaces by wrapping in quotes
+            if (str_contains($value, ' ') && !str_starts_with($value, '"')) {
+                $value = '"' . $value . '"';
+            }
+
+            if (preg_match('/^' . $key . '=/m', $content)) {
                 $content = preg_replace('/^' . $key . '=.*$/m', $key . '=' . $value, $content);
             } else {
                 $content .= "\n" . $key . '=' . $value;

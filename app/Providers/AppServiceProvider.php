@@ -8,6 +8,8 @@ use App\Http\View\Composers\SidebarComposer;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Login;
 use App\Listeners\LogSuccessfulLogin;
+use App\Listeners\LogFailedLogin;
+use Illuminate\Auth\Events\Failed;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -33,6 +35,11 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(
             Login::class,
             LogSuccessfulLogin::class,
+        );
+
+        Event::listen(
+            Failed::class,
+            LogFailedLogin::class,
         );
 
         // Configure Rate Limiters

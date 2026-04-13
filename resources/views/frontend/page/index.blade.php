@@ -5,6 +5,12 @@
 @section('header_icon', 'fas fa-tachometer-alt')
 @section('header_bg_color', 'bg-teal-600 dark:bg-gray-800')
 
+@section('styles')
+    <!-- Leaflet CSS for OpenStreetMap -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+@endsection
+
 @section('content')
     <div class="xl:col-span-3">
         <!-- Banner Section -->
@@ -628,9 +634,7 @@
         });
     </script>
 
-    <!-- Leaflet CSS and JS for OpenStreetMap -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <!-- Leaflet JS for OpenStreetMap -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
@@ -756,7 +760,13 @@
                     });
 
                     // Count locations with area coordinates
-                    const locationsWithAreas = locations.filter(loc => loc.area_coordinates && loc.area_coordinates !== 'null' && loc.area_coordinates.trim() !== '').length;
+                    const locationsWithAreas = locations.filter(loc => {
+                        if (!loc.area_coordinates) return false;
+                        if (typeof loc.area_coordinates === 'string') {
+                            return loc.area_coordinates !== 'null' && loc.area_coordinates.trim() !== '';
+                        }
+                        return Array.isArray(loc.area_coordinates) && loc.area_coordinates.length >= 3;
+                    }).length;
 
                     // Add sample polygon if no areas exist (for testing)
                     if (locationsWithAreas === 0) {
@@ -853,88 +863,64 @@
 
         function addAreaPolygon(location) {
             try {
+                if (!location.area_coordinates) return;
+
                 let coordinates;
 
-                console.log('Processing area coordinates for location:', location.name, location.area_coordinates);
-
-                // Parse area_coordinates if it's a string
+                // 🔥 HANDLE STRING / ARRAY
                 if (typeof location.area_coordinates === 'string') {
-                    if (location.area_coordinates.trim() === '' || location.area_coordinates === 'null') {
-                        console.log('Empty area coordinates for location:', location.name);
-                        return;
-                    }
-                    try {
-                        coordinates = JSON.parse(location.area_coordinates);
-                    } catch (e) {
-                        console.error('Error parsing area coordinates for location:', location.name, e);
-                        return;
-                    }
-                } else if (location.area_coordinates) {
-                    coordinates = location.area_coordinates;
+                    if (
+                        location.area_coordinates.trim() === '' ||
+                        location.area_coordinates === 'null'
+                    ) return;
+
+                    coordinates = JSON.parse(location.area_coordinates);
                 } else {
-                    console.log('No area coordinates for location:', location.name);
-                    return;
+                    coordinates = location.area_coordinates;
                 }
 
-                // Check if coordinates exist and have minimum points for polygon
-                if (!coordinates || !Array.isArray(coordinates) || coordinates.length < 3) {
-                    console.log('Invalid coordinates for location:', location.name, 'coordinates:', coordinates);
-                    return;
-                }
+                if (!Array.isArray(coordinates) || coordinates.length < 3) return;
 
-                // Convert coordinates to proper format for Leaflet
+                // 🔥 FIX FORMAT KOORDINAT
                 let latlngs = coordinates.map(coord => {
-                    if (coord && typeof coord === 'object') {
-                        if (coord.lat !== undefined && coord.lng !== undefined) {
-                            return [parseFloat(coord.lat), parseFloat(coord.lng)];
-                        } else if (coord.latitude !== undefined && coord.longitude !== undefined) {
-                            return [parseFloat(coord.latitude), parseFloat(coord.longitude)];
-                        }
-                    } else if (Array.isArray(coord) && coord.length >= 2) {
+
+                    // format object {lat, lng}
+                    if (coord.lat !== undefined && coord.lng !== undefined) {
+                        return [parseFloat(coord.lat), parseFloat(coord.lng)];
+                    }
+
+                    // format array [lat, lng]
+                    if (Array.isArray(coord)) {
                         return [parseFloat(coord[0]), parseFloat(coord[1])];
                     }
+
                     return null;
-                }).filter(coord => coord !== null && !isNaN(coord[0]) && !isNaN(coord[1]));
 
-                if (latlngs.length < 3) {
-                    console.log('Not enough valid coordinates for polygon:', location.name, 'processed:', latlngs);
-                    return;
-                }
+                }).filter(c => c && !isNaN(c[0]) && !isNaN(c[1]));
 
-                console.log('Creating polygon for:', location.name, 'with coordinates:', latlngs);
+                if (latlngs.length < 3) return;
 
-                const color = location.color || '#3B82F6';
+                console.log("POLYGON:", latlngs); // DEBUG
 
                 const polygon = L.polygon(latlngs, {
-                    color: color,
-                    fillColor: color,
-                    fillOpacity: 0.3,
-                    weight: 3,
-                    opacity: 0.8,
-                    className: `area-polygon type-${location.type}`
+                    color: location.color || '#3B82F6',
+                    fillColor: location.color || '#3B82F6',
+                    fillOpacity: 0.4,
+                    weight: 2
                 }).addTo(villageMap);
-
-                polygon.bindPopup(`
-                    <div style="min-width: 200px;">
-                        <h4 style="margin: 0 0 8px 0; font-weight: bold; color: ${color};">Area: ${location.name}</h4>
-                        <p style="margin: 0 0 4px 0; font-size: 12px; color: #666;">${location.description || 'Area wilayah'}</p>
-                        ${location.area_size ? `<p style="margin: 0; font-size: 11px; color: #888;"><strong>Luas Area:</strong> ${location.formatted_area || location.area_size + ' m²'}</p>` : ''}
-                    </div>
-                `);
 
                 areaPolygons.push({
                     polygon: polygon,
                     location: location
                 });
 
-                // Control visibility based on showAreas state
+                // 🔥 pastikan tampil
                 if (!showAreas) {
                     villageMap.removeLayer(polygon);
                 }
 
-                console.log('Polygon added for location:', location.name, 'showAreas:', showAreas);
-            } catch (error) {
-                console.error('Error adding area polygon for location:', location.name, error);
+            } catch (e) {
+                console.error("Polygon error:", e);
             }
         }
 
