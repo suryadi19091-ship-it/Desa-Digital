@@ -96,6 +96,12 @@ class BackupController extends Controller
     public function downloadBackup($filename)
     {
         try {
+            // Prevent path traversal: only allow safe filenames (no slashes, dots at start, etc.)
+            $filename = basename($filename);
+            if (!preg_match('/^backup_[\d_\-]+\.(sql|zip|gz)$/', $filename)) {
+                abort(400, 'Nama file backup tidak valid');
+            }
+
             $filePath = storage_path('app/backups/' . $filename);
             
             if (!file_exists($filePath)) {
@@ -116,6 +122,15 @@ class BackupController extends Controller
     public function deleteBackup($filename)
     {
         try {
+            // Prevent path traversal
+            $filename = basename($filename);
+            if (!preg_match('/^backup_[\d_\-]+\.(sql|zip|gz)$/', $filename)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nama file backup tidak valid'
+                ], 400);
+            }
+
             $filePath = storage_path('app/backups/' . $filename);
             
             if (file_exists($filePath)) {

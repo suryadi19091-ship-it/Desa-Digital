@@ -96,7 +96,6 @@ Route::get('/galeri', [GalleryController::class, 'index'])->name('gallery.index'
 Route::get('/galeri/unggulan', [GalleryController::class, 'featured'])->name('gallery.featured');
 Route::get('/galeri/{id}', [GalleryController::class, 'show'])->name('gallery.show');
 Route::post('/galeri/{id}/like', [GalleryController::class, 'like'])->name('gallery.like');
-Route::post('/galeri/upload', [GalleryController::class, 'upload'])->name('gallery.upload');
 
 // Agenda & Events
 Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda.index');
