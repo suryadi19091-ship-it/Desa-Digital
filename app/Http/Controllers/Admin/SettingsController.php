@@ -52,7 +52,7 @@ class SettingsController extends Controller
             'settings.social_instagram' => 'nullable|url|max:255',
             'settings.theme' => 'required|string|in:default,blue,green',
             'settings.maintenance_mode' => 'nullable|boolean',
-            'settings.mail_driver' => 'required|string|in:smtp,sendmail,mailgun',
+            'settings.mail_driver' => 'required|string|in:smtp,sendmail,mailgun,log',
             'settings.mail_host' => 'required_if:settings.mail_driver,smtp|string|max:255',
             'settings.mail_port' => 'required_if:settings.mail_driver,smtp|integer|min:1|max:65535',
             'settings.mail_username' => 'required_if:settings.mail_driver,smtp|email|max:255',

@@ -194,7 +194,7 @@
                     @endforeach
                     
                     @if(count($data['items']) > 3)
-                    <div class="text-center p-3 bg-gray-100 rounded border-2 border-dashed border-gray-300 dark:border-gray-700">
+                    <div class="text-center p-3 bg-gray-100 dark:bg-gray-900 rounded border-2 border-dashed border-gray-300 dark:border-gray-700">
                         <div class="font-bold text-gray-600 dark:text-gray-400 dark:text-gray-500">+{{ count($data['items']) - 3 }}</div>
                         <div class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Program Lainnya</div>
                     </div>

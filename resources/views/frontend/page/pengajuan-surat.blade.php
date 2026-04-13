@@ -109,28 +109,28 @@
                     <!-- Data diambil dari $populationData, field identitas tidak bisa diubah -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nama Lengkap *</label>
-                        <input type="text" name="full_name" value="{{ old('full_name', $populationData->name ?? '') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('full_name') border-red-500 @enderror" placeholder="Masukkan nama lengkap" required readonly>
+                        <input type="text" name="full_name" value="{{ old('full_name', $populationData->name ?? '') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-900 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('full_name') border-red-500 @enderror" placeholder="Masukkan nama lengkap" required readonly>
                         @error('full_name')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">NIK *</label>
-                        <input type="text" name="nik" value="{{ old('nik', $populationData->identity_card_number ?? '') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('nik') border-red-500 @enderror" placeholder="16 digit NIK" maxlength="16" required readonly>
+                        <input type="text" name="nik" value="{{ old('nik', $populationData->identity_card_number ?? '') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-900 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('nik') border-red-500 @enderror" placeholder="16 digit NIK" maxlength="16" required readonly>
                         @error('nik')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tempat Lahir *</label>
-                        <input type="text" name="birth_place" value="{{ old('birth_place', $populationData->birth_place ?? '') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('birth_place') border-red-500 @enderror" placeholder="Kota/Kabupaten" required readonly>
+                        <input type="text" name="birth_place" value="{{ old('birth_place', $populationData->birth_place ?? '') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-900 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('birth_place') border-red-500 @enderror" placeholder="Kota/Kabupaten" required readonly>
                         @error('birth_place')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tanggal Lahir *</label>
-                        <input type="date" name="birth_date" value="{{ old('birth_date', $populationData->birth_date ?? '') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('birth_date') border-red-500 @enderror" required readonly>
+                        <input type="date" name="birth_date" value="{{ old('birth_date', $populationData->birth_date ?? '') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-900 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('birth_date') border-red-500 @enderror" required readonly>
                         @error('birth_date')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
@@ -138,28 +138,28 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Jenis Kelamin *</label>
                         <input type="hidden" name="gender" value="{{ old('gender', ($populationData->gender ?? '') == 'M' ? 'L' : 'P') }}">
-                        <input type="text" value="{{ old('gender', ($populationData->gender ?? '') == 'M' ? 'Laki-laki' : 'Perempuan') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('gender') border-red-500 @enderror" required readonly>
+                        <input type="text" value="{{ old('gender', ($populationData->gender ?? '') == 'M' ? 'Laki-laki' : 'Perempuan') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-900 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('gender') border-red-500 @enderror" required readonly>
                         @error('gender')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Agama *</label>
-                        <input type="text" name="religion" value="{{ old('religion', $populationData->religion ?? '') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('religion') border-red-500 @enderror" required readonly>
+                        <input type="text" name="religion" value="{{ old('religion', $populationData->religion ?? '') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-900 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('religion') border-red-500 @enderror" required readonly>
                         @error('religion')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status Perkawinan *</label>
-                        <input type="text" name="marital_status" value="{{ old('marital_status', $populationData->marital_status ?? '') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('marital_status') border-red-500 @enderror" required readonly>
+                        <input type="text" name="marital_status" value="{{ old('marital_status', $populationData->marital_status ?? '') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-900 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('marital_status') border-red-500 @enderror" required readonly>
                         @error('marital_status')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pekerjaan *</label>
-                        <input type="text" name="occupation" value="{{ old('occupation', $populationData->occupation ?? '') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('occupation') border-red-500 @enderror" placeholder="Contoh: Petani, Wiraswasta" required readonly>
+                        <input type="text" name="occupation" value="{{ old('occupation', $populationData->occupation ?? '') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-900 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('occupation') border-red-500 @enderror" placeholder="Contoh: Petani, Wiraswasta" required readonly>
                         @error('occupation')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
@@ -177,7 +177,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Alamat *</label>
-                        <textarea name="address" rows="3" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('address') border-red-500 @enderror" placeholder="Jalan, Gang, Nomor Rumah" required readonly>{{ old('address', $populationData->address ?? '') }}</textarea>
+                        <textarea name="address" rows="3" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-900 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('address') border-red-500 @enderror" placeholder="Jalan, Gang, Nomor Rumah" required readonly>{{ old('address', $populationData->address ?? '') }}</textarea>
                         @error('address')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
@@ -185,7 +185,7 @@
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">RT *</label>
-                        <input type="text" name="rt" value="{{ old('rt', $settlementData->neighborhood_number ?? '') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('rt') border-red-500 @enderror" required readonly>
+                        <input type="text" name="rt" value="{{ old('rt', $settlementData->neighborhood_number ?? '') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-900 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('rt') border-red-500 @enderror" required readonly>
                         @error('rt')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
@@ -193,7 +193,7 @@
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">RW *</label>
-                        <input type="text" name="rw" value="{{ old('rw', $settlementData->community_number ?? '') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('rw') border-red-500 @enderror" required readonly>
+                        <input type="text" name="rw" value="{{ old('rw', $settlementData->community_number ?? '') }}" class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-900 cursor-not-allowed focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 @error('rw') border-red-500 @enderror" required readonly>
                         @error('rw')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror

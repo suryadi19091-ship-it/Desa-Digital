@@ -52,7 +52,7 @@
                 <div class="flex flex-wrap gap-2 mb-6">
                     <span class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mr-2">Tags:</span>
                     @foreach($news->tags as $tag)
-                        <span class="bg-gray-100 text-gray-700 dark:text-gray-300 px-2 py-1 rounded text-xs">
+                        <span class="bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300 px-2 py-1 rounded text-xs">
                             {{ $tag }}
                         </span>
                     @endforeach

@@ -56,6 +56,47 @@
         top: 20px;
         z-index: 1020;
     }
+    
+    /* Mobile Responsiveness */
+    @media (max-width: 767.98px) {
+        #settings-tab {
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding-bottom: 10px;
+        }
+        .settings-nav-item {
+            width: auto !important;
+            min-width: max-content;
+            margin-bottom: 0 !important;
+            margin-right: 10px;
+            padding: 10px 15px !important;
+        }
+        .settings-nav-item i {
+            margin-right: 10px !important;
+        }
+        .settings-nav-item small {
+            display: none !important; /* Hide description on mobile to save space */
+        }
+        .sticky-save-bar {
+            top: auto;
+            bottom: 20px;
+        }
+        .sticky-save-bar .card-body {
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+        }
+        .sticky-save-bar .btn-link {
+            padding-left: 5px;
+            padding-right: 5px;
+            margin-right: 5px !important;
+        }
+        .sticky-save-bar .btn-primary {
+            padding-left: 20px !important;
+            padding-right: 20px !important;
+        }
+    }
 </style>
 @endpush
 
@@ -63,7 +104,7 @@
 <div class="container-fluid pb-5">
     <div class="row">
         <!-- Left Sidebar Navigation -->
-        <div class="col-md-3">
+        <div class="col-md-3 mb-4 mb-md-0">
             <div class="card shadow-sm border-0 rounded-lg overflow-hidden">
                 <div class="card-header bg-white border-bottom py-3">
                     <h5 class="mb-0 font-weight-bold"><i class="fas fa-sliders-h mr-2 text-primary"></i> Menu Pengaturan</h5>
@@ -445,14 +486,14 @@
                 <!-- Sticky Save Action Bar -->
                 <div class="sticky-save-bar mt-4">
                     <div class="card shadow rounded-pill border-0">
-                        <div class="card-body py-2 px-4 d-flex justify-content-between align-items-center bg-white rounded-pill">
+                        <div class="card-body py-2 px-3 px-md-4 d-flex justify-content-between align-items-center bg-white rounded-pill">
                             <div class="d-flex align-items-center">
                                 <div id="tab-label" class="badge badge-pill badge-primary px-3 py-2 text-uppercase font-weight-bold">Umum</div>
                                 <span class="text-muted d-none d-lg-inline ml-3 text-sm">Pastikan semua data sudah benar sebelum menyimpan.</span>
                             </div>
                             <div class="d-flex align-items-center">
-                                <button type="button" onclick="resetSettings()" class="btn btn-link text-danger font-weight-bold mr-3">Reset</button>
-                                <button type="submit" id="save-settings" class="btn btn-primary rounded-pill px-5 shadow font-weight-bold d-flex align-items-center">
+                                <button type="button" onclick="resetSettings()" class="btn btn-link text-danger font-weight-bold mr-2 mr-md-3 text-sm text-md-base">Reset</button>
+                                <button type="submit" id="save-settings" class="btn btn-primary rounded-pill px-4 px-md-5 shadow font-weight-bold d-flex align-items-center">
                                     <i class="fas fa-save mr-2"></i> 
                                     <span id="save-text">Simpan</span>
                                     <div id="save-loading" class="hidden ml-2">
@@ -605,9 +646,15 @@
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             }
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
+        .then(response => response.json().then(data => ({ status: response.status, data: data })))
+        .then(({status, data}) => {
+            if (status === 422 && data.errors) {
+                let errorMessages = [];
+                for (let field in data.errors) {
+                    errorMessages.push(data.errors[field][0]);
+                }
+                Swal.fire({ icon: 'error', title: 'Validasi Gagal', html: errorMessages.join('<br>') });
+            } else if (data.success) {
                 Swal.fire({ icon: 'success', title: 'Berhasil!', text: data.message || 'Pengaturan diperbarui', timer: 1500, showConfirmButton: false });
             } else {
                 Swal.fire({ icon: 'error', title: 'Gagal', text: data.message || 'Terjadi kesalahan' });

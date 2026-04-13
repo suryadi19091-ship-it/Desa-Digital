@@ -46,7 +46,7 @@
         
         <div class="space-y-6">
             <!-- Total Progress Bar -->
-            <div class="bg-gray-100 rounded-lg p-6">
+            <div class="bg-gray-100 dark:bg-gray-900 rounded-lg p-6">
                 <div class="flex justify-between items-center mb-3">
                     <span class="font-semibold text-gray-900 dark:text-gray-100">Total Realisasi Anggaran</span>
                     <span class="font-bold text-green-600">72.3%</span>

@@ -33,7 +33,7 @@
                     <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{{ $gallery->title }}</h1>
                     <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500">{{ $gallery->description }}</p>
                 </div>
-                <button id="likeBtn" class="flex items-center px-4 py-2 {{ $hasLiked ?? false ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600 dark:text-gray-400 dark:text-gray-500' }} rounded-lg hover:bg-red-100 hover:text-red-600 transition duration-200">
+                <button id="likeBtn" class="flex items-center px-4 py-2 {{ $hasLiked ?? false ? 'bg-red-100 text-red-600' : 'bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 dark:text-gray-500' }} rounded-lg hover:bg-red-100 hover:text-red-600 transition duration-200">
                     <i class="fas fa-heart mr-2"></i>
                     <span id="likeCount">{{ $gallery->likes_count ?? 0 }}</span>
                 </button>
@@ -135,9 +135,9 @@
             
             if (data.liked) {
                 likeBtn.classList.add('bg-red-100', 'text-red-600');
-                likeBtn.classList.remove('bg-gray-100', 'text-gray-600 dark:text-gray-400 dark:text-gray-500');
+                likeBtn.classList.remove('bg-gray-100 dark:bg-gray-900', 'text-gray-600 dark:text-gray-400 dark:text-gray-500');
             } else {
-                likeBtn.classList.add('bg-gray-100', 'text-gray-600 dark:text-gray-400 dark:text-gray-500');
+                likeBtn.classList.add('bg-gray-100 dark:bg-gray-900', 'text-gray-600 dark:text-gray-400 dark:text-gray-500');
                 likeBtn.classList.remove('bg-red-100', 'text-red-600');
             }
             

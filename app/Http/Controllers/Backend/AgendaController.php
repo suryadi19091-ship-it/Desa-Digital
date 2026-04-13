@@ -62,6 +62,14 @@ class AgendaController extends Controller
     
     public function store(Request $request)
     {
+        if ($request->has('start_time')) {
+            $request->merge(['start_time' => substr($request->start_time, 0, 5)]);
+        }
+        if ($request->has('end_time')) {
+            $request->merge(['end_time' => substr($request->end_time, 0, 5)]);
+        }
+
+
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -111,6 +119,14 @@ class AgendaController extends Controller
     
     public function update(Request $request, Agenda $agenda)
     {
+        if ($request->has('start_time')) {
+            $request->merge(['start_time' => substr($request->start_time, 0, 5)]);
+        }
+        if ($request->has('end_time')) {
+            $request->merge(['end_time' => substr($request->end_time, 0, 5)]);
+        }
+
+
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',

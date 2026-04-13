@@ -149,7 +149,7 @@
                             data-month="{{ $report['month'] }}" data-year="{{ $report['year'] }}">
                         <i class="fas fa-download mr-1"></i>Download
                     </button>
-                    <button class="flex-1 bg-gray-100 text-gray-700 dark:text-gray-300 py-2 px-3 rounded text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors preview-btn" 
+                    <button class="flex-1 bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300 py-2 px-3 rounded text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors preview-btn" 
                             data-month="{{ $report['month'] }}" data-year="{{ $report['year'] }}">
                         <i class="fas fa-eye mr-1"></i>Preview
                     </button>
@@ -166,7 +166,7 @@
         </div>
 
         <div class="mt-6 text-center">
-            <button class="bg-gray-100 text-gray-700 dark:text-gray-300 px-6 py-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+            <button class="bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300 px-6 py-3 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
                 <i class="fas fa-history mr-2"></i>Lihat Arsip Laporan
             </button>
         </div>
