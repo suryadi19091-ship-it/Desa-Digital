@@ -29,6 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\MaintenanceModeMiddleware::class,
             \App\Http\Middleware\LogUserActivityMiddleware::class,
             \App\Http\Middleware\SecurityHeadersMiddleware::class,
+            'throttle:global',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -24,7 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // Public API Routes
-Route::prefix('v1')->group(function () {
+Route::middleware(['throttle:api'])->prefix('v1')->group(function () {
     
     // Statistics & Data
     Route::get('/statistics', [HomeController::class, 'getStatistics']);
@@ -60,19 +60,22 @@ Route::prefix('v1')->group(function () {
 });
 
 // Protected API Routes (require authentication)
-Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:api'])->prefix('v1')->group(function () {
     
     // User specific data
     Route::get('/user/profile', function (Request $request) {
         return $request->user();
     });
     
-    // File uploads
-    Route::post('/upload/image', [\App\Http\Controllers\Backend\FileController::class, 'uploadImage']);
-    Route::post('/upload/document', [\App\Http\Controllers\Backend\FileController::class, 'uploadDocument']);
+    // File uploads - stricter limit for uploads
+    Route::middleware(['throttle:uploads'])->group(function () {
+        Route::post('/upload/image', [\App\Http\Controllers\Backend\FileController::class, 'uploadImage']);
+        Route::post('/upload/document', [\App\Http\Controllers\Backend\FileController::class, 'uploadDocument']);
+        
+        // Letter requests (often involve uploads or are sensitive)
+        Route::post('/letter-requests', [\App\Http\Controllers\Frontend\ServiceController::class, 'submitLetterRequest']);
+    });
     
-    // Letter requests
-    Route::post('/letter-requests', [\App\Http\Controllers\Frontend\ServiceController::class, 'submitLetterRequest']);
     Route::get('/my-letter-requests', function (Request $request) {
         return $request->user()->letterRequests()->latest()->paginate(10);
     });

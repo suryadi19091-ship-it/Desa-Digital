@@ -30,18 +30,19 @@ use App\Http\Controllers\Admin\SettingsController;
 */
 
 // Login Routes
+// Auth Routes with rate limiting
 Route::get('/aparat/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/aparat/login', [AuthController::class, 'authenticate'])->name('login.authenticate');
+Route::post('/aparat/login', [AuthController::class, 'authenticate'])->name('login.authenticate')->middleware('throttle:6,1');
 
 // Registration Routes
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-Route::post('/register', [AuthController::class, 'store'])->name('register.store');
+Route::post('/register', [AuthController::class, 'store'])->name('register.store')->middleware('throttle:3,1');
 
 // Password Reset Routes
 Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
-Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
+Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email')->middleware('throttle:3,1');
 Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
-Route::post('/reset-password', [AuthController::class, 'updatePassword'])->name('password.store');
+Route::post('/reset-password', [AuthController::class, 'updatePassword'])->name('password.store')->middleware('throttle:3,1');
 
 // Logout Route
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
@@ -89,13 +90,13 @@ Route::get('/umkm/kategori/{category}', [UmkmController::class, 'category'])->na
 // Services
 Route::get('/layanan-surat', [ServiceController::class, 'letters'])->name('services.letters');
 Route::get('/pengajuan-surat', [LetterRequestController::class, 'create'])->name('services.letter-request');
-Route::post('/pengajuan-surat', [LetterRequestController::class, 'store'])->name('frontend.letter-request.store');
+Route::post('/pengajuan-surat', [LetterRequestController::class, 'store'])->name('frontend.letter-request.store')->middleware('throttle:uploads');
 
 // Gallery
 Route::get('/galeri', [GalleryController::class, 'index'])->name('gallery.index');
 Route::get('/galeri/unggulan', [GalleryController::class, 'featured'])->name('gallery.featured');
 Route::get('/galeri/{id}', [GalleryController::class, 'show'])->name('gallery.show');
-Route::post('/galeri/{id}/like', [GalleryController::class, 'like'])->name('gallery.like');
+Route::post('/galeri/{id}/like', [GalleryController::class, 'like'])->name('gallery.like')->middleware('throttle:api');
 
 // Agenda & Events
 Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda.index');
@@ -114,7 +115,7 @@ Route::get('/apbdes/laporan', [HomeController::class, 'budgetReport'])->name('bu
 
 // Contact & Support
 Route::get('/kontak', [ProfileController::class, 'contact'])->name('contact');
-Route::post('/kontak', [ProfileController::class, 'submitContact'])->name('contact.submit');
+Route::post('/kontak', [ProfileController::class, 'submitContact'])->name('contact.submit')->middleware('throttle:api');
 
 // Legacy authentication routes (redirect to new auth system)
 Route::get('/masuk', function () {
@@ -177,7 +178,7 @@ Route::prefix('admin')->name('backend.')->middleware(['auth', 'gate:access-admin
     Route::resource('population', PopulationController::class)->middleware('gate:manage-population-data');
     Route::get('population/statistics', [PopulationController::class, 'statistics'])->name('population.statistics');
     Route::get('population/import/template', [PopulationController::class, 'downloadTemplate'])->name('population.template');
-    Route::post('population/import', [PopulationController::class, 'import'])->name('population.import');
+    Route::post('population/import', [PopulationController::class, 'import'])->name('population.import')->middleware('throttle:uploads');
     Route::get('population/export', [PopulationController::class, 'export'])->name('population.export');
     Route::post('population/bulk-delete', [PopulationController::class, 'bulkDelete'])->name('population.bulk-delete');
 
@@ -289,15 +290,15 @@ Route::prefix('admin')->name('backend.')->middleware(['auth', 'gate:access-admin
     Route::put('legacy-settings', [\App\Http\Controllers\Backend\SettingController::class, 'update'])->name('legacy-settings.update');
 
     // File Management
-    Route::post('upload-image', [\App\Http\Controllers\Backend\FileController::class, 'uploadImage'])->name('upload.image');
-    Route::post('upload-document', [\App\Http\Controllers\Backend\FileController::class, 'uploadDocument'])->name('upload.document');
+    Route::post('upload-image', [\App\Http\Controllers\Backend\FileController::class, 'uploadImage'])->name('upload.image')->middleware('throttle:uploads');
+    Route::post('upload-document', [\App\Http\Controllers\Backend\FileController::class, 'uploadDocument'])->name('upload.document')->middleware('throttle:uploads');
     Route::delete('delete-file/{path}', [\App\Http\Controllers\Backend\FileController::class, 'deleteFile'])->name('delete.file');
 
     // Backup Management (New Admin System)
     Route::get('backup', [BackupController::class, 'index'])->name('backup.index')->middleware('gate:manage-system-backup');
-    Route::post('backup/create', [BackupController::class, 'createBackup'])->name('backup.create')->middleware('gate:manage-system-backup');
-    Route::post('backup/restore', [BackupController::class, 'restoreBackup'])->name('backup.restore')->middleware('gate:manage-system-backup');
-    Route::post('backup/preview', [BackupController::class, 'getBackupPreview'])->name('backup.preview');
+    Route::post('backup/create', [BackupController::class, 'createBackup'])->name('backup.create')->middleware(['gate:manage-system-backup', 'throttle:uploads']);
+    Route::post('backup/restore', [BackupController::class, 'restoreBackup'])->name('backup.restore')->middleware(['gate:manage-system-backup', 'throttle:uploads']);
+    Route::post('backup/preview', [BackupController::class, 'getBackupPreview'])->name('backup.preview')->middleware('throttle:api');
     Route::get('backup/statistics', [BackupController::class, 'getStatistics'])->name('backup.statistics');
     Route::get('backup/{filename}/download', [BackupController::class, 'downloadBackup'])->name('backup.download');
     Route::delete('backup/{filename}', [BackupController::class, 'deleteBackup'])->name('backup.delete');
