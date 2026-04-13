@@ -272,66 +272,62 @@
             </h3>
 
             <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-2 sm:p-4">
-                @if($__env->yieldContent('village_map'))
-                    @yield('village_map')
-                @else
-                    <!-- OpenStreetMap Container -->
-                    <div id="village-map" class="w-full h-64 sm:h-80 lg:h-96 rounded-lg bg-gray-200 relative overflow-hidden">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="text-center">
-                                <i class="fas fa-spinner fa-spin text-2xl text-gray-400 dark:text-gray-500 mb-2"></i>
-                                <p class="text-gray-500 dark:text-gray-400 dark:text-gray-500 text-sm">Memuat peta desa...</p>
-                            </div>
+                <!-- OpenStreetMap Container -->
+                <div id="village-map" class="w-full h-64 sm:h-80 lg:h-96 rounded-lg bg-gray-200 relative overflow-hidden">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="text-center">
+                            <i class="fas fa-spinner fa-spin text-2xl text-gray-400 dark:text-gray-500 mb-2"></i>
+                            <p class="text-gray-500 dark:text-gray-400 dark:text-gray-500 text-sm">Memuat peta desa...</p>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Map Controls -->
+                <div class="mt-3 space-y-3">
+                    <!-- Filter Controls -->
+                    <div class="flex flex-wrap gap-2 justify-center sm:justify-start">
+                        <select id="locationTypeFilter" onchange="filterLocationsByType()"
+                            class="px-3 py-1 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                            <option value="all">Semua Lokasi</option>
+                            <option value="office">Kantor/Pemerintahan</option>
+                            <option value="school">Pendidikan</option>
+                            <option value="health">Kesehatan</option>
+                            <option value="religious">Tempat Ibadah</option>
+                            <option value="commercial">Perdagangan</option>
+                            <option value="public">Fasilitas Umum</option>
+                            <option value="tourism">Wisata</option>
+                            <option value="other">Lainnya</option>
+                        </select>
+                        <button onclick="toggleAreas()" id="areaToggleBtn"
+                            class="px-3 py-1 bg-red-600 text-white text-xs rounded-lg hover:bg-red-700 transition-colors">
+                            <i class="fas fa-eye-slash mr-1"></i> Sembunyikan Area
+                        </button>
+                        <button onclick="showLocationsList()"
+                            class="px-3 py-1 bg-gray-600 text-white text-xs rounded-lg hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-list mr-1"></i> Daftar Lokasi
+                        </button>
                     </div>
 
                     <!-- Map Controls -->
-                    <div class="mt-3 space-y-3">
-                        <!-- Filter Controls -->
-                        <div class="flex flex-wrap gap-2 justify-center sm:justify-start">
-                            <select id="locationTypeFilter" onchange="filterLocationsByType()"
-                                class="px-3 py-1 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-900 transition-colors">
-                                <option value="all">Semua Lokasi</option>
-                                <option value="office">Kantor/Pemerintahan</option>
-                                <option value="school">Pendidikan</option>
-                                <option value="health">Kesehatan</option>
-                                <option value="religious">Tempat Ibadah</option>
-                                <option value="commercial">Perdagangan</option>
-                                <option value="public">Fasilitas Umum</option>
-                                <option value="tourism">Wisata</option>
-                                <option value="other">Lainnya</option>
-                            </select>
-                            <button onclick="toggleAreas()" id="areaToggleBtn"
-                                class="px-3 py-1 bg-red-600 text-white text-xs rounded-lg hover:bg-red-700 transition-colors">
-                                <i class="fas fa-eye-slash mr-1"></i> Sembunyikan Area
-                            </button>
-                            <button onclick="showLocationsList()"
-                                class="px-3 py-1 bg-gray-600 text-white text-xs rounded-lg hover:bg-gray-700 transition-colors">
-                                <i class="fas fa-list mr-1"></i> Daftar Lokasi
-                            </button>
-                        </div>
-
-                        <!-- Map Controls -->
-                        <div class="flex flex-wrap gap-2 justify-center sm:justify-start">
-                            <button onclick="centerMap()"
-                                class="px-3 py-1 bg-green-600 text-white text-xs rounded-lg hover:bg-green-700 transition-colors">
-                                <i class="fas fa-home mr-1"></i> Pusat Desa
-                            </button>
-                            <button onclick="toggleSatellite()"
-                                class="px-3 py-1 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700 transition-colors">
-                                <i class="fas fa-satellite mr-1"></i> Satelit
-                            </button>
-                            <button onclick="fullscreenMap()"
-                                class="px-3 py-1 bg-purple-600 text-white text-xs rounded-lg hover:bg-purple-700 transition-colors">
-                                <i class="fas fa-expand mr-1"></i> Layar Penuh
-                            </button>
-                            <button onclick="refreshLocations()"
-                                class="px-3 py-1 bg-orange-600 text-white text-xs rounded-lg hover:bg-orange-700 transition-colors">
-                                <i class="fas fa-sync-alt mr-1"></i> Refresh
-                            </button>
-                        </div>
+                    <div class="flex flex-wrap gap-2 justify-center sm:justify-start">
+                        <button onclick="centerMap()"
+                            class="px-3 py-1 bg-green-600 text-white text-xs rounded-lg hover:bg-green-700 transition-colors">
+                            <i class="fas fa-home mr-1"></i> Pusat Desa
+                        </button>
+                        <button onclick="toggleSatellite()"
+                            class="px-3 py-1 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-satellite mr-1"></i> Satelit
+                        </button>
+                        <button onclick="fullscreenMap()"
+                            class="px-3 py-1 bg-purple-600 text-white text-xs rounded-lg hover:bg-purple-700 transition-colors">
+                            <i class="fas fa-expand mr-1"></i> Layar Penuh
+                        </button>
+                        <button onclick="refreshLocations()"
+                            class="px-3 py-1 bg-orange-600 text-white text-xs rounded-lg hover:bg-orange-700 transition-colors">
+                            <i class="fas fa-sync-alt mr-1"></i> Refresh
+                        </button>
                     </div>
-                @endif
+                </div>
             </div>
         </div>
 
@@ -702,10 +698,11 @@
             });
 
             if (!isSatellite) {
-                // Switch to satellite view
-                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                    maxZoom: 19,
-                    attribution: '© Esri, Maxar, Earthstar Geographics'
+                // Switch to satellite view (Google Maps)
+                L.tileLayer('http://{s}.google.com/vt?lyrs=s,h&x={x}&y={y}&z={z}', {
+                    maxZoom: 20,
+                    subdomains:['mt0','mt1','mt2','mt3'],
+                    attribution: '© Google Maps'
                 }).addTo(villageMap);
                 isSatellite = true;
             } else {

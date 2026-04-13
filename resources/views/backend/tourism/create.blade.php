@@ -354,11 +354,30 @@ function initializeMap() {
     // Initialize map centered on Indonesia
     map = L.map('map').setView([-6.2088, 106.8456], 10);
     
-    // Add OpenStreetMap tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // Base layers
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 19
-    }).addTo(map);
+    });
+
+    var googleStreets = L.tileLayer('http://{s}.google.com/vt?lyrs=m&x={x}&y={y}&z={z}',{
+        maxZoom: 20,
+        subdomains:['mt0','mt1','mt2','mt3']
+    });
+
+    var googleSat = L.tileLayer('http://{s}.google.com/vt?lyrs=s&x={x}&y={y}&z={z}',{
+        maxZoom: 20,
+        subdomains:['mt0','mt1','mt2','mt3']
+    });
+
+    var baseMaps = {
+        "OpenStreetMap": osm,
+        "Google Maps (Street)": googleStreets,
+        "Google Maps (Satellite)": googleSat
+    };
+
+    osm.addTo(map);
+    L.control.layers(baseMaps).addTo(map);
     
     // Add click event to map
     map.on('click', function(e) {
