@@ -154,12 +154,53 @@
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 sm:p-4 border-l-4 border-pink-500">
                 <div class="flex items-center">
                     <div class="flex-1">
-                        <p class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 dark:text-gray-500">
+                        <p class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">
                             Perempuan</p>
                         <p class="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
                             {{ number_format($statistics['female_population']) }}</p>
                     </div>
                     <i class="fas fa-female text-pink-500 text-xl sm:text-2xl"></i>
+                </div>
+            </div>
+
+            <!-- New row of stats -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 sm:p-4 border-l-4 border-orange-500">
+                <div class="flex items-center">
+                    <div class="flex-1">
+                        <p class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Total Berita</p>
+                        <p class="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100">{{ number_format($statistics['total_news']) }}</p>
+                    </div>
+                    <i class="fas fa-newspaper text-orange-500 text-xl sm:text-2xl"></i>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 sm:p-4 border-l-4 border-indigo-500">
+                <div class="flex items-center">
+                    <div class="flex-1">
+                        <p class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Agenda</p>
+                        <p class="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100">{{ number_format($statistics['total_agenda']) }}</p>
+                    </div>
+                    <i class="fas fa-calendar-alt text-indigo-500 text-xl sm:text-2xl"></i>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 sm:p-4 border-l-4 border-teal-500">
+                <div class="flex items-center">
+                    <div class="flex-1">
+                        <p class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">UMKM</p>
+                        <p class="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100">{{ number_format($statistics['total_umkm']) }}</p>
+                    </div>
+                    <i class="fas fa-store text-teal-500 text-xl sm:text-2xl"></i>
+                </div>
+            </div>
+            
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 sm:p-4 border-l-4 border-red-500">
+                <div class="flex items-center">
+                    <div class="flex-1">
+                        <p class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Layanan</p>
+                        <p class="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100">Aktif</p>
+                    </div>
+                    <i class="fas fa-headset text-red-500 text-xl sm:text-2xl"></i>
                 </div>
             </div>
         </div>

@@ -283,11 +283,11 @@
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 truncate">Kesehatan Sistem</dt>
                             <dd class="flex items-baseline">
-                                <div class="text-2xl font-semibold text-green-600">99.9%</div>
-                                <div class="ml-2 text-sm text-green-500">uptime</div>
+                                <div class="text-2xl font-semibold text-green-600">{{ $stats['system_health'] ?? '100%' }}</div>
+                                <div class="ml-2 text-sm text-green-500">{{ $stats['server_status'] ?? 'Online' }}</div>
                             </dd>
                             <dd class="text-xs text-gray-500 mt-1">
-                                Laravel {{ app()->version() }}
+                                Laravel {{ $stats['laravel_version'] ?? app()->version() }} (PHP {{ $stats['php_version'] ?? PHP_VERSION }})
                             </dd>
                         </dl>
                     </div>
@@ -512,28 +512,28 @@
                 datasets: [
                     {
                         label: 'Pengguna Baru',
-                        data: {!! json_encode($chartData['users'] ?? [5, 12, 8, 15, 22, 18]) !!},
+                        data: {!! json_encode($chartData['users'] ?? []) !!},
                         borderColor: 'rgb(59, 130, 246)',
                         backgroundColor: 'rgba(59, 130, 246, 0.1)',
                         tension: 0.4
                     },
                     {
                         label: 'Berita Dipublikasi',
-                        data: {!! json_encode($chartData['news'] ?? [3, 7, 5, 9, 12, 8]) !!},
+                        data: {!! json_encode($chartData['news'] ?? []) !!},
                         borderColor: 'rgb(16, 185, 129)',
                         backgroundColor: 'rgba(16, 185, 129, 0.1)',
                         tension: 0.4
                     },
                     {
                         label: 'Pesan Kontak',
-                        data: {!! json_encode($chartData['messages'] ?? [8, 15, 12, 18, 25, 20]) !!},
+                        data: {!! json_encode($chartData['messages'] ?? []) !!},
                         borderColor: 'rgb(245, 158, 11)',
                         backgroundColor: 'rgba(245, 158, 11, 0.1)',
                         tension: 0.4
                     },
                     {
                         label: 'Agenda Dibuat',
-                        data: {!! json_encode($chartData['agendas'] ?? [2, 5, 3, 7, 9, 6]) !!},
+                        data: {!! json_encode($chartData['agendas'] ?? []) !!},
                         borderColor: 'rgb(99, 102, 241)',
                         backgroundColor: 'rgba(99, 102, 241, 0.1)',
                         tension: 0.4

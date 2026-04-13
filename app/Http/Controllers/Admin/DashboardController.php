@@ -35,10 +35,10 @@ class DashboardController extends Controller
 
         // Get dashboard statistics
         $stats = $this->getDashboardStats();
-        
+
         // Get chart data for monthly statistics
         $chartData = $this->getChartData();
-        
+
         // Get recent activities
         $recentActivities = $this->getRecentActivities();
 
@@ -56,7 +56,7 @@ class DashboardController extends Controller
     private function getDashboardStats()
     {
         $stats = [];
-        
+
         try {
             // Users statistics
             if (Gate::allows('manage-users')) {
@@ -68,9 +68,7 @@ class DashboardController extends Controller
 
             // Population statistics
             if (Gate::allows('manage-population-data')) {
-                $populationData = PopulationData::latest()->first();
-                $stats['total_population'] = $populationData ? 
-                    ($populationData->male_count + $populationData->female_count) : 0;
+                $stats['total_population'] = PopulationData::where('status', 'Hidup')->count();
             }
 
             // Content statistics
@@ -84,13 +82,15 @@ class DashboardController extends Controller
             // Contact messages statistics
             if (Gate::allows('manage-contact-messages')) {
                 $stats['total_messages'] = ContactMessage::count();
-                $stats['unread_messages'] = ContactMessage::where('is_read', false)->count();
+                $stats['unread_messages'] = ContactMessage::where('status', 'unread')->count();
             }
 
             // Agenda statistics
             if (Gate::allows('manage-village-data')) {
                 $stats['total_agendas'] = Agenda::count();
-                $stats['upcoming_agendas'] = Agenda::where('date', '>=', Carbon::now())->count();
+                $stats['upcoming_agendas'] = Agenda::where('event_date', '>=', Carbon::now()->toDateString())
+                    ->where('is_completed', false)
+                    ->count();
             }
 
             // Budget statistics
@@ -108,9 +108,13 @@ class DashboardController extends Controller
 
             // System statistics
             $stats['storage_used'] = $this->getStorageUsed();
-            $stats['storage_total'] = '1 GB'; // Configurable
+            $stats['storage_total'] = '2 GB'; // Configurable
             $stats['storage_percentage'] = $this->getStoragePercentage();
             $stats['last_backup'] = $this->getLastBackupDate();
+            $stats['system_health'] = '99.9%'; // Simulation
+            $stats['php_version'] = PHP_VERSION;
+            $stats['laravel_version'] = app()->version();
+            $stats['server_status'] = 'Active';
 
         } catch (\Exception $e) {
             \Log::error('Dashboard stats error: ' . $e->getMessage());
@@ -157,9 +161,9 @@ class DashboardController extends Controller
             for ($i = 5; $i >= 0; $i--) {
                 $date = Carbon::now()->subMonths($i);
                 $monthName = $date->locale('id')->format('M');
-                
+
                 $chartData['months'][] = $monthName;
-                
+
                 // Users data
                 if (Gate::allows('manage-users')) {
                     $chartData['users'][] = User::whereMonth('created_at', $date->month)
@@ -226,6 +230,7 @@ class DashboardController extends Controller
                     $activities[] = [
                         'title' => 'Pengguna baru mendaftar',
                         'description' => $user->name,
+                        'timestamp' => $user->created_at,
                         'time' => $user->created_at->diffForHumans(),
                         'icon' => 'fas fa-user-plus',
                         'color' => 'blue'
@@ -240,6 +245,7 @@ class DashboardController extends Controller
                     $activities[] = [
                         'title' => 'Berita baru dipublikasi',
                         'description' => \Str::limit($news->title, 50),
+                        'timestamp' => $news->created_at,
                         'time' => $news->created_at->diffForHumans(),
                         'icon' => 'fas fa-newspaper',
                         'color' => 'green'
@@ -254,6 +260,7 @@ class DashboardController extends Controller
                     $activities[] = [
                         'title' => 'Pesan baru diterima',
                         'description' => 'Dari: ' . $message->name,
+                        'timestamp' => $message->created_at,
                         'time' => $message->created_at->diffForHumans(),
                         'icon' => 'fas fa-envelope',
                         'color' => 'orange'
@@ -268,6 +275,7 @@ class DashboardController extends Controller
                     $activities[] = [
                         'title' => 'Agenda baru ditambahkan',
                         'description' => \Str::limit($agenda->title, 40),
+                        'timestamp' => $agenda->created_at,
                         'time' => $agenda->created_at->diffForHumans(),
                         'icon' => 'fas fa-calendar-plus',
                         'color' => 'purple'
@@ -282,6 +290,7 @@ class DashboardController extends Controller
                     $activities[] = [
                         'title' => 'Anggaran baru diperbarui',
                         'description' => $budget->item_name . ' - Rp ' . number_format($budget->planned_amount, 0, ',', '.'),
+                        'timestamp' => $budget->created_at,
                         'time' => $budget->created_at->diffForHumans(),
                         'icon' => 'fas fa-coins',
                         'color' => 'emerald'
@@ -290,9 +299,8 @@ class DashboardController extends Controller
             }
 
             // Sort by time (most recent first)
-            usort($activities, function($a, $b) {
-                // This is a simplified sort - in production you'd want to use actual timestamps
-                return strcmp($b['time'], $a['time']);
+            usort($activities, function ($a, $b) {
+                return $b['timestamp'] <=> $a['timestamp'];
             });
 
             // Limit to 5 most recent
@@ -315,13 +323,13 @@ class DashboardController extends Controller
             $bytes = 0;
             $publicPath = public_path();
             $storagePath = storage_path();
-            
+
             // Calculate public directory size
             $bytes += $this->getDirectorySize($publicPath);
-            
+
             // Calculate storage directory size
             $bytes += $this->getDirectorySize($storagePath);
-            
+
             return $this->formatBytes($bytes);
         } catch (\Exception $e) {
             \Log::error('Storage calculation error: ' . $e->getMessage());
@@ -339,7 +347,7 @@ class DashboardController extends Controller
             // In production, you'd want to get actual disk usage
             $usedMB = 50; // Example value
             $totalMB = 1024; // 1GB in MB
-            
+
             return round(($usedMB / $totalMB) * 100, 1);
         } catch (\Exception $e) {
             return 0;
@@ -354,7 +362,7 @@ class DashboardController extends Controller
         try {
             // Check for backup files in storage
             $backupPath = storage_path('app/backups');
-            
+
             if (!is_dir($backupPath)) {
                 return 'Never';
             }
@@ -366,7 +374,7 @@ class DashboardController extends Controller
 
             $latestFile = max($files);
             $fileTime = filemtime($latestFile);
-            
+
             return Carbon::createFromTimestamp($fileTime)->diffForHumans();
         } catch (\Exception $e) {
             return 'Never';
@@ -379,13 +387,13 @@ class DashboardController extends Controller
     private function getDirectorySize($directory)
     {
         $size = 0;
-        
+
         try {
             if (is_dir($directory)) {
                 $files = new \RecursiveIteratorIterator(
                     new \RecursiveDirectoryIterator($directory)
                 );
-                
+
                 foreach ($files as $file) {
                     if ($file->isFile()) {
                         $size += $file->getSize();
@@ -396,7 +404,7 @@ class DashboardController extends Controller
             // Handle permission errors or other issues
             return 0;
         }
-        
+
         return $size;
     }
 
@@ -406,11 +414,11 @@ class DashboardController extends Controller
     private function formatBytes($bytes, $precision = 2)
     {
         $units = array('B', 'KB', 'MB', 'GB', 'TB');
-        
+
         for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
             $bytes /= 1024;
         }
-        
+
         return round($bytes, $precision) . ' ' . $units[$i];
     }
 
@@ -459,7 +467,7 @@ class DashboardController extends Controller
         }
 
         $logs = $this->getLogEntries($request);
-        
+
         return view('backend.logs.index', [
             'logs' => $logs,
             'levels' => ['emergency', 'alert', 'critical', 'error', 'warning', 'notice', 'info', 'debug'],
@@ -482,15 +490,15 @@ class DashboardController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->get('search');
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('description', 'like', "%{$search}%")
-                  ->orWhere('log_name', 'like', "%{$search}%");
+                    ->orWhere('log_name', 'like', "%{$search}%");
             });
         }
 
         if ($request->filled('user')) {
             $user = $request->get('user');
-            $query->whereHasMorph('causer', [\App\Models\User::class], function($q) use ($user) {
+            $query->whereHasMorph('causer', [\App\Models\User::class], function ($q) use ($user) {
                 $q->where('name', 'like', "%{$user}%");
             });
         }
@@ -502,9 +510,9 @@ class DashboardController extends Controller
         $activities = $query->paginate(20)->withQueryString();
 
         return view('backend.logs.activity', [
-            'activities'    => $activities,
-            'search'        => $request->get('search', ''),
-            'user_filter'   => $request->get('user', ''),
+            'activities' => $activities,
+            'search' => $request->get('search', ''),
+            'user_filter' => $request->get('user', ''),
             'action_filter' => $request->get('action', ''),
         ]);
     }
@@ -515,23 +523,24 @@ class DashboardController extends Controller
     private function getLogEntries(Request $request)
     {
         $logs = collect();
-        
+
         try {
             $logPath = storage_path('logs/laravel.log');
-            
+
             if (!file_exists($logPath)) {
                 return $logs;
             }
 
             $content = file_get_contents($logPath);
             $lines = explode("\n", $content);
-            
+
             // Parse last 100 log entries (simplified parsing)
             $entries = array_slice(array_reverse($lines), 0, 100);
-            
+
             foreach ($entries as $line) {
-                if (empty(trim($line))) continue;
-                
+                if (empty(trim($line)))
+                    continue;
+
                 // Simple regex to parse Laravel log format
                 if (preg_match('/^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\] \w+\.(\w+): (.+)/', $line, $matches)) {
                     $entry = [
@@ -540,28 +549,28 @@ class DashboardController extends Controller
                         'message' => $matches[3],
                         'context' => '',
                     ];
-                    
+
                     // Apply filters
                     if ($request->get('level') && $request->get('level') !== $entry['level']) {
                         continue;
                     }
-                    
+
                     if ($request->get('search') && stripos($entry['message'], $request->get('search')) === false) {
                         continue;
                     }
-                    
+
                     if ($request->get('date') && !str_contains($entry['datetime'], $request->get('date'))) {
                         continue;
                     }
-                    
+
                     $logs->push($entry);
                 }
             }
-            
+
         } catch (\Exception $e) {
             \Log::error('Error reading log file: ' . $e->getMessage());
         }
-        
+
         return $logs->take(50); // Limit to 50 entries
     }
 
@@ -576,7 +585,7 @@ class DashboardController extends Controller
 
         try {
             $logPath = storage_path('logs/laravel.log');
-            
+
             if (file_exists($logPath)) {
                 // Clear the log file content
                 file_put_contents($logPath, '');
@@ -668,16 +677,16 @@ class DashboardController extends Controller
 
         $filename = "report-desa-" . date('Y-m-d') . ".csv";
         $headers = [
-            "Content-type"        => "text/csv",
+            "Content-type" => "text/csv",
             "Content-Disposition" => "attachment; filename=$filename",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
         ];
 
         $columns = ['Kategori', 'Item', 'Nilai', 'Keterangan'];
 
-        $callback = function() use ($columns) {
+        $callback = function () use ($columns) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
 

@@ -87,12 +87,15 @@ class HomeController extends Controller
                         ->orderBy('created_at', 'desc')
                         ->get();
 
-        // Get statistics from population data (living people only)
+        // Get statistics from population data and other tables
         $statistics = [
             'total_population' => PopulationData::where('status', 'Hidup')->count(),
             'male_population' => PopulationData::where('gender', 'M')->where('status', 'Hidup')->count(),
             'female_population' => PopulationData::where('gender', 'F')->where('status', 'Hidup')->count(),
             'total_families' => PopulationData::where('status', 'Hidup')->distinct('family_card_number')->count('family_card_number'),
+            'total_news' => News::count(),
+            'total_agenda' => Agenda::count(),
+            'total_umkm' => \App\Models\Umkm::count(),
         ];
 
         // Get recent news
