@@ -168,22 +168,35 @@
         <div class="grid lg:grid-cols-2 gap-6 mb-6">
             <!-- Demographics Chart -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
-                <h3 class="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center">
-                    <i class="fas fa-chart-pie mr-2 text-teal-600"></i>
-                    Demografi Penduduk
-                </h3>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-200 flex items-center">
+                        <i class="fas fa-chart-pie mr-2 text-teal-600"></i>
+                        Demografi Penduduk
+                    </h3>
+                    <a href="{{ route('population.stats') }}" class="text-xs text-teal-600 hover:underline font-medium">
+                        Detail Lengkap →
+                    </a>
+                </div>
 
-                <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 sm:p-6 text-center">
-                    @if($__env->yieldContent('chart_content'))
-                        @yield('chart_content')
-                    @else
-                        <div
-                            class="w-32 h-32 sm:w-48 sm:h-48 mx-auto bg-gradient-to-br from-teal-100 to-green-100 rounded-full flex items-center justify-center mb-4">
-                            <i class="fas fa-chart-pie text-3xl sm:text-5xl text-gray-400 dark:text-gray-500"></i>
+                <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-2 sm:p-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="h-48 sm:h-56">
+                            <canvas id="homeGenderChart"></canvas>
                         </div>
-                        <p class="text-gray-500 dark:text-gray-400 dark:text-gray-500 text-sm sm:text-base">Grafik demografi
-                            akan ditampilkan di sini</p>
-                    @endif
+                        <div class="h-48 sm:h-56">
+                            <canvas id="homeAgeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 grid grid-cols-2 gap-2 text-center text-[10px] sm:text-xs">
+                    <div class="p-2 bg-teal-50 dark:bg-teal-900/30 rounded">
+                        <p class="text-gray-500 dark:text-gray-400">Rasio L/P</p>
+                        <p class="font-bold text-teal-600">{{ $demographicSummary['gender']['female'] > 0 ? '1:' . number_format($demographicSummary['gender']['male'] / $demographicSummary['gender']['female'], 2) : '1:1' }}</p>
+                    </div>
+                    <div class="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded">
+                        <p class="text-gray-500 dark:text-gray-400">Usia Produktif</p>
+                        <p class="font-bold text-indigo-600">{{ $statistics['total_population'] > 0 ? number_format(($demographicSummary['age_groups']['produktif'] / $statistics['total_population']) * 100, 1) : 0 }}%</p>
+                    </div>
                 </div>
             </div>
 
@@ -637,6 +650,92 @@
     <!-- Leaflet JS for OpenStreetMap -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <!-- Chart.js for Demographics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Demographic Charts Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gender Chart
+            const genderCtx = document.getElementById('homeGenderChart').getContext('2d');
+            new Chart(genderCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Laki-laki', 'Perempuan'],
+                    datasets: [{
+                        data: [
+                            {{ $demographicSummary['gender']['male'] }}, 
+                            {{ $demographicSummary['gender']['female'] }}
+                        ],
+                        backgroundColor: ['#3B82F6', '#EC4899'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 10,
+                                font: { size: 10 }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Jenis Kelamin',
+                            font: { size: 12, weight: 'bold' }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+
+            // Age distribution Chart
+            const ageCtx = document.getElementById('homeAgeChart').getContext('2d');
+            new Chart(ageCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['0-17', '18-64', '65+'],
+                    datasets: [{
+                        label: 'Jiwa',
+                        data: [
+                            {{ $demographicSummary['age_groups']['anak'] }}, 
+                            {{ $demographicSummary['age_groups']['produktif'] }}, 
+                            {{ $demographicSummary['age_groups']['lansia'] }}
+                        ],
+                        backgroundColor: ['#10B981', '#F59E0B', '#6366F1'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Kelompok Usia',
+                            font: { size: 12, weight: 'bold' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { font: { size: 9 } }
+                        },
+                        x: {
+                            ticks: { font: { size: 9 } }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 
     <!-- Village Map Script -->
     <script>

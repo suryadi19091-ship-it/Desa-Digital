@@ -170,6 +170,19 @@ class HomeController extends Controller
             }
         }
 
+        // Get demographic summary for home page charts
+        $demographicSummary = [
+            'gender' => [
+                'male' => PopulationData::where('gender', 'M')->where('status', 'Hidup')->count(),
+                'female' => PopulationData::where('gender', 'F')->where('status', 'Hidup')->count(),
+            ],
+            'age_groups' => [
+                'anak' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) < 18')->count(),
+                'produktif' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 18 AND 64')->count(),
+                'lansia' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= 65')->count(),
+            ]
+        ];
+
         // Get sidebar data
         $sidebarData = $this->getSidebarData();
 
@@ -177,6 +190,7 @@ class HomeController extends Controller
             'villageProfile',
             'banners',
             'statistics',
+            'demographicSummary',
             'recentNews',
             'recentGallery',
             'upcomingAgenda',
