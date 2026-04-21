@@ -117,7 +117,7 @@ class SettingsController extends Controller
 
         } catch (\Exception $e) {
             \Log::error('Settings update error: ' . $e->getMessage());
-            
+
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
@@ -147,7 +147,7 @@ class SettingsController extends Controller
             // Send test email
             Mail::raw('This is a test email from your Laravel application.', function ($message) use ($validated) {
                 $message->to($validated['email'])
-                        ->subject('Test Email from ' . config('app.name', 'Laravel'));
+                    ->subject('Test Email from ' . config('app.name', 'Laravel'));
             });
 
             return response()->json([
@@ -157,7 +157,7 @@ class SettingsController extends Controller
 
         } catch (\Exception $e) {
             \Log::error('Test email error: ' . $e->getMessage());
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to send test email: ' . $e->getMessage()
@@ -195,7 +195,7 @@ class SettingsController extends Controller
 
         try {
             $backupPath = storage_path('app/backups');
-            
+
             if (!is_dir($backupPath)) {
                 mkdir($backupPath, 0755, true);
             }
@@ -208,12 +208,12 @@ class SettingsController extends Controller
                     $filename = "database_backup_{$timestamp}.sql";
                     $this->createDatabaseBackup($backupPath . '/' . $filename);
                     break;
-                
+
                 case 'files':
                     $filename = "files_backup_{$timestamp}.zip";
                     $this->createFilesBackup($backupPath . '/' . $filename);
                     break;
-                
+
                 case 'full':
                     $filename = "full_backup_{$timestamp}.zip";
                     $this->createFullBackup($backupPath . '/' . $filename);
@@ -228,7 +228,7 @@ class SettingsController extends Controller
 
         } catch (\Exception $e) {
             \Log::error('Backup creation error: ' . $e->getMessage());
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to create backup: ' . $e->getMessage()
@@ -268,7 +268,7 @@ class SettingsController extends Controller
 
             if (file_exists($filePath)) {
                 unlink($filePath);
-                
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Backup deleted successfully'
@@ -282,7 +282,7 @@ class SettingsController extends Controller
 
         } catch (\Exception $e) {
             \Log::error('Backup deletion error: ' . $e->getMessage());
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to delete backup'
@@ -326,7 +326,7 @@ class SettingsController extends Controller
 
         // Merge with cached settings if any
         $cached = cache()->get('app_settings', []);
-        
+
         return array_merge($defaults, $cached);
     }
 
@@ -385,10 +385,10 @@ class SettingsController extends Controller
     private function updateEnvFile($key, $value)
     {
         $path = base_path('.env');
-        
+
         if (file_exists($path)) {
             $content = file_get_contents($path);
-            
+
             // Handle values with spaces by wrapping in quotes
             if (str_contains($value, ' ') && !str_starts_with($value, '"')) {
                 $value = '"' . $value . '"';
@@ -399,7 +399,7 @@ class SettingsController extends Controller
             } else {
                 $content .= "\n" . $key . '=' . $value;
             }
-            
+
             file_put_contents($path, $content);
         }
     }
@@ -410,7 +410,7 @@ class SettingsController extends Controller
     private function getBackupFiles()
     {
         $backupPath = storage_path('app/backups');
-        
+
         if (!is_dir($backupPath)) {
             return [];
         }
@@ -430,7 +430,7 @@ class SettingsController extends Controller
         }
 
         // Sort by creation date (newest first)
-        usort($backups, function($a, $b) {
+        usort($backups, function ($a, $b) {
             return strtotime($b['created']) - strtotime($a['created']);
         });
 
@@ -448,9 +448,9 @@ class SettingsController extends Controller
         $host = config('database.connections.mysql.host');
 
         $command = "mysqldump --user={$username} --password={$password} --host={$host} {$database} > {$filePath}";
-        
+
         exec($command, $output, $returnVar);
-        
+
         if ($returnVar !== 0) {
             throw new \Exception('Database backup failed');
         }
@@ -462,14 +462,14 @@ class SettingsController extends Controller
     private function createFilesBackup($filePath)
     {
         $zip = new \ZipArchive();
-        
+
         if ($zip->open($filePath, \ZipArchive::CREATE) !== TRUE) {
             throw new \Exception('Could not create zip file');
         }
 
         $this->addDirectoryToZip($zip, public_path(), 'public');
         $this->addDirectoryToZip($zip, storage_path('app'), 'storage');
-        
+
         $zip->close();
     }
 
@@ -483,20 +483,20 @@ class SettingsController extends Controller
         $this->createDatabaseBackup($dbBackupPath);
 
         $zip = new \ZipArchive();
-        
+
         if ($zip->open($filePath, \ZipArchive::CREATE) !== TRUE) {
             throw new \Exception('Could not create zip file');
         }
 
         // Add database backup to zip
         $zip->addFile($dbBackupPath, 'database.sql');
-        
+
         // Add directories
         $this->addDirectoryToZip($zip, public_path(), 'public');
         $this->addDirectoryToZip($zip, storage_path('app'), 'storage');
-        
+
         $zip->close();
-        
+
         // Clean up temporary database backup
         if (file_exists($dbBackupPath)) {
             unlink($dbBackupPath);
@@ -543,11 +543,11 @@ class SettingsController extends Controller
     private function formatBytes($bytes, $precision = 2)
     {
         $units = array('B', 'KB', 'MB', 'GB', 'TB');
-        
+
         for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
             $bytes /= 1024;
         }
-        
+
         return round($bytes, $precision) . ' ' . $units[$i];
     }
 }
