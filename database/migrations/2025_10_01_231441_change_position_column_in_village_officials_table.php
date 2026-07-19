@@ -23,13 +23,13 @@ return new class extends Migration
     {
         Schema::table('village_officials', function (Blueprint $table) {
             $table->enum('position', [
-                'kepala_desa', 
-                'sekretaris_desa', 
-                'kaur_pemerintahan', 
-                'kaur_keuangan', 
-                'kaur_pelayanan', 
-                'kadus', 
-                'staff'
+                'kepala_desa',
+                'sekretaris_desa',
+                'kaur_pemerintahan',
+                'kaur_keuangan',
+                'kaur_pelayanan',
+                'kadus',
+                'staff',
             ])->change();
         });
     }

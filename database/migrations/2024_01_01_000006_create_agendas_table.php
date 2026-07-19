@@ -16,12 +16,12 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->enum('category', [
-                'rapat', 
-                'pelayanan', 
-                'olahraga', 
-                'gotong_royong', 
-                'keagamaan', 
-                'lainnya'
+                'rapat',
+                'pelayanan',
+                'olahraga',
+                'gotong_royong',
+                'keagamaan',
+                'lainnya',
             ]);
             $table->date('event_date');
             $table->time('start_time');

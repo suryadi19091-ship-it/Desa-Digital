@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
-        
+
         // Seed population data
         $this->call([
             // System & Permissions

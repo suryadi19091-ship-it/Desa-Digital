@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\VillageProfile;
 use App\Models\VillageOfficial;
+use App\Models\VillageProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,9 +13,10 @@ class VillageController extends Controller
     public function profile()
     {
         $profile = VillageProfile::first();
+
         return view('backend.village.profile', compact('profile'));
     }
-    
+
     public function updateProfile(Request $request)
     {
         $request->validate([
@@ -39,12 +40,12 @@ class VillageController extends Controller
             'description' => 'nullable|string',
             'history' => 'nullable|string',
         ]);
-        
+
         $profile = VillageProfile::first();
-        if (!$profile) {
+        if (! $profile) {
             $profile = new VillageProfile();
         }
-        
+
         // Map form fields to database columns
         $profile->village_name = $request->name;
         $profile->district = $request->district;
@@ -65,19 +66,20 @@ class VillageController extends Controller
         $profile->total_rw = $request->total_rw ?? 0;
         $profile->total_rt = $request->total_rt ?? 0;
         $profile->history = $request->history;
-        
+
         $profile->save();
-        
+
         return redirect()->route('backend.village.profile')
-                         ->with('success', 'Profil desa berhasil diperbarui.');
+            ->with('success', 'Profil desa berhasil diperbarui.');
     }
-    
+
     public function officials()
     {
         $officials = VillageOfficial::orderBy('order')->get();
+
         return view('backend.village.officials', compact('officials'));
     }
-    
+
     public function storeOfficial(Request $request)
     {
         $request->validate([
@@ -91,16 +93,16 @@ class VillageController extends Controller
             'end_date' => 'nullable|date|after:start_date',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'order' => 'nullable|integer|min:0',
-            'is_active' => 'boolean'
+            'is_active' => 'boolean',
         ]);
-        
+
         $photoPath = null;
         if ($request->hasFile('photo')) {
             $photoPath = $request->file('photo')->store('officials', 'public');
         }
-        
+
         $order = $request->order ?? (VillageOfficial::max('order') + 1);
-        
+
         VillageOfficial::create([
             'name' => $request->name,
             'position' => $request->position,
@@ -112,13 +114,13 @@ class VillageController extends Controller
             'end_date' => $request->end_date,
             'photo_path' => $photoPath,
             'order' => $order,
-            'is_active' => $request->boolean('is_active', true)
+            'is_active' => $request->boolean('is_active', true),
         ]);
-        
+
         return redirect()->route('backend.village.officials')
-                         ->with('success', 'Perangkat desa berhasil ditambahkan.');
+            ->with('success', 'Perangkat desa berhasil ditambahkan.');
     }
-    
+
     public function updateOfficial(Request $request, VillageOfficial $official)
     {
         $request->validate([
@@ -132,9 +134,9 @@ class VillageController extends Controller
             'end_date' => 'nullable|date|after:start_date',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'order' => 'nullable|integer|min:0',
-            'is_active' => 'boolean'
+            'is_active' => 'boolean',
         ]);
-        
+
         $photoPath = $official->photo_path;
         if ($request->hasFile('photo')) {
             // Delete old photo
@@ -143,7 +145,7 @@ class VillageController extends Controller
             }
             $photoPath = $request->file('photo')->store('officials', 'public');
         }
-        
+
         $official->update([
             'name' => $request->name,
             'position' => $request->position,
@@ -155,22 +157,22 @@ class VillageController extends Controller
             'end_date' => $request->end_date,
             'photo_path' => $photoPath,
             'order' => $request->order ?? $official->order,
-            'is_active' => $request->boolean('is_active', true)
+            'is_active' => $request->boolean('is_active', true),
         ]);
-        
+
         return redirect()->route('backend.village.officials')
-                         ->with('success', 'Perangkat desa berhasil diperbarui.');
+            ->with('success', 'Perangkat desa berhasil diperbarui.');
     }
-    
+
     public function deleteOfficial(VillageOfficial $official)
     {
         if ($official->photo_path && Storage::disk('public')->exists($official->photo_path)) {
             Storage::disk('public')->delete($official->photo_path);
         }
-        
+
         $official->delete();
-        
+
         return redirect()->route('backend.village.officials')
-                         ->with('success', 'Perangkat desa berhasil dihapus');
+            ->with('success', 'Perangkat desa berhasil dihapus');
     }
 }

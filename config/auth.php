@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+
 return [
 
     /*
@@ -62,7 +64,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model' => env('AUTH_MODEL', User::class),
         ],
 
         // 'users' => [
@@ -133,7 +135,7 @@ return [
     'remember_duration' => env('AUTH_REMEMBER_DURATION', 2592000), // 30 days
 
     // Admin IP restriction (optional)
-    'admin_allowed_ips' => env('AUTH_ADMIN_ALLOWED_IPS') ? 
+    'admin_allowed_ips' => env('AUTH_ADMIN_ALLOWED_IPS') ?
         explode(',', env('AUTH_ADMIN_ALLOWED_IPS')) : [],
 
     // Session settings

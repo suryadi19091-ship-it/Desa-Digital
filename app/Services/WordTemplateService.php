@@ -3,30 +3,31 @@
 namespace App\Services;
 
 use App\Models\LetterTemplate;
-use App\Models\LetterRequest;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use PhpOffice\PhpWord\TemplateProcessor;
+use Illuminate\Support\Str;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\Settings;
-use Exception;
-use Illuminate\Support\Str;
+use PhpOffice\PhpWord\TemplateProcessor;
 
 class WordTemplateService
 {
     protected $templatePath;
+
     protected $outputPath;
 
     public function __construct()
     {
         $this->templatePath = storage_path('app/templates/');
         $this->outputPath = storage_path('app/generated/');
-        
+
         // Ensure directories exist
-        if (!file_exists($this->templatePath)) {
+        if (! file_exists($this->templatePath)) {
             mkdir($this->templatePath, 0755, true);
         }
-        if (!file_exists($this->outputPath)) {
+        if (! file_exists($this->outputPath)) {
             mkdir($this->outputPath, 0755, true);
         }
     }
@@ -38,28 +39,28 @@ class WordTemplateService
     {
         $originalName = $file->getClientOriginalName();
         $extension = $file->getClientOriginalExtension();
-        
+
         // Validate file type
-        if (!in_array(strtolower($extension), ['docx', 'doc'])) {
+        if (! in_array(strtolower($extension), ['docx', 'doc'])) {
             throw new Exception('File harus berformat Word (.docx atau .doc)');
         }
 
         // Generate unique filename
-        $filename = Str::uuid() . '.' . $extension;
-        $path = 'templates/' . $filename;
-        
+        $filename = Str::uuid().'.'.$extension;
+        $path = 'templates/'.$filename;
+
         // Store file
         Storage::disk('local')->put($path, file_get_contents($file->getRealPath()));
-        
+
         // Extract bookmarks from template
         $bookmarks = $this->extractBookmarks(Storage::disk('local')->path($path));
-        
+
         return [
             'path' => $path,
             'original_name' => $originalName,
             'size' => $file->getSize(),
             'mime_type' => $file->getMimeType(),
-            'bookmarks' => $bookmarks
+            'bookmarks' => $bookmarks,
         ];
     }
 
@@ -71,17 +72,17 @@ class WordTemplateService
         try {
             $templateProcessor = new TemplateProcessor($templatePath);
             $variables = $templateProcessor->getVariables();
-            
+
             // Convert to bookmarks format
             $bookmarks = [];
             foreach ($variables as $variable) {
                 $bookmarks[] = [
                     'name' => $variable,
                     'description' => $this->getVariableDescription($variable),
-                    'type' => $this->getVariableType($variable)
+                    'type' => $this->getVariableType($variable),
                 ];
             }
-            
+
             return $bookmarks;
         } catch (Exception $e) {
             // Fallback: return common variables
@@ -94,46 +95,46 @@ class WordTemplateService
      */
     public function generateDocument(LetterTemplate $template, array $data): string
     {
-        if ($template->template_type !== 'word' || !$template->template_file) {
+        if ($template->template_type !== 'word' || ! $template->template_file) {
             throw new Exception('Template bukan tipe Word atau file tidak ditemukan');
         }
 
         $templatePath = Storage::disk('local')->path($template->template_file);
-        
-        if (!file_exists($templatePath)) {
-            throw new Exception('File template tidak ditemukan: ' . $templatePath);
+
+        if (! file_exists($templatePath)) {
+            throw new Exception('File template tidak ditemukan: '.$templatePath);
         }
 
         try {
             // Load template
             $templateProcessor = new TemplateProcessor($templatePath);
-            
+
             // Process data replacement
             $processedData = $this->processReplacementData($template, $data);
-            
+
             // Replace variables in template
             foreach ($processedData as $key => $value) {
                 $templateProcessor->setValue($key, $value);
             }
-            
+
             // Handle tables if any
             $this->processTableData($templateProcessor, $processedData);
-            
+
             // Generate output filename
-            $outputFilename = 'surat_' . $template->code . '_' . time() . '.docx';
-            $outputPath = $this->outputPath . $outputFilename;
-            
+            $outputFilename = 'surat_'.$template->code.'_'.time().'.docx';
+            $outputPath = $this->outputPath.$outputFilename;
+
             // Save generated document
             $templateProcessor->saveAs($outputPath);
-            
+
             // Update template usage
             $template->increment('usage_count');
             $template->update(['last_used_at' => now()]);
-            
+
             return $outputPath;
-            
+
         } catch (Exception $e) {
-            throw new Exception('Error generating document: ' . $e->getMessage());
+            throw new Exception('Error generating document: '.$e->getMessage());
         }
     }
 
@@ -145,24 +146,53 @@ class WordTemplateService
         try {
             // Load Word document
             $phpWord = IOFactory::load($wordFilePath);
-            
+
             // Set PDF renderer
             Settings::setPdfRendererPath(base_path('vendor/tecnickcom/tcpdf'));
             Settings::setPdfRendererName('TCPDF');
-            
+
             // Generate PDF filename
             $pdfFilename = str_replace('.docx', '.pdf', basename($wordFilePath));
-            $pdfPath = $this->outputPath . $pdfFilename;
-            
+            $pdfPath = $this->outputPath.$pdfFilename;
+
             // Save as PDF
             $pdfWriter = IOFactory::createWriter($phpWord, 'PDF');
             $pdfWriter->save($pdfPath);
-            
+
             return $pdfPath;
-            
+
         } catch (Exception $e) {
-            throw new Exception('Error converting to PDF: ' . $e->getMessage());
+            throw new Exception('Error converting to PDF: '.$e->getMessage());
         }
+    }
+
+    /**
+     * Delete template file
+     */
+    public function deleteTemplate(string $filePath): bool
+    {
+        return Storage::disk('local')->delete($filePath);
+    }
+
+    /**
+     * Get template file info
+     */
+    public function getTemplateInfo(string $filePath): array
+    {
+        if (! Storage::disk('local')->exists($filePath)) {
+            throw new Exception('Template file tidak ditemukan');
+        }
+
+        $fullPath = Storage::disk('local')->path($filePath);
+
+        return [
+            'path' => $filePath,
+            'full_path' => $fullPath,
+            'size' => Storage::disk('local')->size($filePath),
+            'last_modified' => Storage::disk('local')->lastModified($filePath),
+            'exists' => file_exists($fullPath),
+            'readable' => is_readable($fullPath),
+        ];
     }
 
     /**
@@ -172,23 +202,21 @@ class WordTemplateService
     {
         $processedData = [];
         $replacementMap = $template->replacement_map ?? [];
-        
+
         // If no mapping defined, use direct mapping
-        if (empty($replacementMap)) {
+        if ($replacementMap === []) {
             $replacementMap = $this->getDefaultReplacementMap();
         }
-        
+
         foreach ($replacementMap as $placeholder => $dataKey) {
-            $value = data_get($data, $dataKey, '[' . strtoupper($placeholder) . ']');
-            
+            $value = data_get($data, $dataKey, '['.strtoupper($placeholder).']');
+
             // Format value based on type
             $processedData[$placeholder] = $this->formatValue($value, $placeholder);
         }
-        
+
         // Add system variables
-        $processedData = array_merge($processedData, $this->getSystemVariables());
-        
-        return $processedData;
+        return array_merge($processedData, $this->getSystemVariables());
     }
 
     /**
@@ -198,7 +226,7 @@ class WordTemplateService
     {
         // Handle cloning tables for multiple records
         $tableVariables = ['family_members', 'documents', 'witnesses'];
-        
+
         foreach ($tableVariables as $tableVar) {
             if (isset($data[$tableVar]) && is_array($data[$tableVar])) {
                 $templateProcessor->cloneRowAndSetValues($tableVar, $data[$tableVar]);
@@ -214,22 +242,22 @@ class WordTemplateService
         if (is_null($value) || $value === '') {
             return '[TIDAK DIISI]';
         }
-        
+
         // Format dates
         if (in_array($placeholder, ['birth_date', 'current_date', 'issue_date'])) {
             return $this->formatDate($value);
         }
-        
+
         // Format currency
         if (in_array($placeholder, ['salary', 'income', 'amount'])) {
             return $this->formatCurrency($value);
         }
-        
+
         // Format gender
         if ($placeholder === 'gender') {
             return $value === 'L' ? 'Laki-laki' : ($value === 'P' ? 'Perempuan' : $value);
         }
-        
+
         return (string) $value;
     }
 
@@ -239,21 +267,21 @@ class WordTemplateService
     protected function formatDate($date): string
     {
         if (is_string($date)) {
-            $date = \Carbon\Carbon::parse($date);
+            $date = Carbon::parse($date);
         }
-        
-        if (!$date instanceof \Carbon\Carbon) {
+
+        if (! $date instanceof Carbon) {
             return (string) $date;
         }
-        
+
         // Format: 15 Oktober 2024
         $months = [
             1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
             5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
-            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
         ];
-        
-        return $date->day . ' ' . $months[$date->month] . ' ' . $date->year;
+
+        return $date->day.' '.$months[$date->month].' '.$date->year;
     }
 
     /**
@@ -261,7 +289,7 @@ class WordTemplateService
      */
     protected function formatCurrency($value): string
     {
-        return 'Rp ' . number_format((float) $value, 0, ',', '.');
+        return 'Rp '.number_format((float) $value, 0, ',', '.');
     }
 
     /**
@@ -286,7 +314,7 @@ class WordTemplateService
         $sequence = str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
         $month = date('m');
         $year = date('Y');
-        
+
         return "{$sequence}/DS/{$month}/{$year}";
     }
 
@@ -312,9 +340,9 @@ class WordTemplateService
             'head_nip' => 'NIP kepala desa',
             'purpose' => 'Keperluan surat',
             'letter_number' => 'Nomor surat',
-            'current_date' => 'Tanggal surat dibuat'
+            'current_date' => 'Tanggal surat dibuat',
         ];
-        
+
         return $descriptions[$variable] ?? 'Variable tidak dikenal';
     }
 
@@ -329,9 +357,9 @@ class WordTemplateService
             'nik' => 'number',
             'rt' => 'number',
             'rw' => 'number',
-            'gender' => 'select'
+            'gender' => 'select',
         ];
-        
+
         return $types[$variable] ?? 'text';
     }
 
@@ -352,7 +380,7 @@ class WordTemplateService
             ['name' => 'village_name', 'description' => 'Nama desa', 'type' => 'text'],
             ['name' => 'head_name', 'description' => 'Nama kepala desa', 'type' => 'text'],
             ['name' => 'purpose', 'description' => 'Keperluan surat', 'type' => 'text'],
-            ['name' => 'current_date', 'description' => 'Tanggal surat', 'type' => 'date']
+            ['name' => 'current_date', 'description' => 'Tanggal surat', 'type' => 'date'],
         ];
     }
 
@@ -378,36 +406,7 @@ class WordTemplateService
             'head_nip' => 'village_profile.head_nip',
             'purpose' => 'purpose',
             'letter_number' => 'letter_number',
-            'current_date' => 'current_date'
-        ];
-    }
-
-    /**
-     * Delete template file
-     */
-    public function deleteTemplate(string $filePath): bool
-    {
-        return Storage::disk('local')->delete($filePath);
-    }
-
-    /**
-     * Get template file info
-     */
-    public function getTemplateInfo(string $filePath): array
-    {
-        if (!Storage::disk('local')->exists($filePath)) {
-            throw new Exception('Template file tidak ditemukan');
-        }
-        
-        $fullPath = Storage::disk('local')->path($filePath);
-        
-        return [
-            'path' => $filePath,
-            'full_path' => $fullPath,
-            'size' => Storage::disk('local')->size($filePath),
-            'last_modified' => Storage::disk('local')->lastModified($filePath),
-            'exists' => file_exists($fullPath),
-            'readable' => is_readable($fullPath)
+            'current_date' => 'current_date',
         ];
     }
 }

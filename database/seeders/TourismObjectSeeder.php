@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\TourismObject;
-use Illuminate\Support\Str;
+use Illuminate\Database\Seeder;
 
 class TourismObjectSeeder extends Seeder
 {
@@ -23,11 +22,11 @@ class TourismObjectSeeder extends Seeder
                 'contact_phone' => '08123456789',
                 'images' => json_encode([
                     'https://images.unsplash.com/photo-1571115764595-644a1f56a55c?w=400&h=250&fit=crop',
-                    'https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=800'
+                    'https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=800',
                 ]),
                 'facilities' => 'Toilet, Mushola, Area Parkir, Warung',
                 'is_featured' => true,
-                'is_active' => true
+                'is_active' => true,
             ],
             [
                 'name' => 'Rumah Budaya Krandegan',
@@ -41,11 +40,11 @@ class TourismObjectSeeder extends Seeder
                 'contact_phone' => '08123456790',
                 'images' => json_encode([
                     'https://images.unsplash.com/photo-1544531586-fbb6cf2ea9bb?w=400&h=250&fit=crop',
-                    'https://images.unsplash.com/photo-1592928302636-c0cce2ef4a5b?w=800'
+                    'https://images.unsplash.com/photo-1592928302636-c0cce2ef4a5b?w=800',
                 ]),
                 'facilities' => 'Toilet, Museum, Toko Souvenir',
                 'is_featured' => true,
-                'is_active' => true
+                'is_active' => true,
             ],
             [
                 'name' => 'Warung Lesehan Krandegan',
@@ -59,11 +58,11 @@ class TourismObjectSeeder extends Seeder
                 'contact_phone' => '08123456791',
                 'images' => json_encode([
                     'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&h=250&fit=crop',
-                    'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800'
+                    'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800',
                 ]),
                 'facilities' => 'Toilet, Area Parkir, WiFi',
                 'is_featured' => true,
-                'is_active' => true
+                'is_active' => true,
             ],
             [
                 'name' => 'Kampung Kreatif Krandegan',
@@ -77,11 +76,11 @@ class TourismObjectSeeder extends Seeder
                 'contact_phone' => '08123456792',
                 'images' => json_encode([
                     'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=400&h=250&fit=crop',
-                    'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800'
+                    'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800',
                 ]),
                 'facilities' => 'Toilet, Ruang Kelas, Kantin, Area Parkir',
                 'is_featured' => false,
-                'is_active' => true
+                'is_active' => true,
             ],
             [
                 'name' => 'Hutan Pinus Krandegan',
@@ -95,11 +94,11 @@ class TourismObjectSeeder extends Seeder
                 'contact_phone' => '08123456793',
                 'images' => json_encode([
                     'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=250&fit=crop',
-                    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800'
+                    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800',
                 ]),
                 'facilities' => 'Toilet, Area Camping, Trek Hiking',
                 'is_featured' => false,
-                'is_active' => true
+                'is_active' => true,
             ],
             [
                 'name' => 'Taman Bermain Anak Krandegan',
@@ -113,12 +112,12 @@ class TourismObjectSeeder extends Seeder
                 'contact_phone' => '08123456794',
                 'images' => json_encode([
                     'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=250&fit=crop',
-                    'https://images.unsplash.com/photo-1569859985852-de9bdc5bb6a3?w=800'
+                    'https://images.unsplash.com/photo-1569859985852-de9bdc5bb6a3?w=800',
                 ]),
                 'facilities' => 'Toilet, Playground, Area Olahraga, Kantin',
                 'is_featured' => false,
-                'is_active' => true
-            ]
+                'is_active' => true,
+            ],
         ];
 
         foreach ($tourismData as $data) {

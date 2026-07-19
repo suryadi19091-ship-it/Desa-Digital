@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Umkm;
 use App\Models\Settlement;
+use App\Models\Umkm;
 use App\Models\UmkmReview;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -16,27 +16,27 @@ class UmkmController extends Controller
         $query = Umkm::with('settlement');
 
         // Search
-        if ($request->has('search') && $request->search != '') {
+        if ($request->has('search') && $request->search !== '') {
             $query->where(function ($q) use ($request) {
-                $q->where('business_name', 'like', '%' . $request->search . '%')
-                  ->orWhere('owner_name', 'like', '%' . $request->search . '%');
+                $q->where('business_name', 'like', '%'.$request->search.'%')
+                    ->orWhere('owner_name', 'like', '%'.$request->search.'%');
             });
         }
 
         // Filter by category
-        if ($request->has('category') && $request->category != '') {
+        if ($request->has('category') && $request->category !== '') {
             $query->where('category', $request->category);
         }
 
         // Filter by status
         if ($request->has('status')) {
-            if ($request->status == 'verified') {
+            if ($request->status === 'verified') {
                 $query->where('is_verified', true);
-            } elseif ($request->status == 'unverified') {
+            } elseif ($request->status === 'unverified') {
                 $query->where('is_verified', false);
-            } elseif ($request->status == 'active') {
+            } elseif ($request->status === 'active') {
                 $query->where('is_active', true);
-            } elseif ($request->status == 'inactive') {
+            } elseif ($request->status === 'inactive') {
                 $query->where('is_active', false);
             }
         }
@@ -48,8 +48,8 @@ class UmkmController extends Controller
             'active' => Umkm::where('is_active', true)->count(),
             'verified' => Umkm::where('is_verified', true)->count(),
             'categories' => Umkm::selectRaw('category, COUNT(*) as count')
-                                ->groupBy('category')
-                                ->pluck('count', 'category'),
+                ->groupBy('category')
+                ->pluck('count', 'category'),
         ];
 
         return view('backend.umkm.index', compact('umkms', 'stats'));
@@ -59,6 +59,7 @@ class UmkmController extends Controller
     {
         $settlements = Settlement::where('is_active', true)->get();
         $categories = ['makanan', 'kerajinan', 'pertanian', 'jasa', 'tekstil', 'lainnya'];
+
         return view('backend.umkm.create', compact('settlements', 'categories'));
     }
 
@@ -107,12 +108,13 @@ class UmkmController extends Controller
         Umkm::create($data);
 
         return redirect()->route('backend.umkm.index')
-                        ->with('success', 'UMKM created successfully!');
+            ->with('success', 'UMKM created successfully!');
     }
 
     public function show($id)
     {
         $umkm = Umkm::with(['settlement', 'reviews'])->findOrFail($id);
+
         return view('backend.umkm.show', compact('umkm'));
     }
 
@@ -121,6 +123,7 @@ class UmkmController extends Controller
         $umkm = Umkm::findOrFail($id);
         $settlements = Settlement::where('is_active', true)->get();
         $categories = ['makanan', 'kerajinan', 'pertanian', 'jasa', 'tekstil', 'lainnya'];
+
         return view('backend.umkm.edit', compact('umkm', 'settlements', 'categories'));
     }
 
@@ -175,18 +178,18 @@ class UmkmController extends Controller
         $umkm->update($data);
 
         return redirect()->route('backend.umkm.index')
-                        ->with('success', 'UMKM updated successfully!');
+            ->with('success', 'UMKM updated successfully!');
     }
 
     public function destroy($id)
     {
         $umkm = Umkm::findOrFail($id);
-        
+
         // Delete logo and photos
         if ($umkm->logo_path) {
             Storage::disk('public')->delete($umkm->logo_path);
         }
-        
+
         if ($umkm->photos) {
             foreach ($umkm->photos as $photo) {
                 Storage::disk('public')->delete($photo);
@@ -196,21 +199,21 @@ class UmkmController extends Controller
         $umkm->delete();
 
         return redirect()->route('backend.umkm.index')
-                        ->with('success', 'UMKM deleted successfully!');
+            ->with('success', 'UMKM deleted successfully!');
     }
 
     public function toggleStatus(Request $request, $id)
     {
         $umkm = Umkm::findOrFail($id);
-        
-        if ($request->type == 'active') {
-            $umkm->is_active = !$umkm->is_active;
+
+        if ($request->type === 'active') {
+            $umkm->is_active = ! $umkm->is_active;
             $status = $umkm->is_active ? 'activated' : 'deactivated';
-        } elseif ($request->type == 'verified') {
-            $umkm->is_verified = !$umkm->is_verified;
+        } elseif ($request->type === 'verified') {
+            $umkm->is_verified = ! $umkm->is_verified;
             $status = $umkm->is_verified ? 'verified' : 'unverified';
         }
-        
+
         $umkm->save();
 
         return response()->json(['message' => "UMKM {$status} successfully!"]);
@@ -220,8 +223,8 @@ class UmkmController extends Controller
     {
         $umkm = Umkm::findOrFail($id);
         $reviews = UmkmReview::where('umkm_id', $id)
-                            ->orderBy('created_at', 'desc')
-                            ->paginate(10);
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
         return view('backend.umkm.reviews', compact('umkm', 'reviews'));
     }
@@ -229,27 +232,28 @@ class UmkmController extends Controller
     public function verifyReview(Request $request, $reviewId)
     {
         $review = UmkmReview::findOrFail($reviewId);
-        $review->is_verified = !$review->is_verified;
+        $review->is_verified = ! $review->is_verified;
         $review->save();
 
         // Update UMKM rating
         $this->updateUmkmRating($review->umkm);
 
         $status = $review->is_verified ? 'verified' : 'unverified';
+
         return response()->json(['message' => "Review {$status} successfully!"]);
     }
 
     private function updateUmkmRating($umkm)
     {
         $reviews = UmkmReview::where('umkm_id', $umkm->id)
-                            ->where('is_verified', true)
-                            ->get();
+            ->where('is_verified', true)
+            ->get();
 
         if ($reviews->count() > 0) {
             $averageRating = $reviews->avg('rating');
             $umkm->update([
                 'rating' => round($averageRating, 2),
-                'total_reviews' => $reviews->count()
+                'total_reviews' => $reviews->count(),
             ]);
         }
     }

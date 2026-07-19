@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\VillageOfficial;
+use Illuminate\Database\Seeder;
 
 class VillageOfficialSeeder extends Seeder
 {
@@ -28,7 +27,7 @@ class VillageOfficialSeeder extends Seeder
                 'start_date' => '2024-01-01',
                 'end_date' => '2029-12-31',
             ],
-            
+
             // Sekretaris Desa
             [
                 'name' => 'SITI NURJANAH, S.AP',
@@ -42,7 +41,7 @@ class VillageOfficialSeeder extends Seeder
                 'is_active' => true,
                 'start_date' => '2006-04-15',
             ],
-            
+
             // Kaur Pemerintahan
             [
                 'name' => 'AHMAD FAUZI, S.H',
@@ -56,7 +55,7 @@ class VillageOfficialSeeder extends Seeder
                 'is_active' => true,
                 'start_date' => '2009-03-10',
             ],
-            
+
             // Kaur Keuangan
             [
                 'name' => 'RINA SURYANI, S.E',
@@ -70,7 +69,7 @@ class VillageOfficialSeeder extends Seeder
                 'is_active' => true,
                 'start_date' => '2010-04-21',
             ],
-            
+
             // Kaur Pelayanan
             [
                 'name' => 'INDAH PERMATA, S.Sos',
@@ -84,7 +83,7 @@ class VillageOfficialSeeder extends Seeder
                 'is_active' => true,
                 'start_date' => '2015-04-05',
             ],
-            
+
             // Kepala Dusun I
             [
                 'name' => 'BAMBANG SUTRISNO',
@@ -97,7 +96,7 @@ class VillageOfficialSeeder extends Seeder
                 'is_active' => true,
                 'start_date' => '2020-01-15',
             ],
-            
+
             // Kepala Dusun II
             [
                 'name' => 'SARTONO WIJAYA',
@@ -110,7 +109,7 @@ class VillageOfficialSeeder extends Seeder
                 'is_active' => true,
                 'start_date' => '2019-08-10',
             ],
-            
+
             // Kepala Dusun III
             [
                 'name' => 'HERI SETIAWAN',
@@ -123,7 +122,7 @@ class VillageOfficialSeeder extends Seeder
                 'is_active' => true,
                 'start_date' => '2021-03-01',
             ],
-            
+
             // Kepala Dusun IV
             [
                 'name' => 'JOKO PRIYANTO',

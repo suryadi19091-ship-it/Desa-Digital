@@ -13,27 +13,27 @@ class TourismController extends Controller
         $query = TourismObject::where('is_active', true);
 
         // Filter by category
-        if ($request->has('category') && $request->category != '') {
+        if ($request->has('category') && $request->category !== '') {
             $query->where('category', $request->category);
         }
 
         // Search functionality
-        if ($request->has('search') && $request->search != '') {
+        if ($request->has('search') && $request->search !== '') {
             $query->where(function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
+                $q->where('name', 'like', '%'.$request->search.'%')
+                    ->orWhere('description', 'like', '%'.$request->search.'%');
             });
         }
 
         // Filter by rating
-        if ($request->has('rating') && $request->rating != '') {
+        if ($request->has('rating') && $request->rating !== '') {
             $query->where('rating', '>=', $request->rating);
         }
 
         $tourismObjects = $query->with('settlement')
-                               ->orderBy('featured', 'desc')
-                               ->orderBy('rating', 'desc')
-                               ->paginate(12);
+            ->orderBy('featured', 'desc')
+            ->orderBy('rating', 'desc')
+            ->paginate(12);
 
         $categories = TourismObject::distinct()->pluck('category');
 
@@ -43,15 +43,15 @@ class TourismController extends Controller
     public function show($id)
     {
         $tourism = TourismObject::where('is_active', true)
-                               ->with('settlement')
-                               ->findOrFail($id);
+            ->with('settlement')
+            ->findOrFail($id);
 
         // Get nearby tourism objects
         $nearbyTourism = TourismObject::where('is_active', true)
-                                    ->where('id', '!=', $tourism->id)
-                                    ->where('settlement_id', $tourism->settlement_id)
-                                    ->limit(4)
-                                    ->get();
+            ->where('id', '!=', $tourism->id)
+            ->where('settlement_id', $tourism->settlement_id)
+            ->limit(4)
+            ->get();
 
         return view('frontend.tourism.show', compact('tourism', 'nearbyTourism'));
     }
@@ -59,10 +59,10 @@ class TourismController extends Controller
     public function featured()
     {
         $featuredTourism = TourismObject::where('is_active', true)
-                                      ->where('featured', true)
-                                      ->with('settlement')
-                                      ->orderBy('rating', 'desc')
-                                      ->paginate(12);
+            ->where('featured', true)
+            ->with('settlement')
+            ->orderBy('rating', 'desc')
+            ->paginate(12);
 
         return view('frontend.tourism.featured', compact('featuredTourism'));
     }

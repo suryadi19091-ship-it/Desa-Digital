@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Permission;
 use App\Models\Role;
+use Illuminate\Database\Seeder;
 
 class PermissionSeeder extends Seeder
 {
@@ -81,7 +81,7 @@ class PermissionSeeder extends Seeder
             [
                 'display_name' => 'Super Administrator',
                 'description' => 'Has access to all system features',
-                'is_active' => true
+                'is_active' => true,
             ]
         );
 
@@ -90,7 +90,7 @@ class PermissionSeeder extends Seeder
             [
                 'display_name' => 'Administrator',
                 'description' => 'Has access to most administrative features',
-                'is_active' => true
+                'is_active' => true,
             ]
         );
 
@@ -102,7 +102,7 @@ class PermissionSeeder extends Seeder
             'manage-village-data', 'manage-population-data', 'manage-locations',
             'manage-contact-messages', 'reply-contact-messages',
             'generate-reports', 'export-data', 'view-activity-logs',
-            'view-system-info', 'manage-village-budget'
+            'view-system-info', 'manage-village-budget',
         ];
 
         $permissions = Permission::whereIn('name', $adminPermissions)->get();

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Permission;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -34,591 +36,212 @@ class AuthServiceProvider extends ServiceProvider
         // Database-driven permissions system
         Gate::before(function ($user, $ability) {
             // Allow if no user (for public access)
-            if (!$user) {
+            if (! $user) {
                 return null; // Continue to individual gates
             }
-            
+
             // User must be active for most operations
-            if (!$user->isActive()) {
+            if (! $user->isActive()) {
                 // But allow some basic operations even for inactive users
                 $allowedForInactive = ['account-active', 'access-system', 'view-profile'];
-                if (!in_array($ability, $allowedForInactive)) {
+                if (! in_array($ability, $allowedForInactive)) {
                     return false;
                 }
             }
-            
+
             // Check if user has explicit permission in database first
             if (method_exists($user, 'hasPermission')) {
                 try {
                     $userPermission = $user->permissions()
                         ->where('permissions.name', $ability)
                         ->first();
-                        
+
                     if ($userPermission) {
                         // If explicitly granted or denied, use that
                         if ($userPermission->pivot->type === 'grant') {
                             return true;
-                        } elseif ($userPermission->pivot->type === 'deny') {
+                        }
+
+                        if ($userPermission->pivot->type === 'deny') {
                             return false;
                         }
                     }
                 } catch (\Exception $e) {
-                    \Log::error('Permission check failed: ' . $e->getMessage());
+                    \Log::error('Permission check failed: '.$e->getMessage());
                 }
             }
-            
+
             // Super admin fallback - has access unless explicitly denied
             if (isset($user->role) && $user->role === 'super_admin') {
                 return true;
             }
-            
+
             // Continue to check individual gates below for fallback
             return null;
         });
-        
+
         // Define database permissions if they don't exist
         $this->defineDefaultPermissions();
-        
+
         // Assign default permissions to roles
         $this->assignDefaultRolePermissions();
-        
+
         // Legacy gates (fallback for role-based system)
         // System Access Gates
-        Gate::define('access-system', function (?User $user) {
-            return $user && $user->is_active === true;
-        });
+        Gate::define('access-system', [\App\Gates\SystemGate::class, 'accessSystem']);
 
-        Gate::define('account-active', function (?User $user) {
-            return $user && $user->is_active === true;
-        });
+        Gate::define('account-active', [\App\Gates\SystemGate::class, 'accountActive']);
 
-        Gate::define('account-verified', function (?User $user) {
-            return $user && $user->email_verified_at !== null;
-        });
+        Gate::define('account-verified', [\App\Gates\SystemGate::class, 'accountVerified']);
 
         // Registration Gates
-        Gate::define('register-account', function (?User $user = null) {
+        Gate::define('register-account', function () {
             // Allow registration by default, but can be configured
             return config('auth.allow_registration', true);
         });
 
         // Role-based Access Gates
-        Gate::define('access-admin-panel', function (?User $user) {
-            if (!$user) return false;
-            
-            // Check if user is active
-            if (!$user->isActive()) return false;
-            
-            // Allow admin and super_admin roles
-            if (isset($user->role)) {
-                return in_array($user->role, ['admin', 'super_admin']);
-            }
-            
-            return false;
-        });
+        Gate::define('access-admin-panel', [\App\Gates\UserGate::class, 'accessAdminPanel']);
 
-        Gate::define('access-user-dashboard', function (?User $user) {
-            return $user && in_array($user->role, ['user', 'member', 'resident']);
-        });
+        Gate::define('access-user-dashboard', [\App\Gates\UserGate::class, 'accessUserDashboard']);
 
-        Gate::define('is-admin', function (?User $user) {
-            return $user && in_array($user->role, ['admin', 'super_admin']);
-        });
+        Gate::define('is-admin', [\App\Gates\UserGate::class, 'isAdmin']);
 
-        Gate::define('is-super-admin', function (?User $user) {
-            return $user && $user->role === 'super_admin';
-        });
+        Gate::define('is-super-admin', [\App\Gates\UserGate::class, 'isSuperAdmin']);
 
-        Gate::define('is-user', function (?User $user) {
-            return $user && in_array($user->role, ['user', 'member', 'resident']);
-        });
+        Gate::define('is-user', [\App\Gates\UserGate::class, 'isUser']);
 
         // Profile Management Gates
-        Gate::define('view-profile', function (?User $user, ?User $targetUser = null) {
-            if (!$user) return false;
-            
-            // Users can view their own profile
-            if ($targetUser && $user->id === $targetUser->id) {
-                return true;
-            }
-            
-            // Admins can view any profile
-            if (in_array($user->role, ['admin', 'super_admin'])) {
-                return true;
-            }
+        Gate::define('view-profile', [\App\Gates\UserGate::class, 'viewProfile']);
 
-            // Default: can view own profile
-            return $targetUser === null;
-        });
+        Gate::define('update-profile', [\App\Gates\UserGate::class, 'updateProfile']);
 
-        Gate::define('update-profile', function (?User $user, ?User $targetUser = null) {
-            if (!$user) return false;
-            
-            // Users can update their own profile
-            if ($targetUser && $user->id === $targetUser->id) {
-                return $user->is_active === true;
-            }
-            
-            // Admins can update any profile
-            if (in_array($user->role, ['admin', 'super_admin'])) {
-                return true;
-            }
-
-            // Default: can update own profile if active
-            return $targetUser === null && $user->is_active === true;
-        });
-
-        Gate::define('change-password', function (?User $user, ?User $targetUser = null) {
-            if (!$user) return false;
-            
-            // Users can change their own password
-            if ($targetUser && $user->id === $targetUser->id) {
-                return $user->is_active === true;
-            }
-            
-            // Admins can change any password except super admin
-            if ($user->role === 'admin') {
-                return $targetUser === null || $targetUser->role !== 'super_admin';
-            }
-            
-            // Super admins can change any password
-            if ($user->role === 'super_admin') {
-                return true;
-            }
-
-            // Default: can change own password if active
-            return $targetUser === null && $user->is_active === true;
-        });
+        Gate::define('change-password', [\App\Gates\UserGate::class, 'changePassword']);
 
         // User Management Gates
-        Gate::define('manage-users', function (?User $user) {
-            if (!$user || !$user->isActive()) return false;
-            
-            // Check database permission first
-            if (method_exists($user, 'hasPermission') && $user->hasPermission('manage-users')) {
-                return true;
-            }
-            
-            // Fallback to role-based check
-            return $user->role === 'super_admin' || in_array($user->role, ['admin']);
-        });
+        Gate::define('manage-users', [\App\Gates\UserGate::class, 'manageUsers']);
 
-        Gate::define('create-user', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin']));
-        });
+        Gate::define('create-user', [\App\Gates\UserGate::class, 'createUser']);
 
-        Gate::define('update-user', function (?User $user, User $targetUser) {
-            if (!$user || !in_array($user->role, ['admin', 'super_admin'])) {
-                return false;
-            }
-            
-            // Super admin can update anyone
-            if ($user->role === 'super_admin') {
-                return true;
-            }
-            
-            // Admin cannot update super admin or other admins
-            if ($user->role === 'admin') {
-                return !in_array($targetUser->role, ['admin', 'super_admin']);
-            }
-            
-            return false;
-        });
+        Gate::define('update-user', [\App\Gates\UserGate::class, 'updateUser']);
 
-        Gate::define('delete-user', function (?User $user, User $targetUser) {
-            if (!$user || !in_array($user->role, ['admin', 'super_admin'])) {
-                return false;
-            }
-            
-            // Cannot delete self
-            if ($user->id === $targetUser->id) {
-                return false;
-            }
-            
-            // Super admin can delete anyone except other super admins
-            if ($user->role === 'super_admin') {
-                return $targetUser->role !== 'super_admin';
-            }
-            
-            // Admin can only delete regular users
-            if ($user->role === 'admin') {
-                return in_array($targetUser->role, ['user', 'member', 'resident']);
-            }
-            
-            return false;
-        });
+        Gate::define('delete-user', [\App\Gates\UserGate::class, 'deleteUser']);
 
-        Gate::define('approve-user', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin']));
-        });
+        Gate::define('approve-user', [\App\Gates\UserGate::class, 'approveUser']);
 
-        Gate::define('bulk-delete-users', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin']));
-        });
+        Gate::define('bulk-delete-users', [\App\Gates\UserGate::class, 'bulkDeleteUsers']);
 
-        Gate::define('manage-user-status', function (?User $user, ?User $targetUser = null) {
-            if (!$user || !in_array($user->role, ['admin', 'super_admin'])) {
-                return false;
-            }
-            
-            // If no target user specified, allow for bulk operations
-            if (!$targetUser) {
-                return true;
-            }
-            
-            // Cannot change own status
-            if ($user->id === $targetUser->id) {
-                return false;
-            }
-            
-            // Super admin can change anyone's status except other super admins
-            if ($user->role === 'super_admin') {
-                return $targetUser->role !== 'super_admin';
-            }
-            
-            // Admin can only change regular user status
-            if ($user->role === 'admin') {
-                return in_array($targetUser->role, ['user', 'member', 'resident']);
-            }
-            
-            return false;
-        });
+        Gate::define('manage-user-status', [\App\Gates\UserGate::class, 'manageUserStatus']);
 
-        Gate::define('view-user', function (?User $user, ?User $targetUser = null) {
-            if (!$user) return false;
-            
-            // Users can view their own profile
-            if ($targetUser && $user->id === $targetUser->id) {
-                return true;
-            }
-            
-            // Admins can view any user
-            return in_array($user->role, ['admin', 'super_admin']);
-        });
+        Gate::define('view-user', [\App\Gates\UserGate::class, 'viewUser']);
 
-        Gate::define('edit-user', function (?User $user, User $targetUser) {
-            if (!$user || !in_array($user->role, ['admin', 'super_admin'])) {
-                return false;
-            }
-            
-            // Cannot edit self through this interface
-            if ($user->id === $targetUser->id) {
-                return false;
-            }
-            
-            // Super admin can edit anyone except other super admins
-            if ($user->role === 'super_admin') {
-                return $targetUser->role !== 'super_admin';
-            }
-            
-            // Admin can only edit regular users
-            if ($user->role === 'admin') {
-                return in_array($targetUser->role, ['user', 'member', 'resident']);
-            }
-            
-            return false;
-        });
+        Gate::define('edit-user', [\App\Gates\UserGate::class, 'editUser']);
 
-        Gate::define('ban-user', function (?User $user, User $targetUser) {
-            if (!$user || !in_array($user->role, ['admin', 'super_admin'])) {
-                return false;
-            }
-            
-            // Cannot ban self
-            if ($user->id === $targetUser->id) {
-                return false;
-            }
-            
-            // Super admin can ban anyone except other super admins
-            if ($user->role === 'super_admin') {
-                return $targetUser->role !== 'super_admin';
-            }
-            
-            // Admin can only ban regular users
-            return in_array($targetUser->role, ['user', 'member', 'resident']);
-        });
+        Gate::define('ban-user', [\App\Gates\UserGate::class, 'banUser']);
 
         // Role Assignment Gates
-        Gate::define('assign-super-admin-role', function (?User $user) {
-            return $user && $user->role === 'super_admin';
-        });
+        Gate::define('assign-super-admin-role', [\App\Gates\UserGate::class, 'assignSuperAdminRole']);
 
-        Gate::define('assign-admin-role', function (?User $user) {
-            return $user && in_array($user->role, ['super_admin']);
-        });
+        Gate::define('assign-admin-role', [\App\Gates\UserGate::class, 'assignAdminRole']);
 
-        Gate::define('assign-operator-role', function (?User $user) {
-            return $user && in_array($user->role, ['admin', 'super_admin']);
-        });
+        Gate::define('assign-operator-role', [\App\Gates\UserGate::class, 'assignOperatorRole']);
 
         // Export Gates
-        Gate::define('export-users', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin']));
-        });
+        Gate::define('export-users', [\App\Gates\UserGate::class, 'exportUsers']);
 
-        Gate::define('export-content', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin']));
-        });
+        Gate::define('export-content', [\App\Gates\ContentGate::class, 'exportContent']);
 
         // Content Management Gates
-        Gate::define('manage-content', function (?User $user) {
-            if (!$user || !$user->isActive()) return false;
-            
-            // Check database permission first
-            if (method_exists($user, 'hasPermission') && $user->hasPermission('manage-content')) {
-                return true;
-            }
-            
-            // Fallback to role-based check
-            return $user->role === 'super_admin' || in_array($user->role, ['admin', 'editor']);
-        });
+        Gate::define('manage-content', [\App\Gates\ContentGate::class, 'manageContent']);
 
-        Gate::define('publish-content', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin']));
-        });
+        Gate::define('publish-content', [\App\Gates\ContentGate::class, 'publishContent']);
 
-        Gate::define('moderate-content', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin', 'moderator']));
-        });
+        Gate::define('moderate-content', [\App\Gates\ContentGate::class, 'moderateContent']);
 
-        Gate::define('view-content', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin', 'editor', 'moderator']));
-        });
+        Gate::define('view-content', [\App\Gates\ContentGate::class, 'viewContent']);
 
-        Gate::define('edit-content', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin', 'editor']));
-        });
+        Gate::define('edit-content', [\App\Gates\ContentGate::class, 'editContent']);
 
-        Gate::define('delete-content', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin']));
-        });
+        Gate::define('delete-content', [\App\Gates\ContentGate::class, 'deleteContent']);
 
         // Data Management Gates
-        Gate::define('manage-village-data', function (?User $user) {
-            if (!$user || !$user->isActive()) return false;
-            
-            // Check database permission first
-            if (method_exists($user, 'hasPermission') && $user->hasPermission('manage-village-data')) {
-                return true;
-            }
-            
-            // Fallback to role-based check
-            return $user->role === 'super_admin' || in_array($user->role, ['admin', 'village_officer']);
-        });
+        Gate::define('manage-village-data', [\App\Gates\DataGate::class, 'manageVillageData']);
 
-        Gate::define('manage-population-data', function (?User $user) {
-            if (!$user || !$user->isActive()) return false;
-            
-            // Check database permission first
-            if (method_exists($user, 'hasPermission') && $user->hasPermission('manage-population-data')) {
-                return true;
-            }
-            
-            // Fallback to role-based check
-            return $user->role === 'super_admin' || in_array($user->role, ['admin', 'population_officer']);
-        });
+        Gate::define('manage-population-data', [\App\Gates\DataGate::class, 'managePopulationData']);
 
-        Gate::define('manage-budget-data', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin', 'finance_officer']));
-        });
+        Gate::define('manage-budget-data', [\App\Gates\DataGate::class, 'manageBudgetData']);
 
-        Gate::define('view-sensitive-data', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin']));
-        });
+        Gate::define('view-sensitive-data', [\App\Gates\DataGate::class, 'viewSensitiveData']);
 
         // Communication Gates
-        Gate::define('manage-contact-messages', function (?User $user) {
-            if (!$user || !$user->isActive()) return false;
-            
-            // Check database permission first
-            if (method_exists($user, 'hasPermission') && $user->hasPermission('manage-contact-messages')) {
-                return true;
-            }
-            
-            // Fallback to role-based check
-            return $user->role === 'super_admin' || in_array($user->role, ['admin', 'cs_officer']);
-        });
+        Gate::define('manage-contact-messages', [\App\Gates\ServiceGate::class, 'manageContactMessages']);
 
-        Gate::define('reply-contact-messages', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin', 'cs_officer']));
-        });
+        Gate::define('reply-contact-messages', [\App\Gates\ServiceGate::class, 'replyContactMessages']);
 
-        Gate::define('send-notifications', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin']));
-        });
+        Gate::define('send-notifications', [\App\Gates\ServiceGate::class, 'sendNotifications']);
 
         // System Configuration Gates
-        Gate::define('manage-settings', function (?User $user) {
-            return $user && $user->role === 'super_admin';
-        });
+        Gate::define('manage-settings', [\App\Gates\SystemGate::class, 'manageSettings']);
 
-        Gate::define('manage-system-backup', function (?User $user) {
-            return $user && $user->role === 'super_admin';
-        });
+        Gate::define('manage-system-backup', [\App\Gates\SystemGate::class, 'manageSystemBackup']);
 
-        Gate::define('view-system-logs', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin']));
-        });
+        Gate::define('view-system-logs', [\App\Gates\SystemGate::class, 'viewSystemLogs']);
 
-        Gate::define('manage-permissions', function (?User $user) {
-            if (!$user || !$user->isActive()) return false;
-            
-            // Check database permission first
-            if (method_exists($user, 'hasPermission') && $user->hasPermission('manage-permissions')) {
-                return true;
-            }
-            
-            // Fallback to role-based check
-            return $user->role === 'super_admin';
-        });
+        Gate::define('manage-permissions', [\App\Gates\SystemGate::class, 'managePermissions']);
 
         // Activity Logging Gates
-        Gate::define('log-user-activity', function (?User $user = null) {
+        Gate::define('log-user-activity', function () {
             // Always allow activity logging for security
             return true;
         });
 
-        Gate::define('view-activity-logs', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin']));
-        });
+        Gate::define('view-activity-logs', [\App\Gates\SystemGate::class, 'viewActivityLogs']);
 
         // Service Management Gates
-        Gate::define('manage-services', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin', 'service_officer']));
-        });
+        Gate::define('manage-services', [\App\Gates\ServiceGate::class, 'manageServices']);
 
-        Gate::define('process-service-requests', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin', 'service_officer']));
-        });
+        Gate::define('process-service-requests', [\App\Gates\ServiceGate::class, 'processServiceRequests']);
 
         // Letter Template Management Gates
-        Gate::define('manage.letter_templates', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin']));
-        });
+        Gate::define('manage.letter_templates', [\App\Gates\ServiceGate::class, 'manageLetterTemplates']);
 
-        Gate::define('letter_templates.view', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin', 'editor']));
-        });
+        Gate::define('letter_templates.view', [\App\Gates\ServiceGate::class, 'letterTemplatesView']);
 
-        Gate::define('letter_templates.create', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin']));
-        });
+        Gate::define('letter_templates.create', [\App\Gates\ServiceGate::class, 'letterTemplatesCreate']);
 
-        Gate::define('letter_templates.edit', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin']));
-        });
+        Gate::define('letter_templates.edit', [\App\Gates\ServiceGate::class, 'letterTemplatesEdit']);
 
-        Gate::define('letter_templates.delete', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin']));
-        });
+        Gate::define('letter_templates.delete', [\App\Gates\ServiceGate::class, 'letterTemplatesDelete']);
 
         // Report Generation Gates
-        Gate::define('generate-reports', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin', 'report_officer']));
-        });
+        Gate::define('generate-reports', [\App\Gates\ServiceGate::class, 'generateReports']);
 
-        Gate::define('export-data', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin']));
-        });
+        Gate::define('export-data', [\App\Gates\ServiceGate::class, 'exportData']);
 
         // Special Permission Gates
-        Gate::define('impersonate-user', function (?User $user, User $targetUser) {
-            if (!$user || $user->role !== 'super_admin') {
-                return false;
-            }
-            
-            // Cannot impersonate self or other super admins
-            return $user->id !== $targetUser->id && $targetUser->role !== 'super_admin';
-        });
+        Gate::define('impersonate-user', [\App\Gates\SystemGate::class, 'impersonateUser']);
 
-        Gate::define('access-maintenance-mode', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin']));
-        });
+        Gate::define('access-maintenance-mode', [\App\Gates\SystemGate::class, 'accessMaintenanceMode']);
 
         // Time-based Gates
-        Gate::define('login-during-maintenance', function (?User $user) {
-            if (!$user) return false;
-            
-            // Allow super_admin and admins to login during maintenance
-            if ($user->role === 'super_admin' || in_array($user->role, ['admin'])) {
-                return true;
-            }
-            
-            // Check if system is in maintenance mode
-            return !app()->isDownForMaintenance();
-        });
+        Gate::define('login-during-maintenance', [\App\Gates\SystemGate::class, 'loginDuringMaintenance']);
 
         // IP-based Gates (example)
-        Gate::define('admin-ip-restriction', function (?User $user) {
-            if (!$user || !($user->role === 'super_admin' || in_array($user->role, ['admin']))) {
-                return false;
-            }
-            
-            // Super admin bypasses IP restrictions
-            if ($user->role === 'super_admin') {
-                return true;
-            }
-            
-            // Check if IP restriction is enabled for regular admins
-            $allowedIps = config('auth.admin_allowed_ips', []);
-            
-            if (empty($allowedIps)) {
-                return true; // No restriction
-            }
-            
-            $currentIp = request()->ip();
-            return in_array($currentIp, $allowedIps);
-        });
+        Gate::define('admin-ip-restriction', [\App\Gates\SystemGate::class, 'adminIpRestriction']);
 
         // Logs and Monitoring Gates
-        Gate::define('view-logs', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin']));
-        });
+        Gate::define('view-logs', [\App\Gates\SystemGate::class, 'viewLogs']);
 
-        Gate::define('view-activity-logs', function (?User $user) {
-            return $user && ($user->role === 'super_admin' || in_array($user->role, ['admin']));
-        });
+        Gate::define('view-activity-logs', [\App\Gates\SystemGate::class, 'viewActivityLogs']);
 
-        Gate::define('view-system-info', function (?User $user) {
-            if (!$user || !$user->isActive()) return false;
-            
-            // Check database permission first
-            if (method_exists($user, 'hasPermission') && $user->hasPermission('view-system-info')) {
-                return true;
-            }
-            
-            // Fallback to role-based check
-            return $user->role === 'super_admin' || in_array($user->role, ['admin']);
-        });
+        Gate::define('view-system-info', [\App\Gates\SystemGate::class, 'viewSystemInfo']);
 
-        Gate::define('clear-logs', function (?User $user) {
-            return $user && $user->role === 'super_admin';
-        });
+        Gate::define('clear-logs', [\App\Gates\SystemGate::class, 'clearLogs']);
 
         // Additional gates for specific features
-        Gate::define('manage-locations', function (?User $user) {
-            if (!$user || !$user->isActive()) return false;
-            
-            // Check database permission first
-            if (method_exists($user, 'hasPermission') && $user->hasPermission('manage-locations')) {
-                return true;
-            }
-            
-            // Fallback to role-based check
-            return $user->role === 'super_admin' || in_array($user->role, ['admin']);
-        });
+        Gate::define('manage-locations', [\App\Gates\DataGate::class, 'manageLocations']);
 
-        Gate::define('manage-village-budget', function (?User $user) {
-            if (!$user || !$user->isActive()) return false;
-            
-            // Check database permission first
-            if (method_exists($user, 'hasPermission') && $user->hasPermission('manage-village-budget')) {
-                return true;
-            }
-            
-            // Fallback to role-based check
-            return $user->role === 'super_admin' || in_array($user->role, ['admin', 'finance_officer']);
-        });
+        Gate::define('manage-village-budget', [\App\Gates\DataGate::class, 'manageVillageBudget']);
     }
 
     /**
@@ -626,29 +249,29 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected function defineDefaultPermissions(): void
     {
-        if (!class_exists(\App\Models\Permission::class)) {
+        if (! class_exists(Permission::class)) {
             return;
         }
 
         try {
             $defaultPermissions = $this->getDefaultPermissions();
-            
+
             foreach ($defaultPermissions as $category => $permissions) {
                 foreach ($permissions as $permission) {
-                    \App\Models\Permission::firstOrCreate(
+                    Permission::firstOrCreate(
                         ['name' => $permission['name']],
                         [
                             'display_name' => $permission['display_name'],
                             'description' => $permission['description'],
                             'category' => $category,
-                            'is_active' => true
+                            'is_active' => true,
                         ]
                     );
                 }
             }
         } catch (\Exception $e) {
             // Silently fail if database is not ready
-            \Log::error('Failed to define default permissions: ' . $e->getMessage());
+            \Log::error('Failed to define default permissions: '.$e->getMessage());
         }
     }
 
@@ -709,7 +332,7 @@ class AuthServiceProvider extends ServiceProvider
                 ['name' => 'manage-permissions', 'display_name' => 'Kelola Permission', 'description' => 'Mengelola hak akses pengguna'],
                 ['name' => 'assign-super-admin-role', 'display_name' => 'Assign Super Admin', 'description' => 'Memberikan role super admin'],
                 ['name' => 'assign-admin-role', 'display_name' => 'Assign Admin', 'description' => 'Memberikan role admin'],
-            ]
+            ],
         ];
     }
 
@@ -719,21 +342,21 @@ class AuthServiceProvider extends ServiceProvider
     protected function assignDefaultRolePermissions(): void
     {
         try {
-            $superAdminRole = \App\Models\Role::firstOrCreate(
+            Role::firstOrCreate(
                 ['name' => 'super_admin'],
                 [
                     'display_name' => 'Super Administrator',
                     'description' => 'Has access to all system features',
-                    'is_active' => true
+                    'is_active' => true,
                 ]
             );
 
-            $adminRole = \App\Models\Role::firstOrCreate(
+            $adminRole = Role::firstOrCreate(
                 ['name' => 'admin'],
                 [
                     'display_name' => 'Administrator',
                     'description' => 'Has access to most administrative features',
-                    'is_active' => true
+                    'is_active' => true,
                 ]
             );
 
@@ -744,14 +367,14 @@ class AuthServiceProvider extends ServiceProvider
                 'manage-content', 'publish-content', 'view-content', 'edit-content',
                 'manage-village-data', 'manage-population-data', 'manage-locations',
                 'manage-contact-messages', 'reply-contact-messages',
-                'generate-reports', 'export-data', 'view-activity-logs'
+                'generate-reports', 'export-data', 'view-activity-logs',
             ];
 
-            $permissions = \App\Models\Permission::whereIn('name', $adminPermissions)->get();
+            $permissions = Permission::whereIn('name', $adminPermissions)->get();
             $adminRole->permissions()->syncWithoutDetaching($permissions);
 
         } catch (\Exception $e) {
-            \Log::error('Failed to assign default role permissions: ' . $e->getMessage());
+            \Log::error('Failed to assign default role permissions: '.$e->getMessage());
         }
     }
 }

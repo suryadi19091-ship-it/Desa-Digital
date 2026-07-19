@@ -8,8 +8,6 @@ use App\Models\LetterTemplate;
 use App\Models\PopulationData;
 use App\Models\Settlement;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class LetterRequestController extends Controller
 {
@@ -32,10 +30,10 @@ class LetterRequestController extends Controller
         // Get user's population data
         $populationData = null;
         $settlementData = null;
-        
+
         if (auth()->user() && auth()->user()->nik) {
             $populationData = PopulationData::where('identity_card_number', auth()->user()->nik)->first();
-            
+
             // Get settlement data if population data exists
             if ($populationData && $populationData->settlement_id) {
                 $settlementData = Settlement::find($populationData->settlement_id);
@@ -53,12 +51,12 @@ class LetterRequestController extends Controller
         // Get user's population data for validation
         $user = auth()->user();
         $populationData = null;
-        
+
         if ($user && $user->nik) {
             $populationData = PopulationData::where('identity_card_number', $user->nik)->first();
         }
-        
-        if (!$populationData) {
+
+        if (! $populationData) {
             return redirect()->back()
                 ->with('error', 'Data penduduk Anda tidak ditemukan. Silakan hubungi admin desa.');
         }
@@ -70,7 +68,7 @@ class LetterRequestController extends Controller
             'ktp_file' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'kk_file' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'other_files.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'terms' => 'required|accepted'
+            'terms' => 'required|accepted',
         ], [
             'letter_template_id.required_unless' => 'Pilih jenis surat yang akan diajukan.',
             'letter_template_id.exists' => 'Template surat tidak ditemukan.',
@@ -88,7 +86,7 @@ class LetterRequestController extends Controller
             // Handle file uploads
             $ktpPath = $request->file('ktp_file')->store('letter_requests/ktp', 'public');
             $kkPath = $request->file('kk_file')->store('letter_requests/kk', 'public');
-            
+
             $otherFiles = [];
             if ($request->hasFile('other_files')) {
                 foreach ($request->file('other_files') as $file) {
@@ -98,13 +96,11 @@ class LetterRequestController extends Controller
 
             // Determine letter type
             $letterType = 'lainnya';
-            $letterTemplateId = null;
-            
+
             if ($request->letter_template_id !== 'lainnya') {
                 $template = LetterTemplate::find($request->letter_template_id);
                 if ($template) {
                     $letterType = $template->letter_type;
-                    $letterTemplateId = $template->id;
                 }
             }
 
@@ -129,20 +125,17 @@ class LetterRequestController extends Controller
                 'purpose' => $request->purpose,
                 'ktp_file_path' => $ktpPath,
                 'kk_file_path' => $kkPath,
-                'other_files' => !empty($otherFiles) ? $otherFiles : null,
+                'other_files' => $otherFiles !== [] ? $otherFiles : null,
                 'status' => 'pending',
-                'notes' => null
+                'notes' => null,
             ]);
 
-            return redirect()->back()->with('success', 
-                "Pengajuan surat berhasil dikirim dengan nomor: {$requestNumber}. " .
-                "Anda akan dihubungi dalam 1-3 hari kerja untuk proses selanjutnya."
-            );
+            return redirect()->back()->with('success', "Pengajuan surat berhasil dikirim dengan nomor: {$requestNumber}. Anda akan dihubungi dalam 1-3 hari kerja untuk proses selanjutnya.");
 
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Gagal mengirim pengajuan: ' . $e->getMessage());
+                ->with('error', 'Gagal mengirim pengajuan: '.$e->getMessage());
         }
     }
 
@@ -153,12 +146,12 @@ class LetterRequestController extends Controller
     {
         $date = now()->format('Ymd');
         $prefix = 'REQ';
-        
+
         // Get last request number for today
         $lastRequest = LetterRequest::whereDate('created_at', now()->toDateString())
             ->orderBy('created_at', 'desc')
             ->first();
-        
+
         $sequence = 1;
         if ($lastRequest) {
             // Extract sequence number from last request
@@ -167,7 +160,7 @@ class LetterRequestController extends Controller
                 $sequence = intval($matches[1]) + 1;
             }
         }
-        
-        return $prefix . $date . str_pad($sequence, 3, '0', STR_PAD_LEFT);
+
+        return $prefix.$date.str_pad($sequence, 3, '0', STR_PAD_LEFT);
     }
 }

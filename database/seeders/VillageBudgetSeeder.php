@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\VillageBudget;
+use Illuminate\Database\Seeder;
 
 class VillageBudgetSeeder extends Seeder
 {
@@ -45,7 +44,7 @@ class VillageBudgetSeeder extends Seeder
                 'realized_amount' => 35000000.00,
                 'created_by' => 1,
             ],
-            
+
             // Expenses (Belanja)
             [
                 'fiscal_year' => 2025,

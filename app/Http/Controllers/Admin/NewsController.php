@@ -17,26 +17,26 @@ class NewsController extends Controller
 
         if ($request->has('search')) {
             $search = $request->get('search');
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('content', 'like', "%{$search}%");
+                    ->orWhere('content', 'like', "%{$search}%");
             });
         }
 
-        if ($request->has('category') && $request->category != '') {
+        if ($request->has('category') && $request->category !== '') {
             $query->where('category', $request->category);
         }
 
-        if ($request->has('status') && $request->status != '') {
-            if ($request->status == 'published') {
+        if ($request->has('status') && $request->status !== '') {
+            if ($request->status === 'published') {
                 $query->where('is_published', true);
-            } else if ($request->status == 'draft') {
+            } elseif ($request->status === 'draft') {
                 $query->where('is_published', false);
             }
         }
 
         $news = $query->orderBy('created_at', 'desc')->paginate(10);
-        
+
         return view('backend.pages.news.index', compact('news'));
     }
 
@@ -49,7 +49,7 @@ class NewsController extends Controller
             'infrastruktur' => 'Infrastruktur',
             'pendidikan' => 'Pendidikan',
             'olahraga' => 'Olahraga',
-            'lainnya' => 'Lainnya'
+            'lainnya' => 'Lainnya',
         ];
 
         return view('backend.pages.news.create', compact('categories'));
@@ -64,13 +64,13 @@ class NewsController extends Controller
             'category' => 'required|in:kegiatan,kesehatan,ekonomi,infrastruktur,pendidikan,olahraga,lainnya',
             'excerpt' => 'nullable|string',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'required|in:draft,published'
+            'status' => 'required|in:draft,published',
         ]);
 
         $data = $request->all();
 
         // Generate slug if not provided
-        if (empty($data['slug'])) {
+        if (! isset($data['slug']) || $data['slug'] === '') {
             $data['slug'] = Str::slug($data['title']);
         }
 
@@ -78,14 +78,14 @@ class NewsController extends Controller
         $originalSlug = $data['slug'];
         $counter = 1;
         while (News::where('slug', $data['slug'])->exists()) {
-            $data['slug'] = $originalSlug . '-' . $counter;
+            $data['slug'] = $originalSlug.'-'.$counter;
             $counter++;
         }
 
         // Handle image upload
         if ($request->hasFile('featured_image')) {
             $image = $request->file('featured_image');
-            $imageName = time() . '_' . Str::random(10) . '.' . $image->getClientOriginalExtension();
+            $imageName = time().'_'.Str::random(10).'.'.$image->getClientOriginalExtension();
             $imagePath = $image->storeAs('news', $imageName, 'public');
             $data['featured_image'] = $imagePath;
         }
@@ -99,10 +99,10 @@ class NewsController extends Controller
         // Set author
         $data['author_id'] = Auth::id();
 
-        $news = News::create($data);
+        News::create($data);
 
         $message = $request->status === 'published' ? 'Berita berhasil dipublikasikan!' : 'Berita berhasil disimpan sebagai draft!';
-        
+
         return redirect()->route('backend.news.index')->with('success', $message);
     }
 
@@ -120,7 +120,7 @@ class NewsController extends Controller
             'infrastruktur' => 'Infrastruktur',
             'pendidikan' => 'Pendidikan',
             'olahraga' => 'Olahraga',
-            'lainnya' => 'Lainnya'
+            'lainnya' => 'Lainnya',
         ];
 
         return view('backend.pages.news.edit', compact('news', 'categories'));
@@ -130,18 +130,18 @@ class NewsController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'slug' => 'nullable|string|unique:news,slug,' . $news->id,
+            'slug' => 'nullable|string|unique:news,slug,'.$news->id,
             'content' => 'required|string',
             'category' => 'required|in:kegiatan,kesehatan,ekonomi,infrastruktur,pendidikan,olahraga,lainnya',
             'excerpt' => 'nullable|string',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'required|in:draft,published'
+            'status' => 'required|in:draft,published',
         ]);
 
         $data = $request->all();
 
         // Generate slug if not provided
-        if (empty($data['slug'])) {
+        if (! isset($data['slug']) || $data['slug'] === '') {
             $data['slug'] = Str::slug($data['title']);
         }
 
@@ -153,23 +153,23 @@ class NewsController extends Controller
             }
 
             $image = $request->file('featured_image');
-            $imageName = time() . '_' . Str::random(10) . '.' . $image->getClientOriginalExtension();
+            $imageName = time().'_'.Str::random(10).'.'.$image->getClientOriginalExtension();
             $imagePath = $image->storeAs('news', $imageName, 'public');
             $data['featured_image'] = $imagePath;
         }
 
         // Set publish status
         $data['is_published'] = ($request->status === 'published');
-        if ($data['is_published'] && !$news->published_at) {
+        if ($data['is_published'] && ! $news->published_at) {
             $data['published_at'] = now();
-        } elseif (!$data['is_published']) {
+        } elseif (! $data['is_published']) {
             $data['published_at'] = null;
         }
 
         $news->update($data);
 
         $message = $request->status === 'published' ? 'Berita berhasil dipublikasikan!' : 'Berita berhasil disimpan sebagai draft!';
-        
+
         return redirect()->route('backend.news.index')->with('success', $message);
     }
 
@@ -190,7 +190,7 @@ class NewsController extends Controller
         $action = $request->get('action');
         $ids = $request->get('ids', []);
 
-        if (empty($ids)) {
+        if ($ids === [] || $ids === null) {
             return response()->json(['success' => false, 'message' => 'Tidak ada item yang dipilih']);
         }
 
@@ -203,20 +203,23 @@ class NewsController extends Controller
                     }
                     $item->delete();
                 }
+
                 return response()->json(['success' => true, 'message' => 'Berita berhasil dihapus']);
 
             case 'publish':
                 News::whereIn('id', $ids)->update([
                     'is_published' => true,
-                    'published_at' => now()
+                    'published_at' => now(),
                 ]);
+
                 return response()->json(['success' => true, 'message' => 'Berita berhasil dipublikasikan']);
 
             case 'unpublish':
                 News::whereIn('id', $ids)->update([
                     'is_published' => false,
-                    'published_at' => null
+                    'published_at' => null,
                 ]);
+
                 return response()->json(['success' => true, 'message' => 'Berita berhasil dijadikan draft']);
 
             default:
@@ -226,31 +229,31 @@ class NewsController extends Controller
 
     public function toggleFeatured(News $news)
     {
-        $news->update(['is_featured' => !$news->is_featured]);
-        
+        $news->update(['is_featured' => ! $news->is_featured]);
+
         $message = $news->is_featured ? 'Berita berhasil ditandai sebagai unggulan' : 'Berita berhasil dihapus dari unggulan';
-        
+
         return response()->json(['success' => true, 'message' => $message]);
     }
 
     public function updateStatus(Request $request, News $news)
     {
         $request->validate([
-            'status' => 'required|in:draft,published'
+            'status' => 'required|in:draft,published',
         ]);
 
         $data = ['is_published' => ($request->status === 'published')];
-        
-        if ($data['is_published'] && !$news->published_at) {
+
+        if ($data['is_published'] && ! $news->published_at) {
             $data['published_at'] = now();
-        } elseif (!$data['is_published']) {
+        } elseif (! $data['is_published']) {
             $data['published_at'] = null;
         }
 
         $news->update($data);
 
         $message = $request->status === 'published' ? 'Berita berhasil dipublikasikan!' : 'Berita berhasil dijadikan draft!';
-        
+
         return response()->json(['success' => true, 'message' => $message]);
     }
 

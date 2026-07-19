@@ -24,11 +24,11 @@ class ContactController extends Controller
         // Search functionality
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('subject', 'like', "%{$search}%")
-                  ->orWhere('message', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('subject', 'like', "%{$search}%")
+                    ->orWhere('message', 'like', "%{$search}%");
             });
         }
 
@@ -36,14 +36,14 @@ class ContactController extends Controller
         if ($request->filled('date_from')) {
             $query->whereDate('created_at', '>=', $request->date_from);
         }
-        
+
         if ($request->filled('date_to')) {
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
         $contacts = $query->with('repliedBy')
-                         ->orderBy('created_at', 'desc')
-                         ->paginate(20);
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
 
         // Get statistics
         $stats = [
@@ -83,20 +83,20 @@ class ContactController extends Controller
     public function storeReply(Request $request, ContactMessage $contact)
     {
         $request->validate([
-            'admin_reply' => 'required|string|min:10'
+            'admin_reply' => 'required|string|min:10',
         ], [
             'admin_reply.required' => 'Balasan wajib diisi.',
-            'admin_reply.min' => 'Balasan minimal 10 karakter.'
+            'admin_reply.min' => 'Balasan minimal 10 karakter.',
         ]);
 
         try {
             $contact->markAsReplied($request->admin_reply, Auth::id());
 
             return redirect()->route('backend.contact.show', $contact)
-                           ->with('success', 'Balasan berhasil disimpan.');
+                ->with('success', 'Balasan berhasil disimpan.');
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan saat menyimpan balasan.')
-                        ->withInput();
+                ->withInput();
         }
     }
 
@@ -106,7 +106,7 @@ class ContactController extends Controller
     public function updateStatus(Request $request, ContactMessage $contact)
     {
         $request->validate([
-            'status' => 'required|in:unread,read,replied'
+            'status' => 'required|in:unread,read,replied',
         ]);
 
         try {
@@ -114,12 +114,12 @@ class ContactController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Status berhasil diperbarui.'
+                'message' => 'Status berhasil diperbarui.',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan saat memperbarui status.'
+                'message' => 'Terjadi kesalahan saat memperbarui status.',
             ], 500);
         }
     }
@@ -132,7 +132,7 @@ class ContactController extends Controller
         $request->validate([
             'action' => 'required|in:mark_read,mark_unread,delete',
             'ids' => 'required|array',
-            'ids.*' => 'exists:contact_messages,id'
+            'ids.*' => 'exists:contact_messages,id',
         ]);
 
         try {
@@ -141,28 +141,28 @@ class ContactController extends Controller
             switch ($request->action) {
                 case 'mark_read':
                     $contacts->update(['status' => 'read']);
-                    $message = count($request->ids) . ' pesan berhasil ditandai sebagai sudah dibaca.';
+                    $message = count($request->ids).' pesan berhasil ditandai sebagai sudah dibaca.';
                     break;
-                    
+
                 case 'mark_unread':
                     $contacts->update(['status' => 'unread']);
-                    $message = count($request->ids) . ' pesan berhasil ditandai sebagai belum dibaca.';
+                    $message = count($request->ids).' pesan berhasil ditandai sebagai belum dibaca.';
                     break;
-                    
+
                 case 'delete':
                     $contacts->delete();
-                    $message = count($request->ids) . ' pesan berhasil dihapus.';
+                    $message = count($request->ids).' pesan berhasil dihapus.';
                     break;
             }
 
             return response()->json([
                 'success' => true,
-                'message' => $message
+                'message' => $message,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan saat memproses aksi.'
+                'message' => 'Terjadi kesalahan saat memproses aksi.',
             ], 500);
         }
     }
@@ -176,7 +176,7 @@ class ContactController extends Controller
             $contact->delete();
 
             return redirect()->route('backend.contact.index')
-                           ->with('success', 'Pesan kontak berhasil dihapus.');
+                ->with('success', 'Pesan kontak berhasil dihapus.');
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan saat menghapus pesan.');
         }
@@ -192,12 +192,12 @@ class ContactController extends Controller
             'unread' => ContactMessage::unread()->count(),
             'today' => ContactMessage::whereDate('created_at', today())->count(),
             'this_week' => ContactMessage::whereBetween('created_at', [
-                now()->startOfWeek(), 
-                now()->endOfWeek()
+                now()->startOfWeek(),
+                now()->endOfWeek(),
             ])->count(),
             'this_month' => ContactMessage::whereMonth('created_at', now()->month)
-                                        ->whereYear('created_at', now()->year)
-                                        ->count(),
+                ->whereYear('created_at', now()->year)
+                ->count(),
         ]);
     }
 }

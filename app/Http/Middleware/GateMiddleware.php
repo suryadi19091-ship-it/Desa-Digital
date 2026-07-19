@@ -12,7 +12,7 @@ class GateMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next, string $gate, ...$parameters): Response
     {
@@ -20,7 +20,7 @@ class GateMiddleware
             if ($request->expectsJson()) {
                 return response()->json([
                     'message' => 'Anda tidak memiliki akses untuk melakukan tindakan ini.',
-                    'gate' => $gate
+                    'gate' => $gate,
                 ], 403);
             }
 

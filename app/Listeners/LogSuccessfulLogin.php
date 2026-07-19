@@ -25,11 +25,12 @@ class LogSuccessfulLogin
                 ->causedBy($user)
                 ->withProperties([
                     'ip' => request()->ip(),
-                    'user_agent' => request()->userAgent()
+                    'user_agent' => request()->userAgent(),
                 ])
                 ->log('Berhasil Login ke sistem');
         } catch (\Exception $e) {
-            // Fail silently
+            // Fail silently — listener must never interrupt the auth flow
+            unset($e);
         }
     }
 }

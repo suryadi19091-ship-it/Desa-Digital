@@ -2,8 +2,9 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
+use App\Models\Role;
 use App\Models\User;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Gate;
 
 class ShowUserPermissions extends Command
@@ -31,16 +32,17 @@ class ShowUserPermissions extends Command
 
         // Find user
         $user = User::where('email', $email)->first();
-        if (!$user) {
+        if (! $user) {
             $this->error("User with email '{$email}' not found!");
+
             return 1;
         }
 
-        $this->info("=== User Information ===");
+        $this->info('=== User Information ===');
         $this->info("Name: {$user->name}");
         $this->info("Email: {$user->email}");
         $this->info("Role: {$user->role}");
-        $this->info("Active: " . ($user->is_active ? 'Yes' : 'No'));
+        $this->info('Active: '.($user->is_active ? 'Yes' : 'No'));
 
         // Test key permissions
         $permissions = [
@@ -53,14 +55,14 @@ class ShowUserPermissions extends Command
             'manage-village-budget',
             'manage-contact-messages',
             'view-system-info',
-            'manage-settings'
+            'manage-settings',
         ];
 
         $this->info("\n=== Permission Check ===");
-        
+
         // Set current user for Gate testing
         auth()->login($user);
-        
+
         foreach ($permissions as $permission) {
             $hasAccess = Gate::allows($permission);
             $status = $hasAccess ? '✅ ALLOWED' : '❌ DENIED';
@@ -69,10 +71,10 @@ class ShowUserPermissions extends Command
 
         // Show role permissions if available
         if (method_exists($user, 'role') && $user->role) {
-            $role = \App\Models\Role::where('name', $user->role)->first();
+            $role = Role::where('name', $user->role)->first();
             if ($role) {
                 $rolePermissions = $role->permissions()->pluck('name')->toArray();
-                if (!empty($rolePermissions)) {
+                if ($rolePermissions !== []) {
                     $this->info("\n=== Role Permissions ({$user->role}) ===");
                     foreach ($rolePermissions as $perm) {
                         $this->info("- {$perm}");
@@ -86,7 +88,7 @@ class ShowUserPermissions extends Command
         // Show direct user permissions if available
         if (method_exists($user, 'permissions')) {
             $userPermissions = $user->permissions()->pluck('name')->toArray();
-            if (!empty($userPermissions)) {
+            if ($userPermissions !== []) {
                 $this->info("\n=== Direct User Permissions ===");
                 foreach ($userPermissions as $perm) {
                     $this->info("- {$perm}");

@@ -16,10 +16,10 @@ class LocationController extends Controller
         // Search functionality
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('address', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('address', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
@@ -82,7 +82,7 @@ class LocationController extends Controller
             'image' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             'is_active' => 'boolean',
             'show_on_map' => 'boolean',
-            'sort_order' => 'nullable|integer'
+            'sort_order' => 'nullable|integer',
         ]);
 
         // Process area coordinates if provided
@@ -111,26 +111,27 @@ class LocationController extends Controller
             'is_active' => $request->boolean('is_active', true),
             'show_on_map' => $request->boolean('show_on_map', true),
             'sort_order' => $request->sort_order ?? 0,
-            'created_by' => auth()->id()
+            'created_by' => auth()->id(),
         ];
 
         // Handle image upload
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '_' . Str::slug($request->name) . '.' . $image->getClientOriginalExtension();
+            $imageName = time().'_'.Str::slug($request->name).'.'.$image->getClientOriginalExtension();
             $image->move(public_path('uploads/locations'), $imageName);
-            $locationData['image_path'] = 'uploads/locations/' . $imageName;
+            $locationData['image_path'] = 'uploads/locations/'.$imageName;
         }
 
         Location::create($locationData);
 
         return redirect()->route('backend.locations.index')
-                         ->with('success', 'Lokasi berhasil ditambahkan.');
+            ->with('success', 'Lokasi berhasil ditambahkan.');
     }
 
     public function show(Location $location)
     {
         $location->load('creator');
+
         return view('backend.locations.show', compact('location'));
     }
 
@@ -158,7 +159,7 @@ class LocationController extends Controller
             'image' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
             'is_active' => 'boolean',
             'show_on_map' => 'boolean',
-            'sort_order' => 'nullable|integer'
+            'sort_order' => 'nullable|integer',
         ]);
 
         // Process area coordinates if provided
@@ -186,7 +187,7 @@ class LocationController extends Controller
             'color' => $request->color ?? $location->color,
             'is_active' => $request->boolean('is_active', true),
             'show_on_map' => $request->boolean('show_on_map', true),
-            'sort_order' => $request->sort_order ?? $location->sort_order
+            'sort_order' => $request->sort_order ?? $location->sort_order,
         ];
 
         // Handle image upload
@@ -197,15 +198,15 @@ class LocationController extends Controller
             }
 
             $image = $request->file('image');
-            $imageName = time() . '_' . Str::slug($request->name) . '.' . $image->getClientOriginalExtension();
+            $imageName = time().'_'.Str::slug($request->name).'.'.$image->getClientOriginalExtension();
             $image->move(public_path('uploads/locations'), $imageName);
-            $locationData['image_path'] = 'uploads/locations/' . $imageName;
+            $locationData['image_path'] = 'uploads/locations/'.$imageName;
         }
 
         $location->update($locationData);
 
         return redirect()->route('backend.locations.index')
-                         ->with('success', 'Lokasi berhasil diperbarui.');
+            ->with('success', 'Lokasi berhasil diperbarui.');
     }
 
     public function destroy(Location $location)
@@ -218,21 +219,21 @@ class LocationController extends Controller
         $location->delete();
 
         return redirect()->route('backend.locations.index')
-                         ->with('success', 'Lokasi berhasil dihapus.');
+            ->with('success', 'Lokasi berhasil dihapus.');
     }
 
     public function toggleStatus(Location $location)
     {
-        $newStatus = !$location->is_active;
-        
+        $newStatus = ! $location->is_active;
+
         $location->update(['is_active' => $newStatus]);
-        
+
         $statusText = $newStatus ? 'diaktifkan' : 'dinonaktifkan';
-        
+
         return response()->json([
             'success' => true,
             'message' => "Lokasi berhasil {$statusText}.",
-            'is_active' => $newStatus
+            'is_active' => $newStatus,
         ]);
     }
 
@@ -240,25 +241,25 @@ class LocationController extends Controller
     {
         // Get locations with applied filters
         $query = Location::query();
-        
+
         // Apply filters from request
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('address', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('address', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         }
-        
+
         if ($request->filled('type')) {
             $query->where('type', $request->type);
         }
-        
+
         if ($request->filled('is_active')) {
             $query->where('is_active', $request->is_active);
         }
-        
+
         // For now, return a message indicating export functionality needs implementation
         // You can implement Excel export using maatwebsite/excel package
         return redirect()->back()->with('info', 'Export functionality untuk lokasi akan segera tersedia. Silakan gunakan fitur pencetakan browser untuk sementara.');

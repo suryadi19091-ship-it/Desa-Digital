@@ -3,18 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Agenda;
+use App\Models\ContactMessage;
+use App\Models\Location;
+use App\Models\News;
+use App\Models\PopulationData;
+use App\Models\User;
+use App\Models\VillageBudget;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use App\Models\User;
-use App\Models\News;
-use App\Models\ContactMessage;
-use App\Models\PopulationData;
-use App\Models\Agenda;
-use App\Models\VillageBudget;
-use App\Models\Location;
-use Carbon\Carbon;
+use Spatie\Activitylog\Models\Activity;
 
 class DashboardController extends Controller
 {
@@ -29,7 +29,7 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         // Check if user can access admin dashboard
-        if (!Gate::allows('access-admin-panel')) {
+        if (! Gate::allows('access-admin-panel')) {
             abort(403, 'Unauthorized access to admin panel');
         }
 
@@ -117,7 +117,7 @@ class DashboardController extends Controller
             $stats['server_status'] = 'Active';
 
         } catch (\Exception $e) {
-            \Log::error('Dashboard stats error: ' . $e->getMessage());
+            \Log::error('Dashboard stats error: '.$e->getMessage());
             // Return default stats if there's an error
             $stats = [
                 'total_users' => 0,
@@ -136,7 +136,7 @@ class DashboardController extends Controller
                 'storage_used' => '0 MB',
                 'storage_total' => '1 GB',
                 'storage_percentage' => 0,
-                'last_backup' => 'Never'
+                'last_backup' => 'Never',
             ];
         }
 
@@ -153,7 +153,7 @@ class DashboardController extends Controller
             'users' => [],
             'news' => [],
             'messages' => [],
-            'agendas' => []
+            'agendas' => [],
         ];
 
         try {
@@ -201,14 +201,14 @@ class DashboardController extends Controller
                 }
             }
         } catch (\Exception $e) {
-            \Log::error('Chart data error: ' . $e->getMessage());
+            \Log::error('Chart data error: '.$e->getMessage());
             // Return default chart data
             $chartData = [
                 'months' => ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
                 'users' => [0, 0, 0, 0, 0, 0],
                 'news' => [0, 0, 0, 0, 0, 0],
                 'messages' => [0, 0, 0, 0, 0, 0],
-                'agendas' => [0, 0, 0, 0, 0, 0]
+                'agendas' => [0, 0, 0, 0, 0, 0],
             ];
         }
 
@@ -233,7 +233,7 @@ class DashboardController extends Controller
                         'timestamp' => $user->created_at,
                         'time' => $user->created_at->diffForHumans(),
                         'icon' => 'fas fa-user-plus',
-                        'color' => 'blue'
+                        'color' => 'blue',
                     ];
                 }
             }
@@ -248,7 +248,7 @@ class DashboardController extends Controller
                         'timestamp' => $news->created_at,
                         'time' => $news->created_at->diffForHumans(),
                         'icon' => 'fas fa-newspaper',
-                        'color' => 'green'
+                        'color' => 'green',
                     ];
                 }
             }
@@ -259,11 +259,11 @@ class DashboardController extends Controller
                 foreach ($recentMessages as $message) {
                     $activities[] = [
                         'title' => 'Pesan baru diterima',
-                        'description' => 'Dari: ' . $message->name,
+                        'description' => 'Dari: '.$message->name,
                         'timestamp' => $message->created_at,
                         'time' => $message->created_at->diffForHumans(),
                         'icon' => 'fas fa-envelope',
-                        'color' => 'orange'
+                        'color' => 'orange',
                     ];
                 }
             }
@@ -278,7 +278,7 @@ class DashboardController extends Controller
                         'timestamp' => $agenda->created_at,
                         'time' => $agenda->created_at->diffForHumans(),
                         'icon' => 'fas fa-calendar-plus',
-                        'color' => 'purple'
+                        'color' => 'purple',
                     ];
                 }
             }
@@ -289,11 +289,11 @@ class DashboardController extends Controller
                 foreach ($recentBudgets as $budget) {
                     $activities[] = [
                         'title' => 'Anggaran baru diperbarui',
-                        'description' => $budget->item_name . ' - Rp ' . number_format($budget->planned_amount, 0, ',', '.'),
+                        'description' => $budget->item_name.' - Rp '.number_format($budget->planned_amount, 0, ',', '.'),
                         'timestamp' => $budget->created_at,
                         'time' => $budget->created_at->diffForHumans(),
                         'icon' => 'fas fa-coins',
-                        'color' => 'emerald'
+                        'color' => 'emerald',
                     ];
                 }
             }
@@ -307,7 +307,7 @@ class DashboardController extends Controller
             $activities = array_slice($activities, 0, 5);
 
         } catch (\Exception $e) {
-            \Log::error('Recent activities error: ' . $e->getMessage());
+            \Log::error('Recent activities error: '.$e->getMessage());
             $activities = [];
         }
 
@@ -332,7 +332,8 @@ class DashboardController extends Controller
 
             return $this->formatBytes($bytes);
         } catch (\Exception $e) {
-            \Log::error('Storage calculation error: ' . $e->getMessage());
+            \Log::error('Storage calculation error: '.$e->getMessage());
+
             return '0 MB';
         }
     }
@@ -363,12 +364,12 @@ class DashboardController extends Controller
             // Check for backup files in storage
             $backupPath = storage_path('app/backups');
 
-            if (!is_dir($backupPath)) {
+            if (! is_dir($backupPath)) {
                 return 'Never';
             }
 
-            $files = glob($backupPath . '/*');
-            if (empty($files)) {
+            $files = glob($backupPath.'/*');
+            if ($files === false || $files === []) {
                 return 'Never';
             }
 
@@ -413,13 +414,14 @@ class DashboardController extends Controller
      */
     private function formatBytes($bytes, $precision = 2)
     {
-        $units = array('B', 'KB', 'MB', 'GB', 'TB');
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $unitsCount = count($units) - 1;
 
-        for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
+        for ($i = 0; $bytes > 1024 && $i < $unitsCount; $i++) {
             $bytes /= 1024;
         }
 
-        return round($bytes, $precision) . ' ' . $units[$i];
+        return round($bytes, $precision).' '.$units[$i];
     }
 
     /**
@@ -427,14 +429,14 @@ class DashboardController extends Controller
      */
     public function getSystemInfo()
     {
-        if (!Gate::allows('view-system-info')) {
+        if (! Gate::allows('view-system-info')) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
         $info = [
             'php_version' => PHP_VERSION,
             'laravel_version' => app()->version(),
-            'server_software' => $_SERVER['SERVER_SOFTWARE'] ?? 'Unknown',
+            'server_software' => request()->server('SERVER_SOFTWARE', 'Unknown'),
             'database_version' => $this->getDatabaseVersion(),
             'memory_limit' => ini_get('memory_limit'),
             'max_execution_time' => ini_get('max_execution_time'),
@@ -451,6 +453,7 @@ class DashboardController extends Controller
     {
         try {
             $result = DB::select('SELECT VERSION() as version');
+
             return $result[0]->version ?? 'Unknown';
         } catch (\Exception $e) {
             return 'Unknown';
@@ -462,7 +465,7 @@ class DashboardController extends Controller
      */
     public function logs(Request $request)
     {
-        if (!Gate::allows('view-logs')) {
+        if (! Gate::allows('view-logs')) {
             abort(403, 'You do not have permission to view logs.');
         }
 
@@ -482,11 +485,11 @@ class DashboardController extends Controller
      */
     public function activityLogs(Request $request)
     {
-        if (!Gate::allows('view-activity-logs')) {
+        if (! Gate::allows('view-activity-logs')) {
             abort(403, 'You do not have permission to view activity logs.');
         }
 
-        $query = \Spatie\Activitylog\Models\Activity::with('causer')->latest();
+        $query = Activity::with('causer')->latest();
 
         if ($request->filled('search')) {
             $search = $request->get('search');
@@ -498,7 +501,7 @@ class DashboardController extends Controller
 
         if ($request->filled('user')) {
             $user = $request->get('user');
-            $query->whereHasMorph('causer', [\App\Models\User::class], function ($q) use ($user) {
+            $query->whereHasMorph('causer', [User::class], function ($q) use ($user) {
                 $q->where('name', 'like', "%{$user}%");
             });
         }
@@ -527,7 +530,7 @@ class DashboardController extends Controller
         try {
             $logPath = storage_path('logs/laravel.log');
 
-            if (!file_exists($logPath)) {
+            if (! file_exists($logPath)) {
                 return $logs;
             }
 
@@ -538,8 +541,9 @@ class DashboardController extends Controller
             $entries = array_slice(array_reverse($lines), 0, 100);
 
             foreach ($entries as $line) {
-                if (empty(trim($line)))
+                if (trim($line) === '') {
                     continue;
+                }
 
                 // Simple regex to parse Laravel log format
                 if (preg_match('/^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\] \w+\.(\w+): (.+)/', $line, $matches)) {
@@ -559,7 +563,7 @@ class DashboardController extends Controller
                         continue;
                     }
 
-                    if ($request->get('date') && !str_contains($entry['datetime'], $request->get('date'))) {
+                    if ($request->get('date') && ! str_contains($entry['datetime'], $request->get('date'))) {
                         continue;
                     }
 
@@ -568,7 +572,7 @@ class DashboardController extends Controller
             }
 
         } catch (\Exception $e) {
-            \Log::error('Error reading log file: ' . $e->getMessage());
+            \Log::error('Error reading log file: '.$e->getMessage());
         }
 
         return $logs->take(50); // Limit to 50 entries
@@ -579,7 +583,7 @@ class DashboardController extends Controller
      */
     public function clearLogs(Request $request)
     {
-        if (!Gate::allows('clear-logs')) {
+        if (! Gate::allows('clear-logs')) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
         }
 
@@ -593,7 +597,8 @@ class DashboardController extends Controller
 
             return response()->json(['success' => true, 'message' => 'Logs cleared successfully!']);
         } catch (\Exception $e) {
-            \Log::error('Error clearing logs: ' . $e->getMessage());
+            \Log::error('Error clearing logs: '.$e->getMessage());
+
             return response()->json(['success' => false, 'message' => 'Failed to clear logs.']);
         }
     }
@@ -603,7 +608,7 @@ class DashboardController extends Controller
      */
     public function statistics()
     {
-        if (!Gate::allows('generate-reports')) {
+        if (! Gate::allows('generate-reports')) {
             abort(403, 'Unauthorized access to statistics');
         }
 
@@ -642,7 +647,7 @@ class DashboardController extends Controller
      */
     public function reports()
     {
-        if (!Gate::allows('generate-reports')) {
+        if (! Gate::allows('generate-reports')) {
             abort(403, 'Unauthorized access to reports');
         }
 
@@ -660,7 +665,7 @@ class DashboardController extends Controller
             'budget' => [
                 'planned' => VillageBudget::sum('planned_amount'),
                 'realized' => VillageBudget::sum('realized_amount'),
-            ]
+            ],
         ];
 
         return view('backend.pages.reports', compact('reports'));
@@ -671,17 +676,17 @@ class DashboardController extends Controller
      */
     public function exportReports()
     {
-        if (!Gate::allows('export-data')) {
+        if (! Gate::allows('export-data')) {
             abort(403, 'Unauthorized to export data');
         }
 
-        $filename = "report-desa-" . date('Y-m-d') . ".csv";
+        $filename = 'report-desa-'.date('Y-m-d').'.csv';
         $headers = [
-            "Content-type" => "text/csv",
-            "Content-Disposition" => "attachment; filename=$filename",
-            "Pragma" => "no-cache",
-            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
-            "Expires" => "0"
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename={$filename}",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
         ];
 
         $columns = ['Kategori', 'Item', 'Nilai', 'Keterangan'];

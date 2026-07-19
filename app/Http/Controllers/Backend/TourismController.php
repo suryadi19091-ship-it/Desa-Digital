@@ -6,38 +6,37 @@ use App\Http\Controllers\Controller;
 use App\Models\TourismObject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class TourismController extends Controller
 {
     public function index(Request $request)
     {
         $query = TourismObject::query();
-        
+
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%')
-                  ->orWhere('address', 'like', '%' . $request->search . '%');
+            $query->where('name', 'like', '%'.$request->search.'%')
+                ->orWhere('description', 'like', '%'.$request->search.'%')
+                ->orWhere('address', 'like', '%'.$request->search.'%');
         }
-        
+
         if ($request->filled('category')) {
             $query->where('category', $request->category);
         }
-        
+
         if ($request->filled('status')) {
             $query->where('is_active', $request->status === 'active');
         }
-        
+
         $tourism = $query->orderBy('created_at', 'desc')->paginate(20);
-        
+
         return view('backend.tourism.index', compact('tourism'));
     }
-    
+
     public function create()
     {
         return view('backend.tourism.create');
     }
-    
+
     public function store(Request $request)
     {
         $request->validate([
@@ -54,16 +53,16 @@ class TourismController extends Controller
             'contact_phone' => 'nullable|string|max:20',
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
-            'is_active' => 'boolean'
+            'is_active' => 'boolean',
         ]);
-        
+
         $imagePaths = [];
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $imagePaths[] = $image->store('tourism', 'public');
             }
         }
-        
+
         TourismObject::create([
             'name' => $request->name,
             'description' => $request->description,
@@ -77,23 +76,23 @@ class TourismController extends Controller
             'contact_person' => $request->contact_person,
             'contact_phone' => $request->contact_phone,
             'images' => $imagePaths,
-            'is_active' => $request->boolean('is_active', true)
+            'is_active' => $request->boolean('is_active', true),
         ]);
-        
+
         return redirect()->route('backend.tourism.index')
-                         ->with('success', 'Objek wisata berhasil ditambahkan.');
+            ->with('success', 'Objek wisata berhasil ditambahkan.');
     }
-    
+
     public function show(TourismObject $tourism)
     {
         return view('backend.tourism.show', compact('tourism'));
     }
-    
+
     public function edit(TourismObject $tourism)
     {
         return view('backend.tourism.edit', compact('tourism'));
     }
-    
+
     public function update(Request $request, TourismObject $tourism)
     {
         $request->validate([
@@ -110,11 +109,11 @@ class TourismController extends Controller
             'contact_phone' => 'nullable|string|max:20',
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
-            'is_active' => 'boolean'
+            'is_active' => 'boolean',
         ]);
-        
+
         $imagePaths = $tourism->images ?? [];
-        
+
         if ($request->hasFile('images')) {
             // Delete old images
             foreach ($imagePaths as $imagePath) {
@@ -122,14 +121,14 @@ class TourismController extends Controller
                     Storage::disk('public')->delete($imagePath);
                 }
             }
-            
+
             // Upload new images
             $imagePaths = [];
             foreach ($request->file('images') as $image) {
                 $imagePaths[] = $image->store('tourism', 'public');
             }
         }
-        
+
         $tourism->update([
             'name' => $request->name,
             'description' => $request->description,
@@ -143,13 +142,13 @@ class TourismController extends Controller
             'contact_person' => $request->contact_person,
             'contact_phone' => $request->contact_phone,
             'images' => $imagePaths,
-            'is_active' => $request->boolean('is_active', true)
+            'is_active' => $request->boolean('is_active', true),
         ]);
-        
+
         return redirect()->route('backend.tourism.index')
-                         ->with('success', 'Objek wisata berhasil diperbarui.');
+            ->with('success', 'Objek wisata berhasil diperbarui.');
     }
-    
+
     public function destroy(TourismObject $tourism)
     {
         // Delete images
@@ -159,25 +158,25 @@ class TourismController extends Controller
                 Storage::disk('public')->delete($imagePath);
             }
         }
-        
+
         $tourism->delete();
-        
+
         return redirect()->route('backend.tourism.index')
-                         ->with('success', 'Objek wisata berhasil dihapus');
+            ->with('success', 'Objek wisata berhasil dihapus');
     }
-    
+
     public function toggleStatus(TourismObject $tourism)
     {
         $tourism->update([
-            'is_active' => !$tourism->is_active
+            'is_active' => ! $tourism->is_active,
         ]);
-        
+
         $status = $tourism->is_active ? 'diaktifkan' : 'dinonaktifkan';
-        
+
         return response()->json([
             'success' => true,
             'message' => "Objek wisata berhasil {$status}.",
-            'is_active' => $tourism->is_active
+            'is_active' => $tourism->is_active,
         ]);
     }
 }

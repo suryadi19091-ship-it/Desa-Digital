@@ -2,12 +2,12 @@
 
 namespace App\Http\View\Composers;
 
-use Illuminate\View\View;
-use App\Models\News;
 use App\Models\Agenda;
+use App\Models\News;
 use App\Models\PopulationData;
-use App\Models\Umkm;
 use App\Models\TourismObject;
+use App\Models\Umkm;
+use Illuminate\View\View;
 
 class SidebarComposer
 {
@@ -36,7 +36,7 @@ class SidebarComposer
             'elderly_aid' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= 65')->count(),
             'poor_families' => floor($familyStats['total_families'] * 0.15), // 15% poor families
             'child_aid' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) < 18')->count(),
-            'total_aid_recipients' => 0
+            'total_aid_recipients' => 0,
         ];
         $aidStats['total_aid_recipients'] = $aidStats['elderly_aid'] + $aidStats['poor_families'] + floor($aidStats['child_aid'] * 0.3);
 
@@ -54,11 +54,11 @@ class SidebarComposer
 
         // Upcoming Agenda
         $upcomingAgenda = Agenda::where('event_date', '>=', now())
-                               ->where('is_public', true)
-                               ->where('is_completed', false)
-                               ->orderBy('event_date', 'asc')
-                               ->limit(3)
-                               ->get();
+            ->where('is_public', true)
+            ->where('is_completed', false)
+            ->orderBy('event_date', 'asc')
+            ->limit(3)
+            ->get();
 
         $sidebarData = [
             'population_stats' => $populationStats,
@@ -67,7 +67,7 @@ class SidebarComposer
             'other_stats' => $otherStats,
             'popular_article' => $popularArticle,
             'latest_article' => $latestArticle,
-            'upcoming_agenda' => $upcomingAgenda
+            'upcoming_agenda' => $upcomingAgenda,
         ];
 
         $view->with('sidebarData', $sidebarData);

@@ -15,18 +15,18 @@ return new class extends Migration
             $table->id();
             $table->string('request_number', 50)->unique();
             $table->enum('letter_type', [
-                'domisili', 
-                'usaha', 
-                'tidak_mampu', 
-                'penghasilan', 
-                'pengantar_ktp', 
-                'pengantar_kk', 
-                'pengantar_akta', 
-                'pengantar_nikah', 
-                'lainnya'
+                'domisili',
+                'usaha',
+                'tidak_mampu',
+                'penghasilan',
+                'pengantar_ktp',
+                'pengantar_kk',
+                'pengantar_akta',
+                'pengantar_nikah',
+                'lainnya',
             ]);
             $table->string('custom_letter_type')->nullable();
-            
+
             // Applicant data
             $table->string('full_name');
             $table->char('nik', 16);
@@ -41,22 +41,22 @@ return new class extends Migration
             $table->string('rw', 3);
             $table->string('phone', 20)->nullable();
             $table->string('email')->nullable();
-            
+
             // Letter details
             $table->text('purpose');
-            
+
             // Files
             $table->string('ktp_file_path')->nullable();
             $table->string('kk_file_path')->nullable();
             $table->json('other_files')->nullable()->comment('JSON array of file paths');
-            
+
             // Status
             $table->enum('status', ['pending', 'processing', 'ready', 'completed', 'rejected'])->default('pending');
             $table->foreignId('processed_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamp('processed_at')->nullable();
             $table->date('completion_date')->nullable();
             $table->text('notes')->nullable();
-            
+
             $table->timestamps();
 
             $table->index(['letter_type', 'status']);

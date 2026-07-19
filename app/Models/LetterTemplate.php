@@ -37,7 +37,7 @@ class LetterTemplate extends Model
         'usage_count',
         'last_used_at',
         'created_by',
-        'updated_by'
+        'updated_by',
     ];
 
     protected $casts = [
@@ -99,7 +99,7 @@ class LetterTemplate extends Model
             'pindah' => 'Surat Keterangan Pindah',
             'beda_nama' => 'Surat Keterangan Beda Nama',
             'kehilangan' => 'Surat Keterangan Kehilangan',
-            'lainnya' => 'Lainnya'
+            'lainnya' => 'Lainnya',
         ];
 
         return $letterTypeNames[$this->letter_type] ?? $this->letter_type;
@@ -119,15 +119,15 @@ class LetterTemplate extends Model
     public function processTemplate($data = [])
     {
         $content = $this->template_content;
-        
+
         // Replace variables with data
         foreach ($data as $key => $value) {
-            $content = str_replace('{{' . $key . '}}', $value, $content);
-            $content = str_replace('{' . $key . '}', $value, $content);
+            $content = str_replace('{{'.$key.'}}', $value, $content);
+            $content = str_replace('{'.$key.'}', $value, $content);
         }
 
         // Add default village data if not provided
-        $villageProfile = \App\Models\VillageProfile::first();
+        $villageProfile = VillageProfile::first();
         if ($villageProfile) {
             $defaultData = [
                 'village_name' => $villageProfile->village_name,
@@ -139,8 +139,8 @@ class LetterTemplate extends Model
             ];
 
             foreach ($defaultData as $key => $value) {
-                $content = str_replace('{{' . $key . '}}', $value, $content);
-                $content = str_replace('{' . $key . '}', $value, $content);
+                $content = str_replace('{{'.$key.'}}', $value, $content);
+                $content = str_replace('{'.$key.'}', $value, $content);
             }
         }
 
@@ -160,8 +160,8 @@ class LetterTemplate extends Model
     public function duplicate()
     {
         $template = $this->replicate();
-        $template->name = $this->name . ' (Copy)';
-        $template->code = $this->code . '_copy_' . time();
+        $template->name = $this->name.' (Copy)';
+        $template->code = $this->code.'_copy_'.time();
         $template->is_active = false;
         $template->created_by = auth()->id();
         $template->save();
@@ -174,7 +174,7 @@ class LetterTemplate extends Model
      */
     public function isWordTemplate(): bool
     {
-        return $this->template_type === 'word' && !empty($this->template_file);
+        return $this->template_type === 'word' && ($this->template_file !== null && $this->template_file !== '');
     }
 
     /**
@@ -182,7 +182,7 @@ class LetterTemplate extends Model
      */
     public function isHtmlTemplate(): bool
     {
-        return $this->template_type === 'html' || empty($this->template_file);
+        return $this->template_type === 'html' || ($this->template_file === null || $this->template_file === '');
     }
 
     /**
@@ -190,11 +190,11 @@ class LetterTemplate extends Model
      */
     public function getTemplateFilePath(): ?string
     {
-        if (empty($this->template_file)) {
+        if ($this->template_file === null || $this->template_file === '') {
             return null;
         }
-        
-        return storage_path('app/' . $this->template_file);
+
+        return storage_path('app/'.$this->template_file);
     }
 
     /**
@@ -202,10 +202,10 @@ class LetterTemplate extends Model
      */
     public function getTemplateFileUrl(): ?string
     {
-        if (empty($this->template_file)) {
+        if ($this->template_file === null || $this->template_file === '') {
             return null;
         }
-        
+
         return route('backend.letter-templates.download', $this->id);
     }
 
@@ -214,18 +214,19 @@ class LetterTemplate extends Model
      */
     public function getFormattedFileSizeAttribute(): string
     {
-        if (empty($this->template_file_size)) {
+        if (! isset($this->template_file_size) || $this->template_file_size === null || $this->template_file_size === 0) {
             return '-';
         }
-        
+
         $bytes = $this->template_file_size;
         $units = ['B', 'KB', 'MB', 'GB'];
-        
-        for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
+        $unitsCount = count($units) - 1;
+
+        for ($i = 0; $bytes > 1024 && $i < $unitsCount; $i++) {
             $bytes /= 1024;
         }
-        
-        return round($bytes, 2) . ' ' . $units[$i];
+
+        return round($bytes, 2).' '.$units[$i];
     }
 
     /**
@@ -233,10 +234,10 @@ class LetterTemplate extends Model
      */
     public function getAvailableBookmarks(): array
     {
-        if ($this->isWordTemplate() && !empty($this->word_bookmarks)) {
+        if ($this->isWordTemplate() && $this->word_bookmarks !== null && $this->word_bookmarks !== []) {
             return $this->word_bookmarks;
         }
-        
+
         // Return default bookmarks
         return $this->getDefaultBookmarks();
     }
@@ -263,7 +264,7 @@ class LetterTemplate extends Model
             ['name' => 'head_nip', 'description' => 'NIP kepala desa', 'type' => 'text'],
             ['name' => 'purpose', 'description' => 'Keperluan surat', 'type' => 'text'],
             ['name' => 'letter_number', 'description' => 'Nomor surat', 'type' => 'text'],
-            ['name' => 'current_date', 'description' => 'Tanggal surat', 'type' => 'date']
+            ['name' => 'current_date', 'description' => 'Tanggal surat', 'type' => 'date'],
         ];
     }
 }

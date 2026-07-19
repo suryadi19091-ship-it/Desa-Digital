@@ -127,7 +127,7 @@ class AuthSeeder extends Seeder
                     'password' => Hash::make('User123!'),
                     'email_verified_at' => $userData['status'] === 'active' ? now() : null,
                     'registered_at' => now()->subDays(rand(1, 30)),
-                    'registered_ip' => '192.168.1.' . rand(1, 254),
+                    'registered_ip' => '192.168.1.'.rand(1, 254),
                     'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
                 ])
             );

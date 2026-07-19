@@ -16,13 +16,13 @@ class Infrastructure extends Model
         'value',
         'unit',
         'order',
-        'is_active'
+        'is_active',
     ];
 
     protected $casts = [
         'value' => 'decimal:2',
         'order' => 'integer',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
     ];
 
     // Get infrastructure data grouped by category

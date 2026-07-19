@@ -45,6 +45,7 @@ class Gallery extends Model
         if (is_null($value) || $value === '') {
             return [];
         }
+
         return is_string($value) ? json_decode($value, true) ?? [] : (is_array($value) ? $value : []);
     }
 

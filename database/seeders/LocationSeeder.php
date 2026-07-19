@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Location;
+use Illuminate\Database\Seeder;
 
 class LocationSeeder extends Seeder
 {
@@ -29,7 +29,7 @@ class LocationSeeder extends Seeder
                     'kamis' => '08:00-16:00',
                     'jumat' => '08:00-16:00',
                     'sabtu' => 'Tutup',
-                    'minggu' => 'Tutup'
+                    'minggu' => 'Tutup',
                 ],
                 'icon' => 'fas fa-building',
                 'color' => 'blue',
@@ -54,7 +54,7 @@ class LocationSeeder extends Seeder
                     'kamis' => '07:00-12:00',
                     'jumat' => '07:00-11:00',
                     'sabtu' => 'Tutup',
-                    'minggu' => 'Tutup'
+                    'minggu' => 'Tutup',
                 ],
                 'icon' => 'fas fa-school',
                 'color' => 'green',
@@ -79,7 +79,7 @@ class LocationSeeder extends Seeder
                     'kamis' => '08:00-15:00',
                     'jumat' => '08:00-15:00',
                     'sabtu' => '08:00-12:00',
-                    'minggu' => 'Tutup'
+                    'minggu' => 'Tutup',
                 ],
                 'icon' => 'fas fa-hospital',
                 'color' => 'red',
@@ -103,7 +103,7 @@ class LocationSeeder extends Seeder
                     'kamis' => '05:00-21:00',
                     'jumat' => '05:00-21:00',
                     'sabtu' => '05:00-21:00',
-                    'minggu' => '05:00-21:00'
+                    'minggu' => '05:00-21:00',
                 ],
                 'icon' => 'fas fa-mosque',
                 'color' => 'purple',
@@ -127,7 +127,7 @@ class LocationSeeder extends Seeder
                     'kamis' => '06:00-17:00',
                     'jumat' => '06:00-17:00',
                     'sabtu' => '06:00-17:00',
-                    'minggu' => '06:00-12:00'
+                    'minggu' => '06:00-12:00',
                 ],
                 'icon' => 'fas fa-shopping-basket',
                 'color' => 'orange',
@@ -151,7 +151,7 @@ class LocationSeeder extends Seeder
                     'kamis' => '08:00-21:00',
                     'jumat' => '08:00-21:00',
                     'sabtu' => '08:00-21:00',
-                    'minggu' => '08:00-21:00'
+                    'minggu' => '08:00-21:00',
                 ],
                 'icon' => 'fas fa-users',
                 'color' => 'indigo',
@@ -159,7 +159,7 @@ class LocationSeeder extends Seeder
                 'show_on_map' => true,
                 'sort_order' => 6,
                 'created_by' => 1,
-            ]
+            ],
         ];
 
         foreach ($locations as $location) {

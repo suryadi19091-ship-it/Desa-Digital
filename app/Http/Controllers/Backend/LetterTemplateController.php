@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\LetterTemplate;
 use App\Services\WordTemplateService;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Exception;
 
 class LetterTemplateController extends Controller
 {
@@ -29,10 +29,10 @@ class LetterTemplateController extends Controller
         // Search
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('code', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('code', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
@@ -74,24 +74,24 @@ class LetterTemplateController extends Controller
             'margins' => 'nullable|array',
             'word_settings' => 'nullable|array',
             'is_active' => 'boolean',
-            'sort_order' => 'nullable|integer|min:0'
+            'sort_order' => 'nullable|integer|min:0',
         ]);
 
         $data = $request->except(['header_logo', 'template_file']);
-        
+
         try {
             // Handle Word template upload
             if ($request->template_type === 'word' && $request->hasFile('template_file')) {
-                $wordService = new WordTemplateService();
+                $wordService = new WordTemplateService;
                 $templateInfo = $wordService->uploadTemplate($request->file('template_file'));
-                
+
                 $data['template_file'] = $templateInfo['path'];
                 $data['template_file_original_name'] = $templateInfo['original_name'];
                 $data['template_file_size'] = $templateInfo['size'];
                 $data['template_file_mime_type'] = $templateInfo['mime_type'];
                 $data['word_bookmarks'] = $templateInfo['bookmarks'];
             }
-            
+
             // Handle logo upload
             if ($request->hasFile('header_logo')) {
                 $data['header_logo_path'] = $request->file('header_logo')->store('letter_templates/logos', 'public');
@@ -116,10 +116,10 @@ class LetterTemplateController extends Controller
             LetterTemplate::create($data);
 
             return redirect()->route('backend.letter-templates.index')
-                           ->with('success', 'Template surat berhasil dibuat.');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Gagal membuat template surat: ' . $e->getMessage())
-                        ->withInput();
+                ->with('success', 'Template surat berhasil dibuat.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Gagal membuat template surat: '.$e->getMessage())
+                ->withInput();
         }
     }
 
@@ -137,7 +137,7 @@ class LetterTemplateController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:50|unique:letter_templates,code,' . $letterTemplate->id,
+            'code' => 'required|string|max:50|unique:letter_templates,code,'.$letterTemplate->id,
             'letter_type' => 'required|in:domisili,usaha,tidak_mampu,penghasilan,pengantar_ktp,pengantar_kk,pengantar_akta,pengantar_nikah,kelahiran,kematian,pindah,beda_nama,kehilangan,lainnya',
             'description' => 'nullable|string',
             'template_type' => 'required|in:word,html',
@@ -154,7 +154,7 @@ class LetterTemplateController extends Controller
             'margins' => 'nullable|array',
             'word_settings' => 'nullable|array',
             'is_active' => 'boolean',
-            'sort_order' => 'nullable|integer|min:0'
+            'sort_order' => 'nullable|integer|min:0',
         ]);
 
         $data = $request->except(['header_logo', 'template_file']);
@@ -162,15 +162,15 @@ class LetterTemplateController extends Controller
         try {
             // Handle Word template upload (if changing to Word or updating Word template)
             if ($request->template_type === 'word' && $request->hasFile('template_file')) {
-                $wordService = new WordTemplateService();
-                
+                $wordService = new WordTemplateService;
+
                 // Delete old template file
                 if ($letterTemplate->template_file) {
                     Storage::disk('public')->delete($letterTemplate->template_file);
                 }
-                
+
                 $templateInfo = $wordService->uploadTemplate($request->file('template_file'));
-                
+
                 $data['template_file'] = $templateInfo['path'];
                 $data['template_file_original_name'] = $templateInfo['original_name'];
                 $data['template_file_size'] = $templateInfo['size'];
@@ -205,10 +205,10 @@ class LetterTemplateController extends Controller
             $letterTemplate->update($data);
 
             return redirect()->route('backend.letter-templates.index')
-                           ->with('success', 'Template surat berhasil diperbarui.');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Gagal memperbarui template surat: ' . $e->getMessage())
-                        ->withInput();
+                ->with('success', 'Template surat berhasil diperbarui.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Gagal memperbarui template surat: '.$e->getMessage())
+                ->withInput();
         }
     }
 
@@ -219,7 +219,7 @@ class LetterTemplateController extends Controller
             if ($letterTemplate->header_logo_path) {
                 Storage::disk('public')->delete($letterTemplate->header_logo_path);
             }
-            
+
             // Delete Word template file
             if ($letterTemplate->template_file) {
                 Storage::disk('public')->delete($letterTemplate->template_file);
@@ -228,9 +228,9 @@ class LetterTemplateController extends Controller
             $letterTemplate->delete();
 
             return redirect()->route('backend.letter-templates.index')
-                           ->with('success', 'Template surat berhasil dihapus.');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Gagal menghapus template surat: ' . $e->getMessage());
+                ->with('success', 'Template surat berhasil dihapus.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Gagal menghapus template surat: '.$e->getMessage());
         }
     }
 
@@ -240,9 +240,9 @@ class LetterTemplateController extends Controller
             $newTemplate = $letterTemplate->duplicate();
 
             return redirect()->route('backend.letter-templates.edit', $newTemplate)
-                           ->with('success', 'Template berhasil diduplikasi. Silakan edit sesuai kebutuhan.');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Gagal menduplikasi template: ' . $e->getMessage());
+                ->with('success', 'Template berhasil diduplikasi. Silakan edit sesuai kebutuhan.');
+        } catch (Exception $e) {
+            return back()->with('error', 'Gagal menduplikasi template: '.$e->getMessage());
         }
     }
 
@@ -250,8 +250,8 @@ class LetterTemplateController extends Controller
     {
         try {
             $letterTemplate->update([
-                'is_active' => !$letterTemplate->is_active,
-                'updated_by' => auth()->id()
+                'is_active' => ! $letterTemplate->is_active,
+                'updated_by' => auth()->id(),
             ]);
 
             $status = $letterTemplate->is_active ? 'diaktifkan' : 'dinonaktifkan';
@@ -259,12 +259,12 @@ class LetterTemplateController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => "Template berhasil {$status}.",
-                'status' => $letterTemplate->is_active
+                'status' => $letterTemplate->is_active,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal mengubah status template.'
+                'message' => 'Gagal mengubah status template.',
             ], 500);
         }
     }
@@ -324,13 +324,13 @@ class LetterTemplateController extends Controller
         $processedContent = $letterTemplate->processTemplate($data);
 
         // Generate PDF using DomPDF
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('backend.services.templates.pdf', compact('letterTemplate', 'processedContent', 'data'));
+        $pdf = Pdf::loadView('backend.services.templates.pdf', compact('letterTemplate', 'processedContent', 'data'));
 
         // Set paper size and orientation
         $pdf->setPaper($letterTemplate->format ?? 'A4', $letterTemplate->orientation ?? 'portrait');
 
         // Download PDF
-        return $pdf->download('template-preview-' . $letterTemplate->code . '.pdf');
+        return $pdf->download('template-preview-'.$letterTemplate->code.'.pdf');
     }
 
     /**
@@ -338,16 +338,16 @@ class LetterTemplateController extends Controller
      */
     public function getBookmarks(LetterTemplate $letterTemplate)
     {
-        if (!$letterTemplate->isWordTemplate()) {
+        if (! $letterTemplate->isWordTemplate()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Template ini bukan Word template.'
+                'message' => 'Template ini bukan Word template.',
             ], 400);
         }
 
         return response()->json([
             'success' => true,
-            'bookmarks' => $letterTemplate->getAvailableBookmarks()
+            'bookmarks' => $letterTemplate->getAvailableBookmarks(),
         ]);
     }
 
@@ -356,13 +356,13 @@ class LetterTemplateController extends Controller
      */
     public function previewWord(LetterTemplate $letterTemplate)
     {
-        if (!$letterTemplate->isWordTemplate()) {
+        if (! $letterTemplate->isWordTemplate()) {
             return back()->with('error', 'Template ini bukan Word template.');
         }
 
         try {
-            $wordService = new WordTemplateService();
-            
+            $wordService = new WordTemplateService;
+
             // Generate sample data for preview
             $sampleData = [
                 'village_name' => 'Desa Contoh',
@@ -372,16 +372,16 @@ class LetterTemplateController extends Controller
                 'letter_number' => 'XXX/XXX/XXXX',
                 'citizen_name' => 'Nama Warga',
                 'citizen_nik' => '1234567890123456',
-                'citizen_address' => 'Alamat Warga'
+                'citizen_address' => 'Alamat Warga',
             ];
 
             $previewPath = $wordService->generateDocument($letterTemplate, $sampleData, true);
-            
-            return response()->download(storage_path('app/public/' . $previewPath))
-                           ->deleteFileAfterSend(true);
-                           
-        } catch (\Exception $e) {
-            return back()->with('error', 'Gagal membuat preview: ' . $e->getMessage());
+
+            return response()->download(storage_path('app/public/'.$previewPath))
+                ->deleteFileAfterSend(true);
+
+        } catch (Exception $e) {
+            return back()->with('error', 'Gagal membuat preview: '.$e->getMessage());
         }
     }
 
@@ -390,13 +390,13 @@ class LetterTemplateController extends Controller
      */
     public function downloadTemplate(LetterTemplate $letterTemplate)
     {
-        if (!$letterTemplate->isWordTemplate() || !$letterTemplate->template_file) {
+        if (! $letterTemplate->isWordTemplate() || ! $letterTemplate->template_file) {
             return back()->with('error', 'File template tidak ditemukan.');
         }
 
-        $filePath = storage_path('app/public/' . $letterTemplate->template_file);
-        
-        if (!file_exists($filePath)) {
+        $filePath = storage_path('app/public/'.$letterTemplate->template_file);
+
+        if (! file_exists($filePath)) {
             return back()->with('error', 'File template tidak ditemukan di server.');
         }
 
@@ -409,21 +409,21 @@ class LetterTemplateController extends Controller
     public function extractBookmarks(Request $request)
     {
         $request->validate([
-            'template_file' => 'required|file|mimes:docx,doc|max:10240'
+            'template_file' => 'required|file|mimes:docx,doc|max:10240',
         ]);
 
         try {
-            $wordService = new WordTemplateService();
+            $wordService = new WordTemplateService;
             $bookmarks = $wordService->extractBookmarks($request->file('template_file'));
-            
+
             return response()->json([
                 'success' => true,
-                'bookmarks' => $bookmarks
+                'bookmarks' => $bookmarks,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal mengekstrak bookmark: ' . $e->getMessage()
+                'message' => 'Gagal mengekstrak bookmark: '.$e->getMessage(),
             ], 500);
         }
     }

@@ -25,8 +25,8 @@ class ActivityLog extends Model
         'model_id' => 'integer',
     ];
 
-    public $timestamps = false;
-    
+    protected $timestamps = false;
+
     protected $dates = ['created_at'];
 
     public function user(): BelongsTo
@@ -39,6 +39,7 @@ class ActivityLog extends Model
         if ($this->model_type && $this->model_id) {
             return $this->morphTo('model', 'model_type', 'model_id');
         }
+
         return null;
     }
 }

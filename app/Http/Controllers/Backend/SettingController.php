@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
@@ -32,12 +31,12 @@ class SettingController extends Controller
             'allowed_file_types' => 'jpg,jpeg,png,gif,pdf,doc,docx',
             'timezone' => 'Asia/Jakarta',
             'date_format' => 'd/m/Y',
-            'time_format' => 'H:i'
+            'time_format' => 'H:i',
         ];
-        
+
         return view('backend.settings.index', compact('settings'));
     }
-    
+
     public function update(Request $request)
     {
         $request->validate([
@@ -61,27 +60,27 @@ class SettingController extends Controller
             'allowed_file_types' => 'required|string',
             'timezone' => 'required|string',
             'date_format' => 'required|string',
-            'time_format' => 'required|string'
+            'time_format' => 'required|string',
         ]);
-        
+
         $settings = $request->except(['site_logo', 'site_favicon']);
-        
+
         // Handle logo upload
         if ($request->hasFile('site_logo')) {
             $logoPath = $request->file('site_logo')->store('settings', 'public');
             $settings['site_logo'] = $logoPath;
         }
-        
+
         // Handle favicon upload
         if ($request->hasFile('site_favicon')) {
             $faviconPath = $request->file('site_favicon')->store('settings', 'public');
             $settings['site_favicon'] = $faviconPath;
         }
-        
+
         // In a real application, you would save these to database or config files
         // For now, we'll just flash success message
-        
+
         return redirect()->route('backend.legacy-settings.index')
-                         ->with('success', 'Pengaturan berhasil disimpan.');
+            ->with('success', 'Pengaturan berhasil disimpan.');
     }
 }

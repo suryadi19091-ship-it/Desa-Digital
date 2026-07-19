@@ -13,7 +13,7 @@ class MaintenanceModeMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
@@ -28,7 +28,7 @@ class MaintenanceModeMiddleware
             if ($request->expectsJson()) {
                 return response()->json([
                     'message' => 'Sistem sedang dalam pemeliharaan. Silakan coba lagi nanti.',
-                    'maintenance' => true
+                    'maintenance' => true,
                 ], 503);
             }
 

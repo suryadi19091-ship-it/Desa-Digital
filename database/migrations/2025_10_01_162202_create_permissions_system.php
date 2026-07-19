@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Create roles table  
+        // Create roles table
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
@@ -38,7 +38,7 @@ return new class extends Migration
             $table->foreignId('role_id')->constrained()->onDelete('cascade');
             $table->foreignId('permission_id')->constrained()->onDelete('cascade');
             $table->timestamps();
-            
+
             $table->unique(['role_id', 'permission_id']);
         });
 
@@ -49,7 +49,7 @@ return new class extends Migration
             $table->foreignId('permission_id')->constrained()->onDelete('cascade');
             $table->enum('type', ['grant', 'deny'])->default('grant');
             $table->timestamps();
-            
+
             $table->unique(['user_id', 'permission_id']);
         });
     }

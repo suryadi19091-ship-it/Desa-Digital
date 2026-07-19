@@ -2,9 +2,9 @@
 
 namespace App\Traits;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
 
 trait HasPagination
 {
@@ -24,9 +24,9 @@ trait HasPagination
     protected function getPerPage(Request $request): int
     {
         $perPage = $request->input('per_page', $this->defaultPerPage);
-        
+
         // Validate per_page value
-        if (!in_array($perPage, $this->perPageOptions)) {
+        if (! in_array($perPage, $this->perPageOptions)) {
             $perPage = $this->defaultPerPage;
         }
 
@@ -39,9 +39,9 @@ trait HasPagination
     protected function paginateQuery(Builder $query, Request $request): LengthAwarePaginator
     {
         $perPage = $this->getPerPage($request);
-        
+
         return $query->paginate($perPage)
-                    ->appends($request->query());
+            ->appends($request->query());
     }
 
     /**
@@ -57,7 +57,7 @@ trait HasPagination
             'from' => $paginator->firstItem(),
             'to' => $paginator->lastItem(),
             'has_pages' => $paginator->hasPages(),
-            'per_page_options' => $this->perPageOptions
+            'per_page_options' => $this->perPageOptions,
         ];
     }
 
@@ -67,8 +67,8 @@ trait HasPagination
     protected function applySearch(Builder $query, Request $request, array $searchableFields): Builder
     {
         $search = $request->input('search');
-        
-        if (!empty($search)) {
+
+        if ($search !== '') {
             $query->where(function ($q) use ($search, $searchableFields) {
                 foreach ($searchableFields as $field) {
                     if (str_contains($field, '.')) {
@@ -76,13 +76,13 @@ trait HasPagination
                         $parts = explode('.', $field);
                         $relation = $parts[0];
                         $relationField = $parts[1];
-                        
+
                         $q->orWhereHas($relation, function ($relationQuery) use ($relationField, $search) {
-                            $relationQuery->where($relationField, 'like', '%' . $search . '%');
+                            $relationQuery->where($relationField, 'like', '%'.$search.'%');
                         });
                     } else {
                         // Handle direct fields
-                        $q->orWhere($field, 'like', '%' . $search . '%');
+                        $q->orWhere($field, 'like', '%'.$search.'%');
                     }
                 }
             });
@@ -98,13 +98,13 @@ trait HasPagination
     {
         foreach ($filters as $field => $config) {
             $value = $request->input($field);
-            
-            if (!empty($value)) {
+
+            if ($value !== null && $value !== '') {
                 if (is_array($config)) {
                     // Custom filter configuration
                     $operator = $config['operator'] ?? '=';
                     $column = $config['column'] ?? $field;
-                    
+
                     if (isset($config['callback'])) {
                         // Custom callback
                         $query = $config['callback']($query, $value, $request);
@@ -128,9 +128,9 @@ trait HasPagination
     {
         $sortBy = $request->input('sort', $defaultSort);
         $sortDirection = $request->input('direction', $defaultDirection);
-        
+
         // Validate sort direction
-        if (!in_array(strtolower($sortDirection), ['asc', 'desc'])) {
+        if (! in_array(strtolower($sortDirection), ['asc', 'desc'])) {
             $sortDirection = $defaultDirection;
         }
 

@@ -2,17 +2,17 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\View;
 use App\Http\View\Composers\SidebarComposer;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Auth\Events\Login;
-use App\Listeners\LogSuccessfulLogin;
 use App\Listeners\LogFailedLogin;
+use App\Listeners\LogSuccessfulLogin;
 use Illuminate\Auth\Events\Failed;
-use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,7 +21,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
     }
 
     /**
@@ -52,7 +51,7 @@ class AppServiceProvider extends ServiceProvider
     protected function configureRateLimiting(): void
     {
         RateLimiter::for('api', function (Request $request) {
-            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+            return Limit::perMinute(60)->by($request->user()?->id ?? $request->ip());
         });
 
         RateLimiter::for('global', function (Request $request) {
@@ -60,7 +59,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         RateLimiter::for('uploads', function (Request $request) {
-            return Limit::perMinute(10)->by($request->user()?->id ?: $request->ip());
+            return Limit::perMinute(10)->by($request->user()?->id ?? $request->ip());
         });
     }
 }

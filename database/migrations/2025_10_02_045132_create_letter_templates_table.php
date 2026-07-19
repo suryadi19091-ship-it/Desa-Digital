@@ -16,20 +16,20 @@ return new class extends Migration
             $table->string('name');
             $table->string('code')->unique();
             $table->enum('letter_type', [
-                'domisili', 
-                'usaha', 
-                'tidak_mampu', 
-                'penghasilan', 
-                'pengantar_ktp', 
-                'pengantar_kk', 
-                'pengantar_akta', 
+                'domisili',
+                'usaha',
+                'tidak_mampu',
+                'penghasilan',
+                'pengantar_ktp',
+                'pengantar_kk',
+                'pengantar_akta',
                 'pengantar_nikah',
                 'kelahiran',
                 'kematian',
                 'pindah',
                 'beda_nama',
                 'kehilangan',
-                'lainnya'
+                'lainnya',
             ]);
             $table->text('description')->nullable();
             $table->longText('template_content');

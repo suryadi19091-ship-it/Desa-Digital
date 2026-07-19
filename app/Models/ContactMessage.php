@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class ContactMessage extends Model
 {
@@ -20,13 +20,13 @@ class ContactMessage extends Model
         'replied_at',
         'replied_by',
         'ip_address',
-        'user_agent'
+        'user_agent',
     ];
 
     protected $casts = [
         'replied_at' => 'datetime',
         'created_at' => 'datetime',
-        'updated_at' => 'datetime'
+        'updated_at' => 'datetime',
     ];
 
     // Relationship with User (admin who replied)
@@ -68,7 +68,7 @@ class ContactMessage extends Model
         return [
             'unread' => 'bg-red-100 text-red-800',
             'read' => 'bg-yellow-100 text-yellow-800',
-            'replied' => 'bg-green-100 text-green-800'
+            'replied' => 'bg-green-100 text-green-800',
         ][$this->status] ?? 'bg-gray-100 text-gray-800';
     }
 
@@ -77,7 +77,7 @@ class ContactMessage extends Model
         return [
             'unread' => 'Belum Dibaca',
             'read' => 'Sudah Dibaca',
-            'replied' => 'Sudah Dibalas'
+            'replied' => 'Sudah Dibalas',
         ][$this->status] ?? 'Tidak Diketahui';
     }
 
@@ -94,7 +94,7 @@ class ContactMessage extends Model
             'status' => 'replied',
             'admin_reply' => $adminReply,
             'replied_at' => now(),
-            'replied_by' => $repliedBy
+            'replied_by' => $repliedBy,
         ]);
     }
 }

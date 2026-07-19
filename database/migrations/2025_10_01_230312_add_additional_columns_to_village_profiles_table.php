@@ -30,12 +30,12 @@ return new class extends Migration
         Schema::table('village_profiles', function (Blueprint $table) {
             $table->dropColumn([
                 'address',
-                'phone', 
+                'phone',
                 'email',
                 'website',
                 'total_rw',
                 'total_rt',
-                'history'
+                'history',
             ]);
         });
     }

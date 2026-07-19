@@ -5,16 +5,17 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Agenda;
 use App\Models\AgendaParticipant;
+use App\Models\VillageProfile;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Carbon\Carbon;
 
 class AgendaController extends Controller
 {
     public function index(Request $request)
     {
         $query = Agenda::where('is_public', true)
-                      ->where('is_completed', false);
+            ->where('is_completed', false);
 
         // Filter by category
         if ($request->filled('category')) {
@@ -27,29 +28,29 @@ class AgendaController extends Controller
         }
 
         $agendas = $query->orderBy('event_date', 'asc')
-                        ->paginate(10);
+            ->paginate(10);
 
         // Get today's events
         $todayEvents = Agenda::where('is_public', true)
-                            ->whereDate('event_date', today())
-                            ->orderBy('start_time', 'asc')
-                            ->get();
+            ->whereDate('event_date', today())
+            ->orderBy('start_time', 'asc')
+            ->get();
 
         // Get upcoming events (next 5)
         $upcomingEvents = Agenda::where('is_public', true)
-                               ->where('event_date', '>', now())
-                               ->orderBy('event_date', 'asc')
-                               ->limit(5)
-                               ->get();
+            ->where('event_date', '>', now())
+            ->orderBy('event_date', 'asc')
+            ->limit(5)
+            ->get();
 
         // Get statistics
         $totalAgendas = Agenda::count();
         $activeAgendas = Agenda::where('is_public', true)
-                              ->where('is_completed', false)
-                              ->count();
+            ->where('is_completed', false)
+            ->count();
         $thisMonthAgendas = Agenda::whereMonth('event_date', now()->month)
-                                 ->whereYear('event_date', now()->year)
-                                 ->count();
+            ->whereYear('event_date', now()->year)
+            ->count();
 
         $statistics = [
             'this_month' => $thisMonthAgendas,
@@ -60,12 +61,12 @@ class AgendaController extends Controller
         ];
 
         // Get village profile for page data
-        $villageProfile = \App\Models\VillageProfile::first();
+        $villageProfile = VillageProfile::first();
 
         return view('frontend.page.agenda', compact(
-            'agendas', 
-            'todayEvents', 
-            'upcomingEvents', 
+            'agendas',
+            'todayEvents',
+            'upcomingEvents',
             'statistics',
             'totalAgendas',
             'activeAgendas',
@@ -77,17 +78,17 @@ class AgendaController extends Controller
     public function show($id)
     {
         $agenda = Agenda::where('is_public', true)
-                       ->findOrFail($id);
+            ->findOrFail($id);
 
         // Get related agendas
         $relatedAgendas = Agenda::where('is_public', true)
-                               ->where('category', $agenda->category)
-                               ->where('id', '!=', $agenda->id)
-                               ->limit(3)
-                               ->get();
+            ->where('category', $agenda->category)
+            ->where('id', '!=', $agenda->id)
+            ->limit(3)
+            ->get();
 
         // Get village profile for page data
-        $villageProfile = \App\Models\VillageProfile::first();
+        $villageProfile = VillageProfile::first();
 
         return view('frontend.page.agenda-detail', compact('agenda', 'relatedAgendas', 'villageProfile'));
     }
@@ -95,14 +96,14 @@ class AgendaController extends Controller
     public function calendar($year, $month)
     {
         $events = Agenda::where('is_public', true)
-                       ->whereYear('event_date', $year)
-                       ->whereMonth('event_date', $month)
-                       ->get(['id', 'title', 'category', 'event_date', 'start_time', 'end_time']);
+            ->whereYear('event_date', $year)
+            ->whereMonth('event_date', $month)
+            ->get(['id', 'title', 'category', 'event_date', 'start_time', 'end_time']);
 
         $calendarData = [];
         foreach ($events as $event) {
             $day = (int) $event->event_date->format('d');
-            if (!isset($calendarData[$day])) {
+            if (! isset($calendarData[$day])) {
                 $calendarData[$day] = [];
             }
             $calendarData[$day][] = [
@@ -116,15 +117,15 @@ class AgendaController extends Controller
         return response()->json([
             'events' => $calendarData,
             'month' => $month,
-            'year' => $year
+            'year' => $year,
         ]);
     }
 
     public function register(Request $request, $id)
     {
         $agenda = Agenda::where('is_public', true)
-                       ->where('registration_required', true)
-                       ->findOrFail($id);
+            ->where('registration_required', true)
+            ->findOrFail($id);
 
         // Check if registration is still open
         if ($agenda->registration_deadline < now() || $agenda->event_date < now()) {
@@ -148,8 +149,8 @@ class AgendaController extends Controller
 
         // Check if already registered
         $existingParticipant = AgendaParticipant::where('agenda_id', $agenda->id)
-                                              ->where('participant_email', $request->participant_email)
-                                              ->first();
+            ->where('participant_email', $request->participant_email)
+            ->first();
 
         if ($existingParticipant) {
             return redirect()->back()->with('error', 'You are already registered for this event.');
@@ -171,10 +172,10 @@ class AgendaController extends Controller
     public function getUpcomingAgenda()
     {
         $agendas = Agenda::where('is_public', true)
-                        ->where('event_date', '>=', now())
-                        ->orderBy('event_date', 'asc')
-                        ->limit(5)
-                        ->get(['id', 'title', 'category', 'event_date', 'start_time', 'location']);
+            ->where('event_date', '>=', now())
+            ->orderBy('event_date', 'asc')
+            ->limit(5)
+            ->get(['id', 'title', 'category', 'event_date', 'start_time', 'location']);
 
         return response()->json($agendas);
     }
@@ -182,7 +183,7 @@ class AgendaController extends Controller
     public function getAgendaDetail($id)
     {
         $agenda = Agenda::where('is_public', true)
-                       ->findOrFail($id);
+            ->findOrFail($id);
 
         return response()->json($agenda);
     }
@@ -190,14 +191,14 @@ class AgendaController extends Controller
     public function getCalendar($year, $month)
     {
         $events = Agenda::where('is_public', true)
-                       ->whereYear('event_date', $year)
-                       ->whereMonth('event_date', $month)
-                       ->get(['id', 'title', 'description', 'category', 'event_date', 'start_time', 'end_time']);
+            ->whereYear('event_date', $year)
+            ->whereMonth('event_date', $month)
+            ->get(['id', 'title', 'description', 'category', 'event_date', 'start_time', 'end_time']);
 
         $calendarData = [];
         foreach ($events as $event) {
             $day = (int) $event->event_date->format('d');
-            if (!isset($calendarData[$day])) {
+            if (! isset($calendarData[$day])) {
                 $calendarData[$day] = [];
             }
             $calendarData[$day][] = [
@@ -207,14 +208,14 @@ class AgendaController extends Controller
                 'type' => $event->category,
                 'category' => $event->category,
                 'time' => $event->start_time ? Carbon::parse($event->start_time)->format('H:i') : '',
-                'formatted_time' => $event->formatted_time ?? ($event->start_time ? Carbon::parse($event->start_time)->format('H:i') . ' WIB' : ''),
+                'formatted_time' => $event->formatted_time ?? ($event->start_time ? Carbon::parse($event->start_time)->format('H:i').' WIB' : ''),
             ];
         }
 
         return response()->json([
             'events' => $calendarData,
             'month' => $month,
-            'year' => $year
+            'year' => $year,
         ]);
     }
 }

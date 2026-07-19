@@ -11,11 +11,11 @@ class PermissionsTestController extends Controller
     public function testPermissions(Request $request)
     {
         $user = auth()->user();
-        
-        if (!$user) {
+
+        if (! $user) {
             return response()->json(['error' => 'User not authenticated'], 401);
         }
-        
+
         $permissions = [
             'access.dashboard',
             'access.backend',
@@ -28,25 +28,25 @@ class PermissionsTestController extends Controller
             'manage.agendas',
             'view.agendas',
             'manage.announcements',
-            'view.announcements'
+            'view.announcements',
         ];
-        
+
         $results = [];
         foreach ($permissions as $permission) {
             $results[$permission] = Gate::allows($permission);
         }
-        
+
         return response()->json([
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
                 'role' => $user->role,
-                'is_active' => $user->is_active
+                'is_active' => $user->is_active,
             ],
             'permissions' => $results,
             'hasPermissionMethod' => method_exists($user, 'hasPermission'),
-            'samplePermissionCheck' => method_exists($user, 'hasPermission') ? $user->hasPermission('access.dashboard') : 'Method not available'
+            'samplePermissionCheck' => method_exists($user, 'hasPermission') ? $user->hasPermission('access.dashboard') : 'Method not available',
         ]);
     }
 }

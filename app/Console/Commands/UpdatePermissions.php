@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-use Carbon\Carbon;
 
 class UpdatePermissions extends Command
 {
@@ -28,32 +28,33 @@ class UpdatePermissions extends Command
      */
     public function handle()
     {
-        if (!$this->option('force')) {
-            if (!$this->confirm('This will update the permissions table with all available routes. Continue?')) {
+        if (! $this->option('force')) {
+            if (! $this->confirm('This will update the permissions table with all available routes. Continue?')) {
                 $this->info('Operation cancelled.');
+
                 return;
             }
         }
 
         $this->info('Starting permissions update...');
-        
+
         // Get all routes
         $routes = $this->getAllRoutes();
-        $this->info('Found ' . count($routes) . ' routes.');
-        
+        $this->info('Found '.count($routes).' routes.');
+
         // Check if permissions table exists
-        if (!$this->checkPermissionsTable()) {
+        if (! $this->checkPermissionsTable()) {
             $this->error('Permissions table does not exist. Creating it...');
             $this->createPermissionsTable();
         }
-        
+
         $created = 0;
         $updated = 0;
         $skipped = 0;
-        
+
         foreach ($routes as $route) {
             $result = $this->createOrUpdatePermission($route);
-            
+
             switch ($result) {
                 case 'created':
                     $created++;
@@ -66,21 +67,21 @@ class UpdatePermissions extends Command
                     break;
             }
         }
-        
+
         $this->info("\nPermissions update completed!");
         $this->table(['Action', 'Count'], [
             ['Created', $created],
-            ['Updated', $updated], 
+            ['Updated', $updated],
             ['Skipped', $skipped],
-            ['Total', $created + $updated + $skipped]
+            ['Total', $created + $updated + $skipped],
         ]);
-        
+
         // Update role permissions for admin
         $this->updateAdminPermissions();
-        
+
         $this->info('✅ All permissions have been updated successfully!');
     }
-    
+
     /**
      * Get all available routes
      */
@@ -88,34 +89,33 @@ class UpdatePermissions extends Command
     {
         $routes = [];
         $routeCollection = Route::getRoutes();
-        
+
         foreach ($routeCollection as $route) {
             $name = $route->getName();
             $uri = $route->uri();
             $methods = implode('|', $route->methods());
-            $action = $route->getActionName();
-            
+
             // Skip routes without names or specific excluded routes
-            if (!$name || $this->shouldSkipRoute($name, $uri)) {
+            if (! $name || $this->shouldSkipRoute($name, $uri)) {
                 continue;
             }
-            
+
             // Determine category and description
             $category = $this->determineCategory($name, $uri);
             $description = $this->generateDescription($name, $uri, $methods);
-            
+
             $routes[] = [
                 'name' => $name,
                 'display_name' => $this->generateDisplayName($name),
                 'description' => $description,
                 'category' => $category,
-                'is_active' => 1
+                'is_active' => 1,
             ];
         }
-        
+
         return $routes;
     }
-    
+
     /**
      * Check if permissions table exists
      */
@@ -123,12 +123,13 @@ class UpdatePermissions extends Command
     {
         try {
             DB::table('permissions')->count();
+
             return true;
         } catch (\Exception $e) {
             return false;
         }
     }
-    
+
     /**
      * Create permissions table if not exists (using existing structure)
      */
@@ -137,14 +138,14 @@ class UpdatePermissions extends Command
         // Table already exists with different structure, no need to create
         $this->info('Using existing permissions table structure.');
     }
-    
+
     /**
      * Create or update permission
      */
     private function createOrUpdatePermission($route)
     {
         $existing = DB::table('permissions')->where('name', $route['name'])->first();
-        
+
         if ($existing) {
             // Update existing permission
             DB::table('permissions')
@@ -154,26 +155,26 @@ class UpdatePermissions extends Command
                     'description' => $route['description'],
                     'category' => $route['category'],
                     'is_active' => $route['is_active'],
-                    'updated_at' => Carbon::now()
+                    'updated_at' => Carbon::now(),
                 ]);
-            
+
             return 'updated';
-        } else {
-            // Create new permission
-            DB::table('permissions')->insert([
-                'name' => $route['name'],
-                'display_name' => $route['display_name'],
-                'description' => $route['description'],
-                'category' => $route['category'],
-                'is_active' => $route['is_active'],
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
-            ]);
-            
-            return 'created';
         }
+
+        // Create new permission
+        DB::table('permissions')->insert([
+            'name' => $route['name'],
+            'display_name' => $route['display_name'],
+            'description' => $route['description'],
+            'category' => $route['category'],
+            'is_active' => $route['is_active'],
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        return 'created';
     }
-    
+
     /**
      * Determine if route should be skipped
      */
@@ -181,27 +182,27 @@ class UpdatePermissions extends Command
     {
         $skipPatterns = [
             'debugbar.*',
-            'horizon.*', 
+            'horizon.*',
             '_debugbar.*',
             'ignition.*',
             'livewire.*',
-            'sanctum.*'
+            'sanctum.*',
         ];
-        
+
         foreach ($skipPatterns as $pattern) {
             if (fnmatch($pattern, $name)) {
                 return true;
             }
         }
-        
+
         // Skip routes with parameters that are too generic
         if (strpos($uri, '{') !== false && strlen($uri) < 5) {
             return true;
         }
-        
+
         return false;
     }
-    
+
     /**
      * Determine route category
      */
@@ -218,9 +219,9 @@ class UpdatePermissions extends Command
             'Business' => ['umkm', 'business'],
             'System' => ['settings', 'backup', 'logs', 'maintenance'],
             'API' => ['api'],
-            'Frontend' => ['frontend', 'public']
+            'Frontend' => ['frontend', 'public'],
         ];
-        
+
         foreach ($categories as $category => $keywords) {
             foreach ($keywords as $keyword) {
                 if (strpos($name, $keyword) !== false || strpos($uri, $keyword) !== false) {
@@ -228,19 +229,19 @@ class UpdatePermissions extends Command
                 }
             }
         }
-        
+
         // Determine by route prefix
         if (strpos($name, 'backend.') === 0) {
             return 'Backend';
         }
-        
+
         if (strpos($name, 'admin.') === 0) {
             return 'Admin';
         }
-        
+
         return 'General';
     }
-    
+
     /**
      * Generate permission description
      */
@@ -250,7 +251,7 @@ class UpdatePermissions extends Command
         $parts = explode('.', $name);
         $action = end($parts);
         $resource = isset($parts[count($parts) - 2]) ? $parts[count($parts) - 2] : $parts[0];
-        
+
         $actionMap = [
             'index' => 'View',
             'show' => 'View Details',
@@ -259,15 +260,15 @@ class UpdatePermissions extends Command
             'edit' => 'Edit',
             'update' => 'Update',
             'destroy' => 'Delete',
-            'delete' => 'Delete'
+            'delete' => 'Delete',
         ];
-        
+
         $actionText = $actionMap[$action] ?? ucfirst($action);
         $resourceText = ucfirst(str_replace(['-', '_'], ' ', $resource));
-        
+
         return "{$actionText} {$resourceText}";
     }
-    
+
     /**
      * Generate display name for permission
      */
@@ -276,52 +277,52 @@ class UpdatePermissions extends Command
         // Convert route name to readable display name
         $parts = explode('.', $name);
         $displayParts = [];
-        
+
         foreach ($parts as $part) {
             $displayParts[] = ucfirst(str_replace(['-', '_'], ' ', $part));
         }
-        
+
         return implode(' - ', $displayParts);
     }
-    
+
     /**
      * Update admin role permissions
      */
     private function updateAdminPermissions()
     {
         $this->info('Updating admin role permissions...');
-        
+
         // Check if roles table exists
         try {
             $adminRole = DB::table('roles')->where('name', 'admin')->first();
-            if (!$adminRole) {
+            if (! $adminRole) {
                 $adminRole = DB::table('roles')->where('name', 'super_admin')->first();
             }
-            
+
             if ($adminRole) {
                 // Get all permissions
                 $permissions = DB::table('permissions')->pluck('id');
-                
+
                 // Clear existing role permissions
                 DB::table('role_permissions')->where('role_id', $adminRole->id)->delete();
-                
+
                 // Assign all permissions to admin role
                 foreach ($permissions as $permissionId) {
                     DB::table('role_permissions')->insert([
                         'role_id' => $adminRole->id,
                         'permission_id' => $permissionId,
                         'created_at' => Carbon::now(),
-                        'updated_at' => Carbon::now()
+                        'updated_at' => Carbon::now(),
                     ]);
                 }
-                
-                $this->info('Admin role updated with ' . count($permissions) . ' permissions.');
+
+                $this->info('Admin role updated with '.count($permissions).' permissions.');
             } else {
                 $this->warn('Admin role not found. Please create admin role manually.');
             }
-            
+
         } catch (\Exception $e) {
-            $this->warn('Could not update role permissions: ' . $e->getMessage());
+            $this->warn('Could not update role permissions: '.$e->getMessage());
         }
     }
 }

@@ -7,7 +7,6 @@ use App\Models\PopulationData;
 use App\Models\Settlement;
 use App\Traits\HasPagination;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class PopulationController extends Controller
 {
@@ -27,14 +26,14 @@ class PopulationController extends Controller
             'status' => 'status',
             'settlement_id' => 'settlement_id',
             'marital_status' => 'marital_status',
-            'religion' => 'religion'
+            'religion' => 'religion',
         ];
         $query = $this->applyFilters($query, $request, $filters);
 
         // Apply sorting
         $query = $this->applySorting($query, $request, 'created_at', 'desc');
 
-        // Paginate results  
+        // Paginate results
         $population = $this->paginateQuery($query, $request);
 
         // Get statistics
@@ -45,7 +44,7 @@ class PopulationController extends Controller
             'alive' => PopulationData::where('status', 'Hidup')->count(),
             'dead' => PopulationData::where('status', 'Mati')->count(),
             'married' => PopulationData::whereIn('marital_status', ['Kawin', 'Married'])->count(),
-            'single' => PopulationData::whereIn('marital_status', ['Belum Kawin', 'Single'])->count()
+            'single' => PopulationData::whereIn('marital_status', ['Belum Kawin', 'Single'])->count(),
         ];
 
         // Add households count (count distinct family_card_number)
@@ -63,6 +62,7 @@ class PopulationController extends Controller
     public function create()
     {
         $settlements = Settlement::where('is_active', true)->get();
+
         return view('backend.population.create', compact('settlements'));
     }
 
@@ -97,12 +97,13 @@ class PopulationController extends Controller
         PopulationData::create($request->all());
 
         return redirect()->route('backend.population.index')
-                        ->with('success', 'Population data created successfully!');
+            ->with('success', 'Population data created successfully!');
     }
 
     public function show($id)
     {
         $population = PopulationData::with('settlement')->findOrFail($id);
+
         return view('backend.population.show', compact('population'));
     }
 
@@ -110,6 +111,7 @@ class PopulationController extends Controller
     {
         $population = PopulationData::findOrFail($id);
         $settlements = Settlement::where('is_active', true)->get();
+
         return view('backend.population.edit', compact('population', 'settlements'));
     }
 
@@ -120,7 +122,7 @@ class PopulationController extends Controller
         $request->validate([
             'serial_number' => 'required|integer',
             'family_card_number' => 'required|string|max:16',
-            'identity_card_number' => 'required|string|max:16|unique:population_data,identity_card_number,' . $population->id,
+            'identity_card_number' => 'required|string|max:16|unique:population_data,identity_card_number,'.$population->id,
             'name' => 'required|string|max:255',
             'birth_place' => 'required|string|max:255',
             'birth_date' => 'required|date',
@@ -146,7 +148,7 @@ class PopulationController extends Controller
         $population->update($request->all());
 
         return redirect()->route('backend.population.index')
-                        ->with('success', 'Population data updated successfully!');
+            ->with('success', 'Population data updated successfully!');
     }
 
     public function destroy($id)
@@ -155,7 +157,7 @@ class PopulationController extends Controller
         $population->delete();
 
         return redirect()->route('backend.population.index')
-                        ->with('success', 'Population data deleted successfully!');
+            ->with('success', 'Population data deleted successfully!');
     }
 
     public function import()
@@ -168,7 +170,7 @@ class PopulationController extends Controller
         // Create a simple CSV template
         $headers = [
             'serial_number',
-            'family_card_number', 
+            'family_card_number',
             'identity_card_number',
             'name',
             'birth_place',
@@ -186,34 +188,34 @@ class PopulationController extends Controller
             'independent_family_head',
             'district',
             'regency',
-            'province'
+            'province',
         ];
-        
+
         $filename = 'population_template.csv';
-        
+
         $handle = fopen('php://output', 'w');
-        
-        return response()->stream(function() use ($handle, $headers) {
+
+        return response()->stream(function () use ($handle, $headers) {
             fputcsv($handle, $headers);
             fclose($handle);
         }, 200, [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="'.$filename.'"'
+            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
         ]);
     }
 
     public function bulkDelete(Request $request)
     {
         $ids = $request->input('population', []);
-        
-        if (empty($ids)) {
+
+        if ($ids === [] || $ids === null) {
             return redirect()->back()->with('error', 'No population data selected.');
         }
-        
+
         $count = PopulationData::whereIn('id', $ids)->delete();
-        
+
         return redirect()->route('backend.population.index')
-                        ->with('success', "Successfully deleted {$count} population data.");
+            ->with('success', "Successfully deleted {$count} population data.");
     }
 
     public function export(Request $request)
@@ -229,8 +231,8 @@ class PopulationController extends Controller
         $stats = [
             'total_population' => PopulationData::count(),
             'gender_distribution' => PopulationData::selectRaw('gender, COUNT(*) as count')
-                                                   ->groupBy('gender')
-                                                   ->pluck('count', 'gender'),
+                ->groupBy('gender')
+                ->pluck('count', 'gender'),
             'age_distribution' => PopulationData::selectRaw('
                 CASE 
                     WHEN CAST(age AS UNSIGNED) BETWEEN 0 AND 17 THEN "0-17"
@@ -241,18 +243,18 @@ class PopulationController extends Controller
                 END as age_group,
                 COUNT(*) as count
             ')
-            ->groupBy('age_group')
-            ->pluck('count', 'age_group'),
+                ->groupBy('age_group')
+                ->pluck('count', 'age_group'),
             'marital_status_distribution' => PopulationData::selectRaw('marital_status, COUNT(*) as count')
-                                                          ->groupBy('marital_status')
-                                                          ->pluck('count', 'marital_status'),
+                ->groupBy('marital_status')
+                ->pluck('count', 'marital_status'),
             'religion_distribution' => PopulationData::selectRaw('religion, COUNT(*) as count')
-                                                    ->groupBy('religion')
-                                                    ->pluck('count', 'religion'),
+                ->groupBy('religion')
+                ->pluck('count', 'religion'),
             'settlement_distribution' => PopulationData::with('settlement')
-                                                      ->selectRaw('settlement_id, COUNT(*) as count')
-                                                      ->groupBy('settlement_id')
-                                                      ->get(),
+                ->selectRaw('settlement_id, COUNT(*) as count')
+                ->groupBy('settlement_id')
+                ->get(),
         ];
 
         return view('backend.population.statistics', compact('stats'));

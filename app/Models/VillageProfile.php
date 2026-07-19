@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class VillageProfile extends Model
 {
@@ -63,7 +62,7 @@ class VillageProfile extends Model
         return $this->village_name;
     }
 
-    public function getCodeAttribute() 
+    public function getCodeAttribute()
     {
         return $this->village_code;
     }

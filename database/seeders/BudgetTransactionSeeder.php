@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\BudgetTransaction;
 use App\Models\VillageBudget;
+use Illuminate\Database\Seeder;
 
 class BudgetTransactionSeeder extends Seeder
 {
@@ -16,9 +15,10 @@ class BudgetTransactionSeeder extends Seeder
     {
         // Get some budget records to link transactions to
         $budgets = VillageBudget::all();
-        
+
         if ($budgets->isEmpty()) {
             $this->command->info('No budget records found. Please run VillageBudgetSeeder first.');
+
             return;
         }
 
@@ -44,7 +44,7 @@ class BudgetTransactionSeeder extends Seeder
                 'notes' => 'Transfer tahap pertama dari Pemerintah Daerah',
                 'created_by' => 1,
             ],
-            
+
             // Expense transactions
             [
                 'budget_id' => $budgets->where('category', 'Belanja Pegawai')->first()?->id,

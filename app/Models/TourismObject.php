@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TourismObject extends Model
 {
@@ -40,8 +39,7 @@ class TourismObject extends Model
         if (is_null($value) || $value === '') {
             return [];
         }
+
         return is_string($value) ? json_decode($value, true) ?? [] : (is_array($value) ? $value : []);
     }
-
-
 }

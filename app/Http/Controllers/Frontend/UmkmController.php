@@ -23,10 +23,10 @@ class UmkmController extends Controller
         // Search functionality
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('business_name', 'like', '%' . $request->search . '%')
-                  ->orWhere('owner_name', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%')
-                  ->orWhere('products', 'like', '%' . $request->search . '%');
+                $q->where('business_name', 'like', '%'.$request->search.'%')
+                    ->orWhere('owner_name', 'like', '%'.$request->search.'%')
+                    ->orWhere('description', 'like', '%'.$request->search.'%')
+                    ->orWhere('products', 'like', '%'.$request->search.'%');
             });
         }
 
@@ -36,8 +36,8 @@ class UmkmController extends Controller
         }
 
         $umkms = $query->orderBy('is_verified', 'desc')
-                      ->orderBy('rating', 'desc')
-                      ->paginate(6);
+            ->orderBy('rating', 'desc')
+            ->paginate(6);
 
         // Get statistics for overview
         $statistics = [
@@ -49,9 +49,9 @@ class UmkmController extends Controller
 
         // Get category statistics
         $categoryStats = Umkm::where('is_active', true)
-                            ->selectRaw('category, COUNT(*) as count')
-                            ->groupBy('category')
-                            ->get();
+            ->selectRaw('category, COUNT(*) as count')
+            ->groupBy('category')
+            ->get();
 
         // Get village profile
         $villageProfile = VillageProfile::first();
@@ -62,15 +62,15 @@ class UmkmController extends Controller
     public function show($slug)
     {
         $umkm = Umkm::where('slug', $slug)
-                   ->where('is_active', true)
-                   ->firstOrFail();
+            ->where('is_active', true)
+            ->firstOrFail();
 
         // Get related UMKM in same category
         $relatedUmkm = Umkm::where('is_active', true)
-                          ->where('category', $umkm->category)
-                          ->where('id', '!=', $umkm->id)
-                          ->limit(4)
-                          ->get();
+            ->where('category', $umkm->category)
+            ->where('id', '!=', $umkm->id)
+            ->limit(4)
+            ->get();
 
         // Get village profile
         $villageProfile = VillageProfile::first();
@@ -81,9 +81,9 @@ class UmkmController extends Controller
     public function category($category)
     {
         $umkms = Umkm::where('is_active', true)
-                    ->where('category', $category)
-                    ->orderBy('rating', 'desc')
-                    ->paginate(12);
+            ->where('category', $category)
+            ->orderBy('rating', 'desc')
+            ->paginate(12);
 
         $categoryName = ucfirst(str_replace('_', ' ', $category));
 
@@ -110,8 +110,8 @@ class UmkmController extends Controller
 
         // Check if user has already reviewed this UMKM
         $existingReview = UmkmReview::where('umkm_id', $umkm->id)
-                                  ->where('reviewer_email', $request->reviewer_email)
-                                  ->first();
+            ->where('reviewer_email', $request->reviewer_email)
+            ->first();
 
         if ($existingReview) {
             return redirect()->back()->with('error', 'You have already reviewed this business.');
@@ -135,14 +135,14 @@ class UmkmController extends Controller
     private function updateUmkmRating($umkm)
     {
         $reviews = UmkmReview::where('umkm_id', $umkm->id)
-                            ->where('is_verified', true)
-                            ->get();
+            ->where('is_verified', true)
+            ->get();
 
         if ($reviews->count() > 0) {
             $averageRating = $reviews->avg('rating');
             $umkm->update([
                 'rating' => round($averageRating, 2),
-                'total_reviews' => $reviews->count()
+                'total_reviews' => $reviews->count(),
             ]);
         }
     }
@@ -150,9 +150,9 @@ class UmkmController extends Controller
     public function verified()
     {
         $verifiedUmkms = Umkm::where('is_active', true)
-                            ->where('is_verified', true)
-                            ->orderBy('rating', 'desc')
-                            ->paginate(12);
+            ->where('is_verified', true)
+            ->orderBy('rating', 'desc')
+            ->paginate(12);
 
         // Get village profile
         $villageProfile = VillageProfile::first();
@@ -164,9 +164,9 @@ class UmkmController extends Controller
     public function getUmkm()
     {
         $umkms = Umkm::where('is_active', true)
-                    ->orderBy('rating', 'desc')
-                    ->limit(12)
-                    ->get(['id', 'business_name', 'slug', 'owner_name', 'category', 'description', 'rating', 'is_verified']);
+            ->orderBy('rating', 'desc')
+            ->limit(12)
+            ->get(['id', 'business_name', 'slug', 'owner_name', 'category', 'description', 'rating', 'is_verified']);
 
         return response()->json($umkms);
     }
@@ -174,8 +174,8 @@ class UmkmController extends Controller
     public function getUmkmDetail($slug)
     {
         $umkm = Umkm::where('slug', $slug)
-                   ->where('is_active', true)
-                   ->firstOrFail();
+            ->where('is_active', true)
+            ->firstOrFail();
 
         return response()->json($umkm);
     }
@@ -183,9 +183,9 @@ class UmkmController extends Controller
     public function getUmkmByCategory($category)
     {
         $umkms = Umkm::where('is_active', true)
-                    ->where('category', $category)
-                    ->orderBy('rating', 'desc')
-                    ->paginate(10);
+            ->where('category', $category)
+            ->orderBy('rating', 'desc')
+            ->paginate(10);
 
         return response()->json($umkms);
     }
@@ -193,21 +193,21 @@ class UmkmController extends Controller
     public function search(Request $request)
     {
         $query = $request->get('q');
-        
-        if (!$query) {
+
+        if (! $query) {
             return response()->json(['data' => []]);
         }
 
         $umkms = Umkm::where('is_active', true)
-                    ->where(function ($q) use ($query) {
-                        $q->where('business_name', 'like', '%' . $query . '%')
-                          ->orWhere('owner_name', 'like', '%' . $query . '%')
-                          ->orWhere('description', 'like', '%' . $query . '%')
-                          ->orWhere('products', 'like', '%' . $query . '%');
-                    })
-                    ->orderBy('rating', 'desc')
-                    ->limit(10)
-                    ->get(['id', 'business_name', 'slug', 'owner_name', 'category', 'description', 'rating']);
+            ->where(function ($q) use ($query) {
+                $q->where('business_name', 'like', '%'.$query.'%')
+                    ->orWhere('owner_name', 'like', '%'.$query.'%')
+                    ->orWhere('description', 'like', '%'.$query.'%')
+                    ->orWhere('products', 'like', '%'.$query.'%');
+            })
+            ->orderBy('rating', 'desc')
+            ->limit(10)
+            ->get(['id', 'business_name', 'slug', 'owner_name', 'category', 'description', 'rating']);
 
         return response()->json(['data' => $umkms]);
     }
@@ -224,16 +224,16 @@ class UmkmController extends Controller
         // Search functionality
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('business_name', 'like', '%' . $request->search . '%')
-                  ->orWhere('owner_name', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%')
-                  ->orWhere('products', 'like', '%' . $request->search . '%');
+                $q->where('business_name', 'like', '%'.$request->search.'%')
+                    ->orWhere('owner_name', 'like', '%'.$request->search.'%')
+                    ->orWhere('description', 'like', '%'.$request->search.'%')
+                    ->orWhere('products', 'like', '%'.$request->search.'%');
             });
         }
 
         $umkms = $query->orderBy('is_verified', 'desc')
-                      ->orderBy('rating', 'desc')
-                      ->paginate(6);
+            ->orderBy('rating', 'desc')
+            ->paginate(6);
 
         // Get statistics
         $statistics = [
@@ -245,9 +245,9 @@ class UmkmController extends Controller
 
         // Get category statistics
         $categoryStats = Umkm::where('is_active', true)
-                            ->selectRaw('category, COUNT(*) as count')
-                            ->groupBy('category')
-                            ->get();
+            ->selectRaw('category, COUNT(*) as count')
+            ->groupBy('category')
+            ->get();
 
         return response()->json([
             'umkms' => $umkms,
@@ -255,7 +255,7 @@ class UmkmController extends Controller
             'categoryStats' => $categoryStats,
             'html' => view('frontend.umkm.partials.umkm-cards', compact('umkms'))->render(),
             'pagination' => view('frontend.umkm.partials.umkm-pagination', compact('umkms'))->render(),
-            'stats' => view('frontend.umkm.partials.umkm-stats', compact('categoryStats'))->render()
+            'stats' => view('frontend.umkm.partials.umkm-stats', compact('categoryStats'))->render(),
         ]);
     }
 }

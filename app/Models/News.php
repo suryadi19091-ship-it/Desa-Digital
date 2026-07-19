@@ -5,21 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class News extends Model
 {
     use HasFactory, LogsActivity;
 
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->logFillable()
-            ->logOnlyDirty()
-            ->dontSubmitEmptyLogs()
-            ->dontLogIfAttributesChangedOnly(['views_count']);
-    }
+
 
     protected $fillable = [
         'title',
@@ -32,25 +25,34 @@ class News extends Model
         'is_featured',
         'is_published',
         'author_id',
-        'published_at'
+        'published_at',
     ];
 
     protected $casts = [
         'is_featured' => 'boolean',
         'is_published' => 'boolean',
         'published_at' => 'datetime',
-        'views_count' => 'integer'
+        'views_count' => 'integer',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->dontLogIfAttributesChangedOnly(['views_count']);
+    }
 
     protected static function boot()
     {
         parent::boot();
 
         static::creating(function ($news) {
-            if (empty($news->slug)) {
+            if (! isset($news->slug) || $news->slug === '') {
                 $news->slug = Str::slug($news->title);
             }
-            if (empty($news->author_id)) {
+            if (! isset($news->author_id) || $news->author_id === null) {
                 $news->author_id = auth()->id();
             }
         });
@@ -96,13 +98,14 @@ class News extends Model
             'infrastruktur' => 'Infrastruktur',
             'pendidikan' => 'Pendidikan',
             'olahraga' => 'Olahraga',
-            'lainnya' => 'Lainnya'
+            'lainnya' => 'Lainnya',
         ];
     }
 
     public function getCategoryLabelAttribute()
     {
         $categories = $this->categories;
+
         return $categories[$this->category] ?? $this->category;
     }
 }

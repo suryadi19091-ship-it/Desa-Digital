@@ -6,21 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Umkm extends Model
 {
     use HasFactory, LogsActivity;
-
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->logFillable()
-            ->logOnlyDirty()
-            ->dontSubmitEmptyLogs()
-            ->dontLogIfAttributesChangedOnly(['view_count']);
-    }
 
     protected $fillable = [
         'business_name',
@@ -59,12 +50,22 @@ class Umkm extends Model
         'registered_at' => 'date',
     ];
 
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->dontLogIfAttributesChangedOnly(['view_count']);
+    }
+
     // Accessor to ensure photos is always an array
     public function getPhotosAttribute($value)
     {
         if (is_null($value) || $value === '') {
             return [];
         }
+
         return is_string($value) ? json_decode($value, true) ?? [] : (is_array($value) ? $value : []);
     }
 

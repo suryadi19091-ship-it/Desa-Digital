@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Agenda;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class AddMoreAgendaSeeder extends Seeder
 {
@@ -27,7 +26,7 @@ class AddMoreAgendaSeeder extends Seeder
                 'contact_phone' => '08123456789',
                 'is_public' => true,
                 'is_completed' => false,
-                'requirements' => 'Membawa KTP dan KK'
+                'requirements' => 'Membawa KTP dan KK',
             ],
             [
                 'title' => 'Rapat Evaluasi Kinerja Perangkat Desa',
@@ -41,7 +40,7 @@ class AddMoreAgendaSeeder extends Seeder
                 'contact_phone' => '08123456789',
                 'is_public' => false,
                 'is_completed' => false,
-                'requirements' => 'Khusus perangkat desa'
+                'requirements' => 'Khusus perangkat desa',
             ],
             [
                 'title' => 'Posyandu Balita dan Lansia',
@@ -55,7 +54,7 @@ class AddMoreAgendaSeeder extends Seeder
                 'contact_phone' => '08987654321',
                 'is_public' => true,
                 'is_completed' => false,
-                'requirements' => 'Bawa KMS/Buku Kesehatan'
+                'requirements' => 'Bawa KMS/Buku Kesehatan',
             ],
             [
                 'title' => 'Pelatihan Kewirausahaan UMKM',
@@ -69,7 +68,7 @@ class AddMoreAgendaSeeder extends Seeder
                 'contact_phone' => '08555666777',
                 'is_public' => true,
                 'is_completed' => false,
-                'requirements' => 'Membawa alat tulis'
+                'requirements' => 'Membawa alat tulis',
             ],
             [
                 'title' => 'Senam Sehat Ibu-ibu PKK',
@@ -83,7 +82,7 @@ class AddMoreAgendaSeeder extends Seeder
                 'contact_phone' => '08222333444',
                 'is_public' => true,
                 'is_completed' => false,
-                'requirements' => 'Pakaian olahraga dan matras'
+                'requirements' => 'Pakaian olahraga dan matras',
             ],
 
             [
@@ -98,8 +97,8 @@ class AddMoreAgendaSeeder extends Seeder
                 'contact_phone' => '08777888999',
                 'is_public' => true,
                 'is_completed' => false,
-                'requirements' => 'Membawa Al-Quran'
-            ]
+                'requirements' => 'Membawa Al-Quran',
+            ],
         ];
 
         foreach ($agendas as $agenda) {

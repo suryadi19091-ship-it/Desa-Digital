@@ -28,7 +28,7 @@ class Location extends Model
         'show_on_map',
         'sort_order',
         'image_path',
-        'created_by'
+        'created_by',
     ];
 
     protected $casts = [
@@ -39,7 +39,7 @@ class Location extends Model
         'latitude' => 'decimal:8',
         'longitude' => 'decimal:8',
         'area_size' => 'decimal:2',
-        'sort_order' => 'integer'
+        'sort_order' => 'integer',
     ];
 
     public function creator(): BelongsTo
@@ -67,7 +67,7 @@ class Location extends Model
             'commercial' => 'Perdagangan',
             'public' => 'Fasilitas Umum',
             'tourism' => 'Wisata',
-            'other' => 'Lainnya'
+            'other' => 'Lainnya',
         ];
 
         return $types[$this->type] ?? 'Tidak Diketahui';
@@ -75,20 +75,24 @@ class Location extends Model
 
     public function getFormattedAreaAttribute(): string
     {
-        if (!$this->area_size) {
+        if (! $this->area_size) {
             return '-';
         }
 
         $area = floatval($this->area_size);
-        
+
         if ($area < 1000) {
-            return number_format($area, 2) . ' m²';
-        } elseif ($area < 10000) {
-            return number_format($area / 10000, 4) . ' Ha';
-        } elseif ($area < 1000000) {
-            return number_format($area / 10000, 2) . ' Ha';
-        } else {
-            return number_format($area / 1000000, 2) . ' km²';
+            return number_format($area, 2).' m²';
         }
+
+        if ($area < 10000) {
+            return number_format($area / 10000, 4).' Ha';
+        }
+
+        if ($area < 1000000) {
+            return number_format($area / 10000, 2).' Ha';
+        }
+
+        return number_format($area / 1000000, 2).' km²';
     }
 }

@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Traits\HasPagination;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
@@ -28,12 +29,14 @@ class UserController extends Controller
                 'callback' => function ($query, $value) {
                     if ($value === 'active') {
                         return $query->where('is_active', true);
-                    } elseif ($value === 'inactive') {
+                    }
+                    if ($value === 'inactive') {
                         return $query->where('is_active', false);
                     }
+
                     return $query;
-                }
-            ]
+                },
+            ],
         ];
         $query = $this->applyFilters($query, $request, $filters);
 
@@ -63,6 +66,7 @@ class UserController extends Controller
     public function create()
     {
         $roles = ['admin', 'staff', 'operator', 'viewer'];
+
         return view('backend.users.create', compact('roles'));
     }
 
@@ -91,12 +95,13 @@ class UserController extends Controller
         User::create($data);
 
         return redirect()->route('backend.users.index')
-                        ->with('success', 'User created successfully!');
+            ->with('success', 'User created successfully!');
     }
 
     public function show($id)
     {
         $user = User::findOrFail($id);
+
         return view('backend.users.show', compact('user'));
     }
 
@@ -104,6 +109,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $roles = ['admin', 'staff', 'operator', 'viewer'];
+
         return view('backend.users.edit', compact('user', 'roles'));
     }
 
@@ -113,9 +119,9 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
             'password' => 'nullable|string|min:8|confirmed',
-            'employee_id' => 'nullable|string|max:50|unique:users,employee_id,' . $user->id,
+            'employee_id' => 'nullable|string|max:50|unique:users,employee_id,'.$user->id,
             'role' => 'required|in:admin,staff,operator,viewer',
             'phone' => 'nullable|string|max:20',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -142,13 +148,13 @@ class UserController extends Controller
         $user->update($data);
 
         return redirect()->route('backend.users.index')
-                        ->with('success', 'User updated successfully!');
+            ->with('success', 'User updated successfully!');
     }
 
     public function destroy($id)
     {
         $user = User::findOrFail($id);
-        
+
         // Delete avatar
         if ($user->avatar) {
             Storage::disk('public')->delete($user->avatar);
@@ -157,45 +163,45 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('backend.users.index')
-                        ->with('success', 'User deleted successfully!');
+            ->with('success', 'User deleted successfully!');
     }
 
-    public function toggleStatus(Request $request, $id)
+    public function toggleStatus($id)
     {
         try {
             $user = User::findOrFail($id);
             $oldStatus = $user->is_active ? 'active' : 'inactive';
-            $user->is_active = !$user->is_active;
+            $user->is_active = ! $user->is_active;
             $user->save();
 
             $newStatus = $user->is_active ? 'active' : 'inactive';
             $statusText = $user->is_active ? 'diaktifkan' : 'dinonaktifkan';
 
             // Log the status change
-            \Log::info('User status changed', [
+            Log::info('User status changed', [
                 'user_id' => $user->id,
                 'user_name' => $user->name,
                 'old_status' => $oldStatus,
                 'new_status' => $newStatus,
                 'changed_by' => auth()->id(),
-                'changed_by_name' => auth()->user()->name ?? 'System'
+                'changed_by_name' => auth()->user()->name ?? 'System',
             ]);
 
             return response()->json([
                 'success' => true,
                 'message' => "Status pengguna {$user->name} berhasil {$statusText}",
-                'new_status' => $user->is_active
+                'new_status' => $user->is_active,
             ]);
         } catch (\Exception $e) {
-            \Log::error('Toggle user status error', [
+            Log::error('Toggle user status error', [
                 'user_id' => $id,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                'message' => 'Terjadi kesalahan: '.$e->getMessage(),
             ], 500);
         }
     }

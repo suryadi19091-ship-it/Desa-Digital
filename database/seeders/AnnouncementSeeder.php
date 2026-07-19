@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Announcement;
+use Illuminate\Database\Seeder;
 
 class AnnouncementSeeder extends Seeder
 {
@@ -100,7 +100,7 @@ class AnnouncementSeeder extends Seeder
                 'valid_until' => '2025-10-15',
                 'created_by' => 1,
                 'created_at' => now()->subDays(16),
-            ]
+            ],
         ];
 
         foreach ($announcements as $announcement) {

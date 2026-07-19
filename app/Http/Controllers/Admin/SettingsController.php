@@ -4,11 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class SettingsController extends Controller
 {
@@ -23,7 +22,7 @@ class SettingsController extends Controller
      */
     public function index()
     {
-        if (!Gate::allows('manage-system-settings')) {
+        if (! Gate::allows('manage-system-settings')) {
             abort(403, 'Unauthorized to manage system settings');
         }
 
@@ -38,7 +37,7 @@ class SettingsController extends Controller
      */
     public function update(Request $request)
     {
-        if (!Gate::allows('manage-system-settings')) {
+        if (! Gate::allows('manage-system-settings')) {
             abort(403, 'Unauthorized to manage system settings');
         }
 
@@ -94,7 +93,7 @@ class SettingsController extends Controller
             }
 
             // Don't update password if empty
-            if (empty($settings['mail_password'])) {
+            if (! isset($settings['mail_password']) || $settings['mail_password'] === '') {
                 unset($settings['mail_password']);
             }
 
@@ -108,7 +107,7 @@ class SettingsController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Settings updated successfully',
-                    'settings' => $settings
+                    'settings' => $settings,
                 ]);
             }
 
@@ -116,12 +115,12 @@ class SettingsController extends Controller
                 ->with('success', 'Settings updated successfully');
 
         } catch (\Exception $e) {
-            \Log::error('Settings update error: ' . $e->getMessage());
+            \Log::error('Settings update error: '.$e->getMessage());
 
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Failed to update settings: ' . $e->getMessage()
+                    'message' => 'Failed to update settings: '.$e->getMessage(),
                 ]);
             }
 
@@ -135,32 +134,32 @@ class SettingsController extends Controller
      */
     public function testEmail(Request $request)
     {
-        if (!Gate::allows('manage-system-settings')) {
+        if (! Gate::allows('manage-system-settings')) {
             abort(403, 'Unauthorized to test email settings');
         }
 
         $validated = $request->validate([
-            'email' => 'required|email'
+            'email' => 'required|email',
         ]);
 
         try {
             // Send test email
             Mail::raw('This is a test email from your Laravel application.', function ($message) use ($validated) {
                 $message->to($validated['email'])
-                    ->subject('Test Email from ' . config('app.name', 'Laravel'));
+                    ->subject('Test Email from '.config('app.name', 'Laravel'));
             });
 
             return response()->json([
                 'success' => true,
-                'message' => 'Test email sent successfully'
+                'message' => 'Test email sent successfully',
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Test email error: ' . $e->getMessage());
+            \Log::error('Test email error: '.$e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to send test email: ' . $e->getMessage()
+                'message' => 'Failed to send test email: '.$e->getMessage(),
             ]);
         }
     }
@@ -170,7 +169,7 @@ class SettingsController extends Controller
      */
     public function backupIndex()
     {
-        if (!Gate::allows('manage-system-backup')) {
+        if (! Gate::allows('manage-system-backup')) {
             abort(403, 'Unauthorized to manage backups');
         }
 
@@ -185,18 +184,18 @@ class SettingsController extends Controller
      */
     public function createBackup(Request $request)
     {
-        if (!Gate::allows('manage-system-backup')) {
+        if (! Gate::allows('manage-system-backup')) {
             abort(403, 'Unauthorized to create backups');
         }
 
         $validated = $request->validate([
-            'type' => 'required|string|in:database,files,full'
+            'type' => 'required|string|in:database,files,full',
         ]);
 
         try {
             $backupPath = storage_path('app/backups');
 
-            if (!is_dir($backupPath)) {
+            if (! is_dir($backupPath)) {
                 mkdir($backupPath, 0755, true);
             }
 
@@ -206,32 +205,32 @@ class SettingsController extends Controller
             switch ($validated['type']) {
                 case 'database':
                     $filename = "database_backup_{$timestamp}.sql";
-                    $this->createDatabaseBackup($backupPath . '/' . $filename);
+                    $this->createDatabaseBackup($backupPath.'/'.$filename);
                     break;
 
                 case 'files':
                     $filename = "files_backup_{$timestamp}.zip";
-                    $this->createFilesBackup($backupPath . '/' . $filename);
+                    $this->createFilesBackup($backupPath.'/'.$filename);
                     break;
 
                 case 'full':
                     $filename = "full_backup_{$timestamp}.zip";
-                    $this->createFullBackup($backupPath . '/' . $filename);
+                    $this->createFullBackup($backupPath.'/'.$filename);
                     break;
             }
 
             return response()->json([
                 'success' => true,
                 'message' => 'Backup created successfully',
-                'filename' => $filename
+                'filename' => $filename,
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Backup creation error: ' . $e->getMessage());
+            \Log::error('Backup creation error: '.$e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create backup: ' . $e->getMessage()
+                'message' => 'Failed to create backup: '.$e->getMessage(),
             ]);
         }
     }
@@ -241,13 +240,13 @@ class SettingsController extends Controller
      */
     public function downloadBackup($filename)
     {
-        if (!Gate::allows('manage-system-backup')) {
+        if (! Gate::allows('manage-system-backup')) {
             abort(403, 'Unauthorized to download backups');
         }
 
-        $filePath = storage_path('app/backups/' . $filename);
+        $filePath = storage_path('app/backups/'.$filename);
 
-        if (!file_exists($filePath)) {
+        if (! file_exists($filePath)) {
             abort(404, 'Backup file not found');
         }
 
@@ -259,33 +258,32 @@ class SettingsController extends Controller
      */
     public function deleteBackup($filename)
     {
-        if (!Gate::allows('manage-system-backup')) {
+        if (! Gate::allows('manage-system-backup')) {
             abort(403, 'Unauthorized to delete backups');
         }
 
         try {
-            $filePath = storage_path('app/backups/' . $filename);
+            $filePath = storage_path('app/backups/'.$filename);
 
             if (file_exists($filePath)) {
                 unlink($filePath);
 
                 return response()->json([
                     'success' => true,
-                    'message' => 'Backup deleted successfully'
-                ]);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Backup file not found'
+                    'message' => 'Backup deleted successfully',
                 ]);
             }
+            return response()->json([
+                'success' => false,
+                'message' => 'Backup file not found',
+            ]);
 
         } catch (\Exception $e) {
-            \Log::error('Backup deletion error: ' . $e->getMessage());
+            \Log::error('Backup deletion error: '.$e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete backup'
+                'message' => 'Failed to delete backup',
             ]);
         }
     }
@@ -363,7 +361,7 @@ class SettingsController extends Controller
             $envUpdates['MAIL_PASSWORD'] = $settings['mail_password'];
         }
         if (isset($settings['site_name'])) {
-            $envUpdates['APP_NAME'] = '"' . $settings['site_name'] . '"';
+            $envUpdates['APP_NAME'] = '"'.$settings['site_name'].'"';
         }
 
         // Update .env file
@@ -375,7 +373,7 @@ class SettingsController extends Controller
         try {
             Artisan::call('config:clear');
         } catch (\Exception $e) {
-            \Log::warning('Could not clear config cache: ' . $e->getMessage());
+            \Log::warning('Could not clear config cache: '.$e->getMessage());
         }
     }
 
@@ -390,14 +388,14 @@ class SettingsController extends Controller
             $content = file_get_contents($path);
 
             // Handle values with spaces by wrapping in quotes
-            if (str_contains($value, ' ') && !str_starts_with($value, '"')) {
-                $value = '"' . $value . '"';
+            if (str_contains($value, ' ') && ! str_starts_with($value, '"')) {
+                $value = '"'.$value.'"';
             }
 
-            if (preg_match('/^' . $key . '=/m', $content)) {
-                $content = preg_replace('/^' . $key . '=.*$/m', $key . '=' . $value, $content);
+            if (preg_match('/^'.$key.'=/m', $content)) {
+                $content = preg_replace('/^'.$key.'=.*$/m', $key.'='.$value, $content);
             } else {
-                $content .= "\n" . $key . '=' . $value;
+                $content .= "\n".$key.'='.$value;
             }
 
             file_put_contents($path, $content);
@@ -411,11 +409,11 @@ class SettingsController extends Controller
     {
         $backupPath = storage_path('app/backups');
 
-        if (!is_dir($backupPath)) {
+        if (! is_dir($backupPath)) {
             return [];
         }
 
-        $files = glob($backupPath . '/*');
+        $files = glob($backupPath.'/*');
         $backups = [];
 
         foreach ($files as $file) {
@@ -424,7 +422,7 @@ class SettingsController extends Controller
                     'name' => basename($file),
                     'size' => $this->formatBytes(filesize($file)),
                     'created' => date('Y-m-d H:i:s', filemtime($file)),
-                    'type' => $this->getBackupType(basename($file))
+                    'type' => $this->getBackupType(basename($file)),
                 ];
             }
         }
@@ -463,7 +461,7 @@ class SettingsController extends Controller
     {
         $zip = new \ZipArchive();
 
-        if ($zip->open($filePath, \ZipArchive::CREATE) !== TRUE) {
+        if ($zip->open($filePath, \ZipArchive::CREATE) !== true) {
             throw new \Exception('Could not create zip file');
         }
 
@@ -484,7 +482,7 @@ class SettingsController extends Controller
 
         $zip = new \ZipArchive();
 
-        if ($zip->open($filePath, \ZipArchive::CREATE) !== TRUE) {
+        if ($zip->open($filePath, \ZipArchive::CREATE) !== true) {
             throw new \Exception('Could not create zip file');
         }
 
@@ -516,7 +514,7 @@ class SettingsController extends Controller
         foreach ($iterator as $file) {
             if ($file->isFile()) {
                 $filePath = $file->getRealPath();
-                $relativePath = $zipPath . '/' . substr($filePath, strlen($dirPath) + 1);
+                $relativePath = $zipPath.'/'.substr($filePath, strlen($dirPath) + 1);
                 $zip->addFile($filePath, $relativePath);
             }
         }
@@ -529,11 +527,14 @@ class SettingsController extends Controller
     {
         if (str_contains($filename, 'database_backup')) {
             return 'Database';
-        } elseif (str_contains($filename, 'files_backup')) {
+        }
+        if (str_contains($filename, 'files_backup')) {
             return 'Files';
-        } elseif (str_contains($filename, 'full_backup')) {
+        }
+        if (str_contains($filename, 'full_backup')) {
             return 'Full';
         }
+
         return 'Unknown';
     }
 
@@ -542,12 +543,13 @@ class SettingsController extends Controller
      */
     private function formatBytes($bytes, $precision = 2)
     {
-        $units = array('B', 'KB', 'MB', 'GB', 'TB');
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $unitsCount = count($units) - 1;
 
-        for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
+        for ($i = 0; $bytes > 1024 && $i < $unitsCount; $i++) {
             $bytes /= 1024;
         }
 
-        return round($bytes, $precision) . ' ' . $units[$i];
+        return round($bytes, $precision).' '.$units[$i];
     }
 }

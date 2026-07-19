@@ -3,19 +3,19 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use App\Models\News;
 use App\Models\Agenda;
 use App\Models\Announcement;
-use App\Models\Gallery;
-use App\Models\VillageProfile;
 use App\Models\Banner;
-use App\Models\Umkm;
-use App\Models\TourismObject;
-use App\Models\PopulationData;
-use App\Models\VillageBudget;
 use App\Models\BudgetTransaction;
+use App\Models\Gallery;
 use App\Models\Location;
+use App\Models\News;
+use App\Models\PopulationData;
+use App\Models\TourismObject;
+use App\Models\Umkm;
 use App\Models\User;
+use App\Models\VillageBudget;
+use App\Models\VillageProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -62,9 +62,9 @@ class HomeController extends Controller
 
         // Upcoming Agenda
         $upcomingAgenda = Agenda::where('event_date', '>=', now())
-                               ->orderBy('event_date', 'asc')
-                               ->limit(3)
-                               ->get();
+            ->orderBy('event_date', 'asc')
+            ->limit(3)
+            ->get();
 
         return [
             'population_stats' => $populationStats,
@@ -73,7 +73,7 @@ class HomeController extends Controller
             'other_stats' => $otherStats,
             'popular_article' => $popularArticles,
             'latest_article' => $latestArticles,
-            'upcoming_agenda' => $upcomingAgenda
+            'upcoming_agenda' => $upcomingAgenda,
         ];
     }
 
@@ -84,8 +84,8 @@ class HomeController extends Controller
 
         // Get active banners
         $banners = Banner::where('is_active', true)
-                        ->orderBy('created_at', 'desc')
-                        ->get();
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         // Get statistics from population data and other tables
         $statistics = [
@@ -95,54 +95,54 @@ class HomeController extends Controller
             'total_families' => PopulationData::where('status', 'Hidup')->distinct('family_card_number')->count('family_card_number'),
             'total_news' => News::count(),
             'total_agenda' => Agenda::count(),
-            'total_umkm' => \App\Models\Umkm::count(),
+            'total_umkm' => Umkm::count(),
         ];
 
         // Get recent news
         $recentNews = News::orderBy('created_at', 'desc')
-                         ->limit(4)
-                         ->get();
+            ->limit(4)
+            ->get();
 
         // Get recent gallery
         $recentGallery = Gallery::orderBy('created_at', 'desc')
-                               ->limit(6)
-                               ->get();
+            ->limit(6)
+            ->get();
 
         // Get upcoming agenda
         $upcomingAgenda = Agenda::where('event_date', '>=', now())
-                               ->orderBy('event_date', 'asc')
-                               ->limit(3)
-                               ->get();
+            ->orderBy('event_date', 'asc')
+            ->limit(3)
+            ->get();
 
         // Get important announcements
         $importantAnnouncements = Announcement::where('is_active', true)
-                                            ->where('priority', '!=', 'low')
-                                            ->orderBy('created_at', 'desc')
-                                            ->limit(3)
-                                            ->get();
+            ->where('priority', '!=', 'low')
+            ->orderBy('created_at', 'desc')
+            ->limit(3)
+            ->get();
 
         // Get recent activities for dashboard
         $recentActivities = collect([]);
-        
+
         // Add recent news as activities
-        $recentNews->each(function($news) use ($recentActivities) {
+        $recentNews->each(function ($news) use ($recentActivities) {
             $recentActivities->push([
                 'icon' => 'fas fa-newspaper text-blue-500',
-                'title' => 'Berita: ' . $news->title,
+                'title' => 'Berita: '.$news->title,
                 'time' => $news->created_at->diffForHumans(),
                 'author' => $news->author->name ?? 'Admin',
-                'color' => 'text-blue-500'
+                'color' => 'text-blue-500',
             ]);
         });
-        
+
         // Add recent agenda as activities
-        $upcomingAgenda->each(function($agenda) use ($recentActivities) {
+        $upcomingAgenda->each(function ($agenda) use ($recentActivities) {
             $recentActivities->push([
                 'icon' => 'fas fa-calendar text-green-500',
-                'title' => 'Agenda: ' . $agenda->title,
+                'title' => 'Agenda: '.$agenda->title,
                 'time' => $agenda->event_date->diffForHumans(),
                 'author' => 'Panitia',
-                'color' => 'text-green-500'
+                'color' => 'text-green-500',
             ]);
         });
 
@@ -151,7 +151,7 @@ class HomeController extends Controller
 
         // Get current user if authenticated
         $user = Auth::check() ? Auth::user() : null;
-        
+
         // Get role permissions if user is authenticated
         $rolePermissions = [];
         if ($user) {
@@ -183,7 +183,7 @@ class HomeController extends Controller
                 'anak' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) < 18')->count(),
                 'produktif' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 18 AND 64')->count(),
                 'lansia' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= 65')->count(),
-            ]
+            ],
         ];
 
         // Get sidebar data
@@ -208,7 +208,7 @@ class HomeController extends Controller
     public function populationData()
     {
         $populationData = PopulationData::with('settlement')
-                                       ->paginate(20);
+            ->paginate(20);
 
         // Basic statistics
         $totalPopulation = PopulationData::where('status', 'Hidup')->count();
@@ -235,22 +235,22 @@ class HomeController extends Controller
 
         // Calculate percentages for age distribution
         foreach ($ageDistribution as $key => $value) {
-            $ageDistribution[$key . '_percentage'] = $totalPopulation > 0 ? round(($value / $totalPopulation) * 100, 1) : 0;
+            $ageDistribution[$key.'_percentage'] = $totalPopulation > 0 ? round(($value / $totalPopulation) * 100, 1) : 0;
         }
 
         // Education level (for people 15+)
         $totalEducationAge = PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= 15')->count();
         $educationLevels = [
-            'tidak_sekolah' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= 15')->where(function($q) {
+            'tidak_sekolah' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= 15')->where(function ($q) {
                 $q->whereNull('occupation')->orWhere('occupation', '')->orWhere('occupation', 'LIKE', '%Tidak%')->orWhere('occupation', 'LIKE', '%Belum%');
             })->count(),
             'sd' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= 15')->where('occupation', 'LIKE', '%SD%')->count(),
             'smp' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= 15')->where('occupation', 'LIKE', '%SMP%')->count(),
             'sma' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= 15')->where('occupation', 'LIKE', '%SMA%')->count(),
-            'diploma' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= 15')->where(function($q) {
+            'diploma' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= 15')->where(function ($q) {
                 $q->where('occupation', 'LIKE', '%Diploma%')->orWhere('occupation', 'LIKE', '%S1%')->orWhere('occupation', 'LIKE', '%Sarjana%');
             })->count(),
-            'pascasarjana' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= 15')->where(function($q) {
+            'pascasarjana' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= 15')->where(function ($q) {
                 $q->where('occupation', 'LIKE', '%S2%')->orWhere('occupation', 'LIKE', '%S3%')->orWhere('occupation', 'LIKE', '%Master%')->orWhere('occupation', 'LIKE', '%Doktor%');
             })->count(),
         ];
@@ -267,19 +267,19 @@ class HomeController extends Controller
         $occupations = [
             'petani' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 18 AND 64')->where('occupation', 'LIKE', '%Petani%')->count(),
             'buruh_tani' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 18 AND 64')->where('occupation', 'LIKE', '%Buruh%')->count(),
-            'wiraswasta' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 18 AND 64')->where(function($q) {
+            'wiraswasta' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 18 AND 64')->where(function ($q) {
                 $q->where('occupation', 'LIKE', '%Wiraswasta%')->orWhere('occupation', 'LIKE', '%Dagang%')->orWhere('occupation', 'LIKE', '%Pedagang%');
             })->count(),
-            'pns' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 18 AND 64')->where(function($q) {
+            'pns' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 18 AND 64')->where(function ($q) {
                 $q->where('occupation', 'LIKE', '%PNS%')->orWhere('occupation', 'LIKE', '%TNI%')->orWhere('occupation', 'LIKE', '%POLRI%');
             })->count(),
-            'guru' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 18 AND 64')->where(function($q) {
+            'guru' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 18 AND 64')->where(function ($q) {
                 $q->where('occupation', 'LIKE', '%Guru%')->orWhere('occupation', 'LIKE', '%Pendidik%');
             })->count(),
-            'kesehatan' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 18 AND 64')->where(function($q) {
+            'kesehatan' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 18 AND 64')->where(function ($q) {
                 $q->where('occupation', 'LIKE', '%Dokter%')->orWhere('occupation', 'LIKE', '%Bidan%')->orWhere('occupation', 'LIKE', '%Perawat%');
             })->count(),
-            'teknologi' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 18 AND 64')->where(function($q) {
+            'teknologi' => PopulationData::where('status', 'Hidup')->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 18 AND 64')->where(function ($q) {
                 $q->where('occupation', 'LIKE', '%IT%')->orWhere('occupation', 'LIKE', '%Teknologi%')->orWhere('occupation', 'LIKE', '%Programmer%');
             })->count(),
         ];
@@ -301,11 +301,11 @@ class HomeController extends Controller
         $villageProfile = VillageProfile::first();
 
         return view('frontend.page.data-penduduk', compact(
-            'populationData', 
-            'statistics', 
-            'ageDistribution', 
-            'educationLevels', 
-            'occupations', 
+            'populationData',
+            'statistics',
+            'ageDistribution',
+            'educationLevels',
+            'occupations',
             'populationByArea',
             'villageProfile'
         ));
@@ -319,7 +319,7 @@ class HomeController extends Controller
             $total = PopulationData::whereYear('created_at', '<=', $year)->count();
             $yearlyData->push([
                 'year' => $year,
-                'total' => $total
+                'total' => $total,
             ]);
         }
 
@@ -327,13 +327,13 @@ class HomeController extends Controller
         $totalPop = PopulationData::where('status', 'Hidup')->count();
         $maleCount = PopulationData::where('gender', 'M')->where('status', 'Hidup')->count();
         $femaleCount = PopulationData::where('gender', 'F')->where('status', 'Hidup')->count();
-        
+
         $genderStats = [
             'male_count' => $maleCount,
             'female_count' => $femaleCount,
             'male_percentage' => $totalPop > 0 ? ($maleCount / $totalPop) * 100 : 50,
             'female_percentage' => $totalPop > 0 ? ($femaleCount / $totalPop) * 100 : 50,
-            'ratio' => $femaleCount > 0 ? '1:' . number_format($maleCount / $femaleCount, 2) : '1:1'
+            'ratio' => $femaleCount > 0 ? '1:'.number_format($maleCount / $femaleCount, 2) : '1:1',
         ];
 
         // Age Statistics with proper grouping (only living people)
@@ -352,9 +352,9 @@ class HomeController extends Controller
             END as gender,
             COUNT(*) as count
         ')
-        ->whereNotNull('birth_date')
-        ->where('status', 'Hidup')
-        ->groupByRaw('
+            ->whereNotNull('birth_date')
+            ->where('status', 'Hidup')
+            ->groupByRaw('
             CASE 
                 WHEN TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 0 AND 4 THEN 2
                 WHEN TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 5 AND 17 THEN 11
@@ -365,7 +365,7 @@ class HomeController extends Controller
             END,
             gender
         ')
-        ->get();
+            ->get();
 
         // Marital Status (translate to Indonesian, only living people)
         $maritalStatus = PopulationData::selectRaw('
@@ -378,9 +378,9 @@ class HomeController extends Controller
             END as marital_status,
             COUNT(*) as count
         ')
-        ->whereNotNull('marital_status')
-        ->where('status', 'Hidup')
-        ->groupByRaw('
+            ->whereNotNull('marital_status')
+            ->where('status', 'Hidup')
+            ->groupByRaw('
             CASE 
                 WHEN marital_status = "Single" THEN "Belum Kawin"
                 WHEN marital_status = "Married" THEN "Kawin"
@@ -389,47 +389,47 @@ class HomeController extends Controller
                 ELSE marital_status
             END
         ')
-        ->orderBy('count', 'desc')
-        ->get();
+            ->orderBy('count', 'desc')
+            ->get();
 
         // Religion Statistics (only living people)
         $religions = PopulationData::selectRaw('religion, COUNT(*) as count')
-                                  ->whereNotNull('religion')
-                                  ->where('status', 'Hidup')
-                                  ->groupBy('religion')
-                                  ->orderBy('count', 'desc')
-                                  ->get();
+            ->whereNotNull('religion')
+            ->where('status', 'Hidup')
+            ->groupBy('religion')
+            ->orderBy('count', 'desc')
+            ->get();
 
         // Occupation Statistics (only living people)
         $occupations = PopulationData::selectRaw('occupation, COUNT(*) as count')
-                                    ->whereNotNull('occupation')
-                                    ->where('status', 'Hidup')
-                                    ->groupBy('occupation')
-                                    ->orderBy('count', 'desc')
-                                    ->limit(10)
-                                    ->get();
+            ->whereNotNull('occupation')
+            ->where('status', 'Hidup')
+            ->groupBy('occupation')
+            ->orderBy('count', 'desc')
+            ->limit(10)
+            ->get();
 
         // Birth & Death Statistics (2025)
         $currentYear = 2025;
-        
+
         // Calculate births (people born this year and still alive)
         $birthsThisYear = PopulationData::whereYear('birth_date', $currentYear)
-                                       ->where('status', 'Hidup')
-                                       ->get();
+            ->where('status', 'Hidup')
+            ->get();
         $totalBirths = $birthsThisYear->count();
         $maleBirths = $birthsThisYear->where('gender', 'M')->count();
         $femaleBirths = $birthsThisYear->where('gender', 'F')->count();
-        
+
         // Calculate deaths (actual deaths from database)
         $deathsThisYear = PopulationData::whereYear('death_date', $currentYear)->get();
         $totalDeaths = $deathsThisYear->count();
         $maleDeaths = $deathsThisYear->where('gender', 'M')->count();
         $femaleDeaths = $deathsThisYear->where('gender', 'F')->count();
-        
+
         // Calculate birth/death rates per 1000 population (only living people)
         $livingPopulation = PopulationData::where('status', 'Hidup')->count();
         $totalPopulation = PopulationData::count(); // Total including deceased for rate calculation
-        
+
         $birthRate = $totalPopulation > 0 ? ($totalBirths / $totalPopulation) * 1000 : 0;
         $deathRate = $totalPopulation > 0 ? ($totalDeaths / $totalPopulation) * 1000 : 0;
         $naturalGrowth = $totalBirths - $totalDeaths;
@@ -440,28 +440,28 @@ class HomeController extends Controller
                 'total' => $totalBirths,
                 'male' => $maleBirths,
                 'female' => $femaleBirths,
-                'rate' => number_format($birthRate, 1)
+                'rate' => number_format($birthRate, 1),
             ],
             'deaths' => [
                 'total' => $totalDeaths,
                 'male' => $maleDeaths,
                 'female' => $femaleDeaths,
-                'rate' => number_format($deathRate, 1)
+                'rate' => number_format($deathRate, 1),
             ],
             'natural_growth' => [
                 'total' => $naturalGrowth,
-                'rate' => number_format($naturalGrowthRate, 1)
+                'rate' => number_format($naturalGrowthRate, 1),
             ],
             'population_status' => [
                 'living' => $livingPopulation,
                 'deceased' => PopulationData::where('status', 'Meninggal')->count(),
-                'total' => $totalPopulation
-            ]
+                'total' => $totalPopulation,
+            ],
         ];
 
         return view('frontend.page.statistik-penduduk', compact(
             'yearlyData',
-            'genderStats', 
+            'genderStats',
             'ageStats',
             'maritalStatus',
             'religions',
@@ -473,25 +473,25 @@ class HomeController extends Controller
     public function budget()
     {
         $currentYear = date('Y');
-        
+
         $budgetSummary = VillageBudget::where('fiscal_year', $currentYear)
-                                    ->selectRaw('budget_type, category, SUM(planned_amount) as total_allocated')
-                                    ->groupBy('budget_type', 'category')
-                                    ->get();
+            ->selectRaw('budget_type, category, SUM(planned_amount) as total_allocated')
+            ->groupBy('budget_type', 'category')
+            ->get();
 
         $totalBudget = $budgetSummary->sum('total_allocated');
-        
-        $realization = BudgetTransaction::whereHas('budget', function($q) use ($currentYear) {
+
+        $realization = BudgetTransaction::whereHas('budget', function ($q) use ($currentYear) {
             $q->where('fiscal_year', $currentYear);
         })->where('transaction_type', 'expense')->sum('amount');
 
         // Get recent transactions for activity feed
-        $recentTransactions = \App\Models\BudgetTransaction::whereHas('budget', function($q) use ($currentYear) {
+        $recentTransactions = BudgetTransaction::whereHas('budget', function ($q) use ($currentYear) {
             $q->where('fiscal_year', $currentYear);
         })->with('budget')
-          ->orderBy('transaction_date', 'desc')
-          ->limit(3)
-          ->get();
+            ->orderBy('transaction_date', 'desc')
+            ->limit(3)
+            ->get();
 
         return view('frontend.page.apbdes', compact('budgetSummary', 'totalBudget', 'realization', 'recentTransactions'));
     }
@@ -499,12 +499,12 @@ class HomeController extends Controller
     public function budgetPlan()
     {
         $currentYear = date('Y');
-        
+
         // Get all budgets for current year
         $budgets = VillageBudget::where('fiscal_year', $currentYear)
-                               ->orderBy('budget_type')
-                               ->orderBy('category')
-                               ->get();
+            ->orderBy('budget_type')
+            ->orderBy('category')
+            ->get();
 
         // Separate revenue and expenditure
         $revenue = $budgets->where('budget_type', 'pendapatan');
@@ -517,21 +517,21 @@ class HomeController extends Controller
             'dana_bantuan' => $revenue->where('category', 'Dana Bantuan Keuangan')->sum('planned_amount'),
             'pades' => $revenue->where('category', 'Pendapatan Asli Desa')->sum('planned_amount'),
             'lain_lain' => $revenue->whereNotIn('category', [
-                'Dana Desa', 
-                'Alokasi Dana Desa', 
-                'Dana Bantuan Keuangan', 
-                'Pendapatan Asli Desa'
+                'Dana Desa',
+                'Alokasi Dana Desa',
+                'Dana Bantuan Keuangan',
+                'Pendapatan Asli Desa',
             ])->sum('planned_amount'),
         ];
-        
+
         $totalRevenue = array_sum($revenueBreakdown);
 
         // Calculate expenditure by sector
-        $expenditureByCategory = $expenditure->groupBy('category')->map(function($items) {
+        $expenditureByCategory = $expenditure->groupBy('category')->map(function ($items) {
             return [
                 'planned_amount' => $items->sum('planned_amount'),
                 'realized_amount' => $items->sum('realized_amount'),
-                'items' => $items->toArray()
+                'items' => $items->toArray(),
             ];
         });
 
@@ -543,7 +543,7 @@ class HomeController extends Controller
             $quarterlyProgress["q{$q}"] = [
                 'target' => $totalRevenue / 4,
                 'realized' => $expenditure->sum('realized_amount') / 4 * $q,
-                'percentage' => ($expenditure->sum('realized_amount') / 4 * $q) / ($totalRevenue / 4) * 100
+                'percentage' => ($expenditure->sum('realized_amount') / 4 * $q) / ($totalRevenue / 4) * 100,
             ];
         }
 
@@ -560,12 +560,12 @@ class HomeController extends Controller
         }
 
         return view('frontend.page.apbdes-anggaran', compact(
-            'budgets', 
-            'revenue', 
-            'expenditure', 
-            'revenueBreakdown', 
-            'totalRevenue', 
-            'expenditureByCategory', 
+            'budgets',
+            'revenue',
+            'expenditure',
+            'revenueBreakdown',
+            'totalRevenue',
+            'expenditureByCategory',
             'totalExpenditure',
             'quarterlyProgress',
             'previousYears',
@@ -577,10 +577,12 @@ class HomeController extends Controller
     {
         $currentYear = date('Y');
         $budgets = VillageBudget::where('fiscal_year', $currentYear)
-                               ->with(['transactions' => function($q) {
-                                   $q->where('transaction_type', 'expense');
-                               }])
-                               ->get();
+            ->with([
+                'transactions' => function ($q) {
+                    $q->where('transaction_type', 'expense');
+                }
+            ])
+            ->get();
 
         return view('frontend.page.apbdes-realisasi', compact('budgets'));
     }
@@ -589,17 +591,17 @@ class HomeController extends Controller
     {
         $currentYear = request('filter_year', date('Y'));
         $filterMonth = request('filter_month');
-        
+
         // Monthly report with cumulative calculations
-        $monthlyReportQuery = BudgetTransaction::whereHas('budget', function($q) use ($currentYear) {
+        $monthlyReportQuery = BudgetTransaction::whereHas('budget', function ($q) use ($currentYear) {
             $q->where('fiscal_year', $currentYear);
         });
-        
+
         // Apply month filter if specified
         if ($filterMonth) {
             $monthlyReportQuery->whereMonth('transaction_date', $filterMonth);
         }
-        
+
         $monthlyReport = $monthlyReportQuery
             ->selectRaw('MONTH(transaction_date) as month, YEAR(transaction_date) as year, SUM(CASE WHEN transaction_type = "income" THEN amount ELSE 0 END) as income, SUM(CASE WHEN transaction_type = "expense" THEN amount ELSE 0 END) as expense')
             ->groupBy('month', 'year')
@@ -610,11 +612,11 @@ class HomeController extends Controller
         $totalBudget = VillageBudget::where('fiscal_year', $currentYear)->sum('planned_amount');
         $totalRealized = 0;
         $monthlyReports = [];
-        
+
         $monthNames = [
             1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
             5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
-            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
         ];
 
         foreach ($monthlyReport as $report) {
@@ -625,12 +627,12 @@ class HomeController extends Controller
                 'year' => $report->year,
                 'realization' => $report->expense,
                 'cumulative' => $totalRealized,
-                'progress' => $totalBudget > 0 ? ($totalRealized / $totalBudget) * 100 : 0
+                'progress' => $totalBudget > 0 ? $totalRealized / $totalBudget * 100 : 0,
             ];
         }
-        
+
         // If no data found and no filter applied, generate sample data
-        if (empty($monthlyReports) && !$filterMonth) {
+        if ($monthlyReports === [] && ! $filterMonth) {
             for ($month = 1; $month <= 12; $month++) {
                 if ($month <= date('n')) { // Only show months up to current month
                     $realization = rand(80000000, 150000000);
@@ -641,7 +643,7 @@ class HomeController extends Controller
                         'year' => $currentYear,
                         'realization' => $realization,
                         'cumulative' => $totalRealized,
-                        'progress' => $totalBudget > 0 ? ($totalRealized / $totalBudget) * 100 : ($totalRealized / 2000000000) * 100
+                        'progress' => $totalBudget > 0 ? $totalRealized / $totalBudget * 100 : $totalRealized / 2000000000 * 100,
                     ];
                 }
             }
@@ -654,28 +656,28 @@ class HomeController extends Controller
                 'status' => 'current',
                 'total_budget' => $totalBudget,
                 'realization' => $totalRealized,
-                'progress' => $totalBudget > 0 ? ($totalRealized / $totalBudget) * 100 : 0
+                'progress' => $totalBudget > 0 ? $totalRealized / $totalBudget * 100 : 0,
             ],
             [
                 'year' => 2024,
                 'status' => 'completed',
                 'total_budget' => 2620000000,
                 'realization' => 2590000000,
-                'progress' => 98.9
+                'progress' => 98.9,
             ],
             [
                 'year' => 2023,
                 'status' => 'archived',
                 'total_budget' => 2400000000,
                 'realization' => 2350000000,
-                'progress' => 97.9
-            ]
+                'progress' => 97.9,
+            ],
         ];
 
         // Recent galleries/documentation
-        $recentGalleries = \App\Models\Gallery::orderBy('created_at', 'desc')
-                                           ->limit(4)
-                                           ->get();
+        $recentGalleries = Gallery::orderBy('created_at', 'desc')
+            ->limit(4)
+            ->get();
 
         return view('frontend.page.apbdes-laporan', compact('monthlyReports', 'annualReports', 'recentGalleries', 'totalBudget', 'totalRealized'));
     }
@@ -690,11 +692,12 @@ class HomeController extends Controller
     {
         $credentials = $request->validate([
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
+
             return redirect()->intended('/')->with('success', 'Login berhasil!');
         }
 
@@ -716,7 +719,7 @@ class HomeController extends Controller
             'password' => 'required|string|min:8|confirmed',
             'nik' => 'required|string|size:16|unique:users',
             'phone' => 'required|string|max:15',
-            'address' => 'required|string'
+            'address' => 'required|string',
         ]);
 
         $user = User::create([
@@ -727,7 +730,7 @@ class HomeController extends Controller
             'phone' => $request->phone,
             'address' => $request->address,
             'role' => 'citizen',
-            'is_active' => true
+            'is_active' => true,
         ]);
 
         Auth::login($user);
@@ -776,23 +779,24 @@ class HomeController extends Controller
     public function getLocations()
     {
         $locations = Location::active()
-                                       ->onMap()
-                                       ->orderBy('sort_order')
-                                       ->get([
-                                           'name', 'description', 'type', 'latitude', 'longitude', 
-                                           'area_size', 'area_coordinates', 'address', 'phone', 'email',
-                                           'icon', 'color'
-                                       ])
-                                       ->map(function($location) {
-                                           $location->type_name = $location->getTypeNameAttribute();
-                                           $location->formatted_area = $location->getFormattedAreaAttribute();
-                                           return $location;
-                                       });
+            ->onMap()
+            ->orderBy('sort_order')
+            ->get([
+                'name', 'description', 'type', 'latitude', 'longitude',
+                'area_size', 'area_coordinates', 'address', 'phone', 'email',
+                'icon', 'color',
+            ])
+            ->map(function ($location) {
+                $location->type_name = $location->getTypeNameAttribute();
+                $location->formatted_area = $location->getFormattedAreaAttribute();
+
+                return $location;
+            });
 
         // Add sample location with area coordinates if no locations exist
         if ($locations->isEmpty()) {
             $locations = collect([
-                (object)[
+                (object) [
                     'name' => 'Kantor Desa Ciuwlan',
                     'description' => 'Kantor administrasi desa',
                     'type' => 'office',
@@ -803,7 +807,7 @@ class HomeController extends Controller
                         ['lat' => -6.8460, 'lng' => 107.1240],
                         ['lat' => -6.8470, 'lng' => 107.1235],
                         ['lat' => -6.8465, 'lng' => 107.1225],
-                        ['lat' => -6.8450, 'lng' => 107.1230]
+                        ['lat' => -6.8450, 'lng' => 107.1230],
                     ]),
                     'address' => 'Desa Ciuwlan, Telagasari, Karawang',
                     'phone' => '0267-123456',
@@ -811,8 +815,8 @@ class HomeController extends Controller
                     'icon' => 'fas fa-building',
                     'color' => '#3B82F6',
                     'type_name' => 'Kantor Pemerintahan',
-                    'formatted_area' => '2,500 m²'
-                ]
+                    'formatted_area' => '2,500 m²',
+                ],
             ]);
         }
 
@@ -822,9 +826,9 @@ class HomeController extends Controller
     public function getBudgetSummary()
     {
         $currentYear = date('Y');
-        
+
         $totalBudget = VillageBudget::where('fiscal_year', $currentYear)->sum('planned_amount');
-        $totalRealized = BudgetTransaction::whereHas('budget', function($q) use ($currentYear) {
+        $totalRealized = BudgetTransaction::whereHas('budget', function ($q) use ($currentYear) {
             $q->where('fiscal_year', $currentYear);
         })->where('transaction_type', 'expense')->sum('amount');
 
@@ -832,13 +836,14 @@ class HomeController extends Controller
             'total_budget' => $totalBudget,
             'total_realized' => $totalRealized,
             'remaining' => $totalBudget - $totalRealized,
-            'percentage' => $totalBudget > 0 ? ($totalRealized / $totalBudget) * 100 : 0
+            'percentage' => $totalBudget > 0 ? ($totalRealized / $totalBudget) * 100 : 0,
         ]);
     }
 
     public function getVillageProfile()
     {
         $profile = VillageProfile::first();
+
         return response()->json($profile);
     }
 }

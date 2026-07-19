@@ -109,7 +109,7 @@
                     return str_starts_with($key, 'kaur');
                 })->flatten();
                 $colors = [
-                    'green' => ['bg' => 'bg-green-50 dark:bg-green-900/40', 'border' => 'border-green-200', 'text' => 'text-green-600', 'icon-bg' => 'bg-green-500'],
+                    'emerald' => ['bg' => 'bg-emerald-50 dark:bg-emerald-900/40', 'border' => 'border-emerald-200', 'text' => 'text-emerald-600', 'icon-bg' => 'bg-emerald-500'],
                     'yellow' => ['bg' => 'bg-yellow-50 dark:bg-yellow-900/40', 'border' => 'border-yellow-200', 'text' => 'text-yellow-600', 'icon-bg' => 'bg-yellow-500'],
                     'purple' => ['bg' => 'bg-purple-50 dark:bg-purple-900/40', 'border' => 'border-purple-200', 'text' => 'text-purple-600', 'icon-bg' => 'bg-purple-500']
                 ];
@@ -164,13 +164,19 @@
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             @php
-                $kadusColors = ['orange', 'green', 'blue', 'purple', 'teal'];
+                $kadusColors = [
+                    ['bg' => 'bg-orange-50 dark:bg-orange-900/40', 'border' => 'border-orange-200', 'text' => 'text-orange-600', 'icon-bg' => 'bg-orange-500'],
+                    ['bg' => 'bg-emerald-50 dark:bg-emerald-900/40', 'border' => 'border-emerald-200', 'text' => 'text-emerald-600', 'icon-bg' => 'bg-emerald-500'],
+                    ['bg' => 'bg-blue-50 dark:bg-blue-900/40', 'border' => 'border-blue-200', 'text' => 'text-blue-600', 'icon-bg' => 'bg-blue-500'],
+                    ['bg' => 'bg-purple-50 dark:bg-purple-900/40', 'border' => 'border-purple-200', 'text' => 'text-purple-600', 'icon-bg' => 'bg-purple-500'],
+                    ['bg' => 'bg-teal-50 dark:bg-teal-900/40', 'border' => 'border-teal-200', 'text' => 'text-teal-600', 'icon-bg' => 'bg-teal-500'],
+                ];
             @endphp
             @foreach($groupedOfficials->get('kadus') as $index => $kadus)
-                @php $color = $kadusColors[$index % count($kadusColors)]; @endphp
-                <div class="bg-{{ $color }}-50 dark:bg-{{ $color }}-900/40 border border-{{ $color }}-200 rounded-lg p-6">
+                @php $c = $kadusColors[$index % count($kadusColors)]; @endphp
+                <div class="{{ $c['bg'] }} border {{ $c['border'] }} rounded-lg p-6">
                     <div class="flex items-center space-x-4 mb-4">
-                        <div class="w-16 h-16 bg-{{ $color }}-500 rounded-full flex items-center justify-center overflow-hidden">
+                        <div class="w-16 h-16 {{ $c['icon-bg'] }} rounded-full flex items-center justify-center overflow-hidden">
                             @if($kadus->photo_path)
                                 <img src="{{ asset('storage/' . $kadus->photo_path) }}" alt="{{ $kadus->name }}" class="w-full h-full object-cover">
                             @else
@@ -179,7 +185,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-gray-900 dark:text-gray-100 uppercase">{{ $kadus->name }}</h3>
-                            <p class="text-{{ $color }}-600 text-sm">{{ $kadus->position_title }}</p>
+                            <p class="{{ $c['text'] }} text-sm">{{ $kadus->position_title }}</p>
                             @if($kadus->work_period)<p class="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500">Masa Jabatan: {{ $kadus->work_period }}</p>@endif
                         </div>
                     </div>
@@ -210,12 +216,19 @@
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             @php
-                $staffColors = ['teal', 'cyan', 'lime', 'rose', 'indigo', 'orange'];
+                $staffColors = [
+                    ['bg' => 'bg-teal-50', 'border' => 'border-teal-200', 'text' => 'text-teal-600', 'icon-bg' => 'bg-teal-500'],
+                    ['bg' => 'bg-cyan-50', 'border' => 'border-cyan-200', 'text' => 'text-cyan-600', 'icon-bg' => 'bg-cyan-500'],
+                    ['bg' => 'bg-lime-50', 'border' => 'border-lime-200', 'text' => 'text-lime-600', 'icon-bg' => 'bg-lime-500'],
+                    ['bg' => 'bg-rose-50', 'border' => 'border-rose-200', 'text' => 'text-rose-600', 'icon-bg' => 'bg-rose-500'],
+                    ['bg' => 'bg-indigo-50', 'border' => 'border-indigo-200', 'text' => 'text-indigo-600', 'icon-bg' => 'bg-indigo-500'],
+                    ['bg' => 'bg-orange-50', 'border' => 'border-orange-200', 'text' => 'text-orange-600', 'icon-bg' => 'bg-orange-500'],
+                ];
             @endphp
             @foreach($groupedOfficials->get('staff') as $index => $staff)
-                @php $color = $staffColors[$index % count($staffColors)]; @endphp
-                <div class="bg-{{ $color }}-50 border border-{{ $color }}-200 rounded-lg p-4 text-center">
-                    <div class="w-12 h-12 bg-{{ $color }}-500 rounded-full mx-auto mb-2 flex items-center justify-center overflow-hidden">
+                @php $c = $staffColors[$index % count($staffColors)]; @endphp
+                <div class="{{ $c['bg'] }} border {{ $c['border'] }} rounded-lg p-4 text-center">
+                    <div class="w-12 h-12 {{ $c['icon-bg'] }} rounded-full mx-auto mb-2 flex items-center justify-center overflow-hidden">
                         @if($staff->photo_path)
                             <img src="{{ asset('storage/' . $staff->photo_path) }}" alt="{{ $staff->name }}" class="w-full h-full object-cover">
                         @else
@@ -223,11 +236,14 @@
                         @endif
                     </div>
                     <h4 class="font-medium text-gray-900 dark:text-gray-100 text-sm uppercase">{{ $staff->name }}</h4>
-                    <p class="text-xs text-{{ $color }}-600">{{ $staff->position_title }}</p>
+                    <p class="text-xs {{ $c['text'] }}">{{ $staff->position_title }}</p>
                 </div>
             @endforeach
         </div>
     </div>
     @endif
 </div>
+
+<!-- Tailwind Safelist Helper -->
+<div class="hidden bg-emerald-50 bg-emerald-500 border-emerald-200 text-emerald-600 bg-yellow-50 bg-yellow-500 border-yellow-200 text-yellow-600 bg-purple-50 bg-purple-500 border-purple-200 text-purple-600 bg-orange-50 bg-orange-500 border-orange-200 text-orange-600 bg-blue-50 bg-blue-500 border-blue-200 text-blue-600 bg-teal-50 bg-teal-500 border-teal-200 text-teal-600 bg-cyan-50 bg-cyan-500 border-cyan-200 text-cyan-600 bg-lime-50 bg-lime-500 border-lime-200 text-lime-600 bg-rose-50 bg-rose-500 border-rose-200 text-rose-600 bg-indigo-50 bg-indigo-500 border-indigo-200 text-indigo-600 dark:bg-emerald-900/40 dark:bg-yellow-900/40 dark:bg-purple-900/40 dark:bg-orange-900/40 dark:bg-blue-900/40 dark:bg-teal-900/40"></div>
 @endsection

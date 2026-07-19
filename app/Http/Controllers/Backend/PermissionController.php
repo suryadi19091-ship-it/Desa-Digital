@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class PermissionController extends Controller
 {
@@ -25,7 +25,7 @@ class PermissionController extends Controller
         $permissions = Permission::orderBy('name')->get();
         $roles = Role::with('permissions')->get();
         $users = User::with('permissions', 'roleObject')->get();
-        
+
         return view('backend.permissions.index', compact('permissions', 'roles', 'users'));
     }
 
@@ -37,7 +37,7 @@ class PermissionController extends Controller
         $request->validate([
             'role_id' => 'required|exists:roles,id',
             'permissions' => 'array',
-            'permissions.*' => 'exists:permissions,id'
+            'permissions.*' => 'exists:permissions,id',
         ]);
 
         $role = Role::findOrFail($request->role_id);
@@ -54,7 +54,7 @@ class PermissionController extends Controller
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'permissions' => 'array',
-            'permissions.*' => 'exists:permissions,id'
+            'permissions.*' => 'exists:permissions,id',
         ]);
 
         $user = User::findOrFail($request->user_id);
@@ -70,12 +70,12 @@ class PermissionController extends Controller
     {
         $user = auth()->user();
         $allPermissions = Permission::orderBy('name')->get();
-        
+
         $userPermissions = [];
         foreach ($allPermissions as $permission) {
             $userPermissions[$permission->name] = $user->hasPermission($permission->name);
         }
-        
+
         return view('backend.permissions.test', compact('allPermissions', 'userPermissions', 'user'));
     }
 }

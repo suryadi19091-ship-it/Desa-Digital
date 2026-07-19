@@ -3,16 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\Rule;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -27,7 +26,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        if (!Gate::allows('manage-users')) {
+        if (! Gate::allows('manage-users')) {
             abort(403, 'Unauthorized to manage users');
         }
 
@@ -36,10 +35,10 @@ class UserController extends Controller
         // Search filter
         if ($request->filled('search')) {
             $search = $request->get('search');
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
             });
         }
 
@@ -75,7 +74,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        if (!Gate::allows('create-user')) {
+        if (! Gate::allows('create-user')) {
             abort(403, 'Unauthorized to create users');
         }
 
@@ -87,7 +86,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        if (!Gate::allows('create-user')) {
+        if (! Gate::allows('create-user')) {
             abort(403, 'Unauthorized to create users');
         }
 
@@ -106,10 +105,10 @@ class UserController extends Controller
         ]);
 
         // Check role assignment permissions
-        if (!$this->canAssignRole($validated['role'])) {
+        if (! $this->canAssignRole($validated['role'])) {
             return response()->json([
                 'success' => false,
-                'message' => 'You are not authorized to assign this role'
+                'message' => 'You are not authorized to assign this role',
             ], 403);
         }
 
@@ -137,11 +136,7 @@ class UserController extends Controller
 
             // Send welcome email if requested
             if ($validated['send_welcome_email'] ?? false) {
-                try {
-                    // Mail::to($user->email)->send(new WelcomeEmail($user, $validated['password']));
-                } catch (\Exception $e) {
-                    \Log::error('Welcome email failed: ' . $e->getMessage());
-                }
+                // Mail::to($user->email)->send(new WelcomeEmail($user, $validated['password']));
             }
 
             // Log activity
@@ -149,14 +144,14 @@ class UserController extends Controller
                 'user_id' => $user->id,
                 'user_name' => $user->name,
                 'created_by' => Auth::user()->id,
-                'created_by_name' => Auth::user()->name
+                'created_by_name' => Auth::user()->name,
             ]);
 
             if ($request->ajax()) {
                 return response()->json([
                     'success' => true,
                     'message' => 'User created successfully',
-                    'redirect' => route('backend.users.show', $user)
+                    'redirect' => route('backend.users.show', $user),
                 ]);
             }
 
@@ -164,12 +159,12 @@ class UserController extends Controller
                 ->with('success', 'User created successfully');
 
         } catch (\Exception $e) {
-            \Log::error('User creation error: ' . $e->getMessage());
-            
+            Log::error('User creation error: '.$e->getMessage());
+
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Failed to create user: ' . $e->getMessage()
+                    'message' => 'Failed to create user: '.$e->getMessage(),
                 ]);
             }
 
@@ -183,15 +178,15 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        if (!Gate::allows('view-user', $user)) {
+        if (! Gate::allows('view-user', $user)) {
             abort(403, 'Unauthorized to view this user');
         }
 
         // Get user activity logs if authorized
         $activities = [];
-        if (Gate::allows('view-user-activities')) {
-            // $activities = Activity::where('causer_id', $user->id)->latest()->take(10)->get();
-        }
+        // if (Gate::allows('view-user-activities')) {
+        //     $activities = Activity::where('causer_id', $user->id)->latest()->take(10)->get();
+        // }
 
         return view('backend.pages.users.show', compact('user', 'activities'));
     }
@@ -201,7 +196,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        if (!Gate::allows('edit-user', $user)) {
+        if (! Gate::allows('edit-user', $user)) {
             abort(403, 'Unauthorized to edit this user');
         }
 
@@ -213,7 +208,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        if (!Gate::allows('edit-user', $user)) {
+        if (! Gate::allows('edit-user', $user)) {
             abort(403, 'Unauthorized to edit this user');
         }
 
@@ -230,10 +225,10 @@ class UserController extends Controller
         ]);
 
         // Check role assignment permissions
-        if ($user->role !== $validated['role'] && !$this->canAssignRole($validated['role'])) {
+        if ($user->role !== $validated['role'] && ! $this->canAssignRole($validated['role'])) {
             return response()->json([
                 'success' => false,
-                'message' => 'You are not authorized to assign this role'
+                'message' => 'You are not authorized to assign this role',
             ], 403);
         }
 
@@ -248,7 +243,7 @@ class UserController extends Controller
             }
 
             // Handle password update
-            if (!empty($validated['password'])) {
+            if (isset($validated['password']) && $validated['password'] !== null && $validated['password'] !== '') {
                 $validated['password'] = Hash::make($validated['password']);
             } else {
                 unset($validated['password']);
@@ -263,13 +258,13 @@ class UserController extends Controller
                 'user_id' => $user->id,
                 'user_name' => $user->name,
                 'updated_by' => Auth::user()->id,
-                'updated_by_name' => Auth::user()->name
+                'updated_by_name' => Auth::user()->name,
             ]);
 
             if ($request->ajax()) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'User updated successfully'
+                    'message' => 'User updated successfully',
                 ]);
             }
 
@@ -277,12 +272,12 @@ class UserController extends Controller
                 ->with('success', 'User updated successfully');
 
         } catch (\Exception $e) {
-            \Log::error('User update error: ' . $e->getMessage());
-            
+            Log::error('User update error: '.$e->getMessage());
+
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Failed to update user'
+                    'message' => 'Failed to update user',
                 ]);
             }
 
@@ -296,7 +291,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        if (!Gate::allows('delete-user', $user)) {
+        if (! Gate::allows('delete-user', $user)) {
             abort(403, 'Unauthorized to delete this user');
         }
 
@@ -304,7 +299,7 @@ class UserController extends Controller
         if ($user->id === Auth::id()) {
             return response()->json([
                 'success' => false,
-                'message' => 'You cannot delete your own account'
+                'message' => 'You cannot delete your own account',
             ]);
         }
 
@@ -322,20 +317,20 @@ class UserController extends Controller
             Log::info('User deleted', [
                 'user_name' => $userName,
                 'deleted_by' => Auth::user()->id,
-                'deleted_by_name' => Auth::user()->name
+                'deleted_by_name' => Auth::user()->name,
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => 'User deleted successfully'
+                'message' => 'User deleted successfully',
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('User deletion error: ' . $e->getMessage());
-            
+            Log::error('User deletion error: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete user'
+                'message' => 'Failed to delete user',
             ]);
         }
     }
@@ -345,19 +340,19 @@ class UserController extends Controller
      */
     public function updateStatus(Request $request, User $user)
     {
-        if (!Gate::allows('manage-user-status', $user)) {
+        if (! Gate::allows('manage-user-status', $user)) {
             abort(403, 'Unauthorized to manage user status');
         }
 
         $validated = $request->validate([
-            'status' => 'required|string|in:active,inactive,suspended'
+            'status' => 'required|string|in:active,inactive,suspended',
         ]);
 
         try {
             $oldStatus = $user->status;
             $user->update([
                 'status' => $validated['status'],
-                'updated_by' => Auth::id()
+                'updated_by' => Auth::id(),
             ]);
 
             // Log activity
@@ -367,20 +362,20 @@ class UserController extends Controller
                 'old_status' => $oldStatus,
                 'new_status' => $validated['status'],
                 'changed_by' => Auth::user()->id,
-                'changed_by_name' => Auth::user()->name
+                'changed_by_name' => Auth::user()->name,
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => 'User status updated successfully'
+                'message' => 'User status updated successfully',
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('User status update error: ' . $e->getMessage());
-            
+            Log::error('User status update error: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update user status'
+                'message' => 'Failed to update user status',
             ]);
         }
     }
@@ -390,14 +385,14 @@ class UserController extends Controller
      */
     public function bulkAction(Request $request)
     {
-        if (!Gate::allows('manage-users')) {
+        if (! Gate::allows('manage-users')) {
             abort(403, 'Unauthorized to perform bulk actions');
         }
 
         $validated = $request->validate([
             'action' => 'required|string|in:activate,deactivate,delete',
             'user_ids' => 'required|array|min:1',
-            'user_ids.*' => 'exists:users,id'
+            'user_ids.*' => 'exists:users,id',
         ]);
 
         try {
@@ -414,14 +409,14 @@ class UserController extends Controller
                             $count++;
                         }
                         break;
-                    
+
                     case 'deactivate':
                         if (Gate::allows('manage-user-status', $user)) {
                             $user->update(['status' => 'inactive']);
                             $count++;
                         }
                         break;
-                    
+
                     case 'delete':
                         if (Gate::allows('delete-user', $user)) {
                             if ($user->avatar) {
@@ -439,20 +434,20 @@ class UserController extends Controller
                 'action' => $validated['action'],
                 'users_count' => $count,
                 'performed_by' => Auth::user()->id,
-                'performed_by_name' => Auth::user()->name
+                'performed_by_name' => Auth::user()->name,
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => "Bulk action completed successfully on {$count} users"
+                'message' => "Bulk action completed successfully on {$count} users",
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Bulk action error: ' . $e->getMessage());
-            
+            Log::error('Bulk action error: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to perform bulk action'
+                'message' => 'Failed to perform bulk action',
             ]);
         }
     }
@@ -462,7 +457,7 @@ class UserController extends Controller
      */
     public function export(Request $request)
     {
-        if (!Gate::allows('export-users')) {
+        if (! Gate::allows('export-users')) {
             abort(403, 'Unauthorized to export users');
         }
 
@@ -472,9 +467,9 @@ class UserController extends Controller
             // Apply filters from request
             if ($request->filled('search')) {
                 $search = $request->get('search');
-                $query->where(function($q) use ($search) {
+                $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%");
+                        ->orWhere('email', 'like', "%{$search}%");
                 });
             }
 
@@ -492,23 +487,24 @@ class UserController extends Controller
             $csvContent = "Name,Email,Phone,Role,Status,Created At\n";
             foreach ($users as $user) {
                 $csvContent .= implode(',', [
-                    '"' . str_replace('"', '""', $user->name) . '"',
-                    '"' . str_replace('"', '""', $user->email) . '"',
-                    '"' . str_replace('"', '""', $user->phone ?? '') . '"',
-                    '"' . str_replace('"', '""', $user->role) . '"',
-                    '"' . str_replace('"', '""', $user->status) . '"',
-                    '"' . $user->created_at->format('Y-m-d H:i:s') . '"',
-                ]) . "\n";
+                    '"'.str_replace('"', '""', $user->name).'"',
+                    '"'.str_replace('"', '""', $user->email).'"',
+                    '"'.str_replace('"', '""', $user->phone ?? '').'"',
+                    '"'.str_replace('"', '""', $user->role).'"',
+                    '"'.str_replace('"', '""', $user->status).'"',
+                    '"'.$user->created_at->format('Y-m-d H:i:s').'"',
+                ])."\n";
             }
 
-            $filename = 'users_export_' . date('Y-m-d_H-i-s') . '.csv';
+            $filename = 'users_export_'.date('Y-m-d_H-i-s').'.csv';
 
             return response($csvContent)
                 ->header('Content-Type', 'text/csv')
-                ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
+                ->header('Content-Disposition', 'attachment; filename="'.$filename.'"');
 
         } catch (\Exception $e) {
-            \Log::error('Export error: ' . $e->getMessage());
+            Log::error('Export error: '.$e->getMessage());
+
             return back()->with('error', 'Failed to export users data');
         }
     }
@@ -519,8 +515,8 @@ class UserController extends Controller
     public function getRolePermissions(Request $request)
     {
         $role = $request->get('role');
-        
-        if (!$role) {
+
+        if (! $role) {
             return response()->json(['permissions' => []]);
         }
 
@@ -546,11 +542,11 @@ class UserController extends Controller
             'user' => [
                 ['name' => 'Profile Management', 'description' => 'Manage own profile and settings'],
                 ['name' => 'Content Viewing', 'description' => 'Access to view published content'],
-            ]
+            ],
         ];
 
         return response()->json([
-            'permissions' => $rolePermissions[$role] ?? []
+            'permissions' => $rolePermissions[$role] ?? [],
         ]);
     }
 

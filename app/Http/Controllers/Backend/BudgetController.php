@@ -3,67 +3,66 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\VillageBudget;
 use App\Models\BudgetTransaction;
+use App\Models\VillageBudget;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class BudgetController extends Controller
 {
     public function index(Request $request)
     {
         $query = VillageBudget::query();
-        
+
         // Apply filters
         if ($request->filled('year')) {
             $query->where('fiscal_year', $request->year);
         }
-        
+
         if ($request->filled('category')) {
             $query->where('category', $request->category);
         }
-        
+
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('description', 'like', "%{$search}%")
-                  ->orWhere('category', 'like', "%{$search}%")
-                  ->orWhere('sub_category', 'like', "%{$search}%");
+                    ->orWhere('category', 'like', "%{$search}%")
+                    ->orWhere('sub_category', 'like', "%{$search}%");
             });
         }
-        
+
         $budgets = $query->orderBy('fiscal_year', 'desc')
-                         ->orderBy('category')
-                         ->paginate(20);
-        
+            ->orderBy('category')
+            ->paginate(20);
+
         // Get summary statistics for current year
         $currentYear = $request->filled('year') ? $request->year : date('Y');
         $yearQuery = VillageBudget::where('fiscal_year', $currentYear);
-        
+
         $totalBudget = $yearQuery->sum('planned_amount');
-        
+
         // Calculate total realized from transactions
         $totalRealized = 0;
         $budgetIds = $yearQuery->pluck('id');
         if ($budgetIds->isNotEmpty()) {
             $totalRealized = BudgetTransaction::whereIn('budget_id', $budgetIds)->sum('amount');
         }
-        
+
         $summary = [
             'total_budget' => $totalBudget,
             'total_realized' => $totalRealized,
             'remaining' => $totalBudget - $totalRealized,
-            'realization_percentage' => $totalBudget > 0 ? ($totalRealized / $totalBudget) * 100 : 0
+            'realization_percentage' => $totalBudget > 0 ? ($totalRealized / $totalBudget) * 100 : 0,
         ];
-        
+
         return view('backend.budget.index', compact('budgets', 'summary'));
     }
-    
+
     public function create()
     {
         return view('backend.budget.create');
     }
-    
+
     public function store(Request $request)
     {
         $request->validate([
@@ -72,9 +71,9 @@ class BudgetController extends Controller
             'category' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'amount' => 'required|numeric|min:0',
-            'description' => 'nullable|string'
+            'description' => 'nullable|string',
         ]);
-        
+
         VillageBudget::create([
             'fiscal_year' => $request->year,
             'budget_type' => $request->type == 'income' ? 'pendapatan' : 'belanja',
@@ -82,33 +81,33 @@ class BudgetController extends Controller
             'sub_category' => $request->name,
             'description' => $request->description,
             'planned_amount' => $request->amount,
-            'created_by' => auth()->id()
+            'created_by' => auth()->id(),
         ]);
-        
+
         return redirect()->route('backend.budget.index')
-                         ->with('success', 'Anggaran berhasil ditambahkan.');
+            ->with('success', 'Anggaran berhasil ditambahkan.');
     }
-    
+
     public function show(VillageBudget $budget)
     {
         $transactions = $budget->transactions()
-                              ->orderBy('transaction_date', 'desc')
-                              ->paginate(10);
-        
+            ->orderBy('transaction_date', 'desc')
+            ->paginate(10);
+
         $summary = [
             'total_transactions' => $budget->transactions()->count(),
             'total_spent' => $budget->transactions()->sum('amount'),
-            'remaining_budget' => $budget->planned_amount - $budget->transactions()->sum('amount')
+            'remaining_budget' => $budget->planned_amount - $budget->transactions()->sum('amount'),
         ];
-        
+
         return view('backend.budget.show', compact('budget', 'transactions', 'summary'));
     }
-    
+
     public function edit(VillageBudget $budget)
     {
         return view('backend.budget.edit', compact('budget'));
     }
-    
+
     public function update(Request $request, VillageBudget $budget)
     {
         $request->validate([
@@ -117,45 +116,45 @@ class BudgetController extends Controller
             'category' => 'required|string|max:255',
             'sub_category' => 'nullable|string|max:255',
             'description' => 'required|string',
-            'planned_amount' => 'required|numeric|min:0'
+            'planned_amount' => 'required|numeric|min:0',
         ]);
-        
+
         $budget->update([
             'fiscal_year' => $request->fiscal_year,
             'budget_type' => $request->budget_type,
             'category' => $request->category,
             'sub_category' => $request->sub_category,
             'description' => $request->description,
-            'planned_amount' => $request->planned_amount
+            'planned_amount' => $request->planned_amount,
         ]);
-        
+
         return redirect()->route('backend.budget.index')
-                         ->with('success', 'Anggaran berhasil diperbarui.');
+            ->with('success', 'Anggaran berhasil diperbarui.');
     }
-    
+
     public function destroy(VillageBudget $budget)
     {
         // Check if budget has transactions
         if ($budget->transactions()->count() > 0) {
             return redirect()->route('backend.budget.index')
-                           ->with('error', 'Tidak dapat menghapus anggaran yang sudah memiliki transaksi.');
+                ->with('error', 'Tidak dapat menghapus anggaran yang sudah memiliki transaksi.');
         }
-        
+
         $budget->delete();
-        
+
         return redirect()->route('backend.budget.index')
-                         ->with('success', 'Anggaran berhasil dihapus.');
+            ->with('success', 'Anggaran berhasil dihapus.');
     }
-    
+
     public function transactions(VillageBudget $budget)
     {
         $transactions = $budget->transactions()
-                              ->orderBy('transaction_date', 'desc')
-                              ->paginate(20);
-        
+            ->orderBy('transaction_date', 'desc')
+            ->paginate(20);
+
         return view('backend.budget.transactions', compact('budget', 'transactions'));
     }
-    
+
     public function addTransaction(Request $request, VillageBudget $budget)
     {
         $request->validate([
@@ -164,9 +163,9 @@ class BudgetController extends Controller
             'amount' => 'required|numeric|min:0',
             'transaction_type' => 'required|in:income,expense',
             'reference_number' => 'nullable|string|max:255',
-            'notes' => 'nullable|string'
+            'notes' => 'nullable|string',
         ]);
-        
+
         // Check if transaction exceeds remaining budget (for expenses)
         if ($request->transaction_type === 'expense') {
             $remainingBudget = $budget->planned_amount - $budget->transactions()->where('transaction_type', 'expense')->sum('amount');
@@ -174,7 +173,7 @@ class BudgetController extends Controller
                 return back()->with('error', 'Jumlah transaksi melebihi sisa anggaran.');
             }
         }
-        
+
         BudgetTransaction::create([
             'budget_id' => $budget->id,
             'transaction_date' => $request->transaction_date,
@@ -183,62 +182,62 @@ class BudgetController extends Controller
             'transaction_type' => $request->transaction_type,
             'reference_number' => $request->reference_number,
             'notes' => $request->notes,
-            'user_id' => auth()->id()
+            'user_id' => auth()->id(),
         ]);
-        
+
         return redirect()->route('backend.budget.transactions', $budget)
-                         ->with('success', 'Transaksi berhasil ditambahkan.');
+            ->with('success', 'Transaksi berhasil ditambahkan.');
     }
-    
+
     public function deleteTransaction(BudgetTransaction $transaction)
     {
         $budgetId = $transaction->budget_id;
         $transaction->delete();
-        
+
         return redirect()->route('backend.budget.transactions', $budgetId)
-                         ->with('success', 'Transaksi berhasil dihapus.');
+            ->with('success', 'Transaksi berhasil dihapus.');
     }
-    
+
     public function reportSummary(Request $request)
     {
         $year = $request->get('year', date('Y'));
-        
+
         $budgets = VillageBudget::where('fiscal_year', $year)->get();
-        
-        $summary = $budgets->groupBy('category')->map(function($categoryBudgets) {
+
+        $summary = $budgets->groupBy('category')->map(function ($categoryBudgets) {
             $allocated = $categoryBudgets->sum('planned_amount');
             $spent = 0;
-            
+
             foreach ($categoryBudgets as $budget) {
                 $spent += $budget->transactions()->where('transaction_type', 'expense')->sum('amount');
             }
-            
+
             return [
                 'allocated' => $allocated,
                 'spent' => $spent,
                 'remaining' => $allocated - $spent,
-                'percentage' => $allocated > 0 ? ($spent / $allocated) * 100 : 0
+                'percentage' => $allocated > 0 ? ($spent / $allocated) * 100 : 0,
             ];
         });
-        
+
         return view('backend.budget.report-summary', compact('summary', 'year'));
     }
-    
+
     public function export(VillageBudget $budget)
     {
         // In a real application, you would generate Excel/PDF export here
         // For now, return JSON data
-        
+
         $data = [
             'budget' => $budget,
             'transactions' => $budget->transactions()->get(),
             'summary' => [
                 'allocated' => $budget->planned_amount,
                 'spent' => $budget->transactions()->where('transaction_type', 'expense')->sum('amount'),
-                'income' => $budget->transactions()->where('transaction_type', 'income')->sum('amount')
-            ]
+                'income' => $budget->transactions()->where('transaction_type', 'income')->sum('amount'),
+            ],
         ];
-        
+
         return response()->json($data);
     }
 }

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('hamlet_leader');
             $table->string('neighborhood_name'); // RT name
             $table->string('neighborhood_number'); // RT number
-            $table->string('community_name'); // RW name  
+            $table->string('community_name'); // RW name
             $table->string('community_number'); // RW number
             $table->string('district');
             $table->string('regency');

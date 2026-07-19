@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Umkm;
 use App\Models\Settlement;
-use Illuminate\Support\Str;
+use App\Models\Umkm;
+use Illuminate\Database\Seeder;
 
 class UmkmSeeder extends Seeder
 {
@@ -13,7 +12,7 @@ class UmkmSeeder extends Seeder
     {
         // Get settlement IDs
         $settlements = Settlement::all();
-        
+
         $umkmData = [
             [
                 'business_name' => 'Warung Makan Sari Rasa',
@@ -314,7 +313,7 @@ class UmkmSeeder extends Seeder
                 'is_active' => true,
                 'is_verified' => true,
                 'registered_at' => now()->subMonths(14),
-            ]
+            ],
         ];
 
         foreach ($umkmData as $data) {

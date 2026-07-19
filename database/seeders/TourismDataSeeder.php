@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\TourismObject;
 use Illuminate\Database\Seeder;
 
 class TourismDataSeeder extends Seeder
@@ -10,11 +10,11 @@ class TourismDataSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-public function run(): void
+    public function run(): void
     {
         // Update existing tourism objects to be featured (first 3)
-        \App\Models\TourismObject::limit(3)->update(['is_featured' => true]);
-        
+        TourismObject::limit(3)->update(['is_featured' => true]);
+
         // Add more tourism objects if needed
         $tourismData = [
             [
@@ -30,7 +30,7 @@ public function run(): void
                 'is_featured' => true,
             ],
             [
-                'name' => 'Kebun Teh Panorama', 
+                'name' => 'Kebun Teh Panorama',
                 'description' => 'Perkebunan teh dengan pemandangan pegunungan yang menakjubkan.',
                 'category' => 'agrowisata',
                 'address' => 'Dusun Panorama, Desa Krandegan',
@@ -40,12 +40,12 @@ public function run(): void
                 'images' => ['https://images.unsplash.com/photo-1563822249548-9a72b6353cd1?w=800&h=600&fit=crop'],
                 'is_active' => true,
                 'is_featured' => false,
-            ]
+            ],
         ];
 
         foreach ($tourismData as $data) {
-            \App\Models\TourismObject::updateOrCreate(
-                ['name' => $data['name']], 
+            TourismObject::updateOrCreate(
+                ['name' => $data['name']],
                 $data
             );
         }

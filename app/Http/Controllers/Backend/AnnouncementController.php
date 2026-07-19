@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Announcement;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class AnnouncementController extends Controller
 {
@@ -19,8 +17,8 @@ class AnnouncementController extends Controller
         // Search
         if ($request->has('search') && $request->search != '') {
             $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('content', 'like', '%' . $request->search . '%');
+                $q->where('title', 'like', '%'.$request->search.'%')
+                    ->orWhere('content', 'like', '%'.$request->search.'%');
             });
         }
 
@@ -42,14 +40,14 @@ class AnnouncementController extends Controller
         if ($request->has('date_from') && $request->date_from != '') {
             $query->whereDate('valid_from', '>=', $request->date_from);
         }
-        
+
         if ($request->has('date_to') && $request->date_to != '') {
             $query->whereDate('valid_until', '<=', $request->date_to);
         }
 
         $announcements = $query->orderBy('priority', 'desc')
-                              ->orderBy('created_at', 'desc')
-                              ->paginate(15);
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
 
         $priorities = ['low', 'medium', 'high', 'urgent'];
 
@@ -59,7 +57,7 @@ class AnnouncementController extends Controller
     public function create()
     {
         $priorities = ['low' => 'Low', 'medium' => 'Medium', 'high' => 'High', 'urgent' => 'Urgent'];
-        
+
         return view('backend.announcements.create', compact('priorities'));
     }
 
@@ -81,13 +79,13 @@ class AnnouncementController extends Controller
         Announcement::create($data);
 
         return redirect()->route('backend.announcements.index')
-                        ->with('success', 'Announcement created successfully!');
+            ->with('success', 'Announcement created successfully!');
     }
 
     public function show($id)
     {
         $announcement = Announcement::with('author')->findOrFail($id);
-        
+
         return view('backend.announcements.show', compact('announcement'));
     }
 
@@ -95,7 +93,7 @@ class AnnouncementController extends Controller
     {
         $announcement = Announcement::findOrFail($id);
         $priorities = ['low' => 'Low', 'medium' => 'Medium', 'high' => 'High', 'urgent' => 'Urgent'];
-        
+
         return view('backend.announcements.edit', compact('announcement', 'priorities'));
     }
 
@@ -118,7 +116,7 @@ class AnnouncementController extends Controller
         $announcement->update($data);
 
         return redirect()->route('backend.announcements.index')
-                        ->with('success', 'Announcement updated successfully!');
+            ->with('success', 'Announcement updated successfully!');
     }
 
     public function destroy($id)
@@ -127,19 +125,20 @@ class AnnouncementController extends Controller
         $announcement->delete();
 
         return redirect()->route('backend.announcements.index')
-                        ->with('success', 'Announcement deleted successfully!');
+            ->with('success', 'Announcement deleted successfully!');
     }
 
     public function toggleStatus(Request $request, $id)
     {
         $announcement = Announcement::findOrFail($id);
-        $announcement->is_active = !$announcement->is_active;
+        $announcement->is_active = ! $announcement->is_active;
         $announcement->save();
 
         $status = $announcement->is_active ? 'activated' : 'deactivated';
+
         return response()->json([
             'success' => true,
-            'message' => "Announcement {$status} successfully!"
+            'message' => "Announcement {$status} successfully!",
         ]);
     }
 
@@ -158,12 +157,12 @@ class AnnouncementController extends Controller
                 $announcements->update(['is_active' => true]);
                 $message = 'Selected announcements activated successfully!';
                 break;
-                
+
             case 'deactivate':
                 $announcements->update(['is_active' => false]);
                 $message = 'Selected announcements deactivated successfully!';
                 break;
-                
+
             case 'delete':
                 // Delete attachments for each announcement
                 foreach ($announcements->get() as $announcement) {
@@ -179,24 +178,24 @@ class AnnouncementController extends Controller
         }
 
         return redirect()->route('backend.announcements.index')
-                        ->with('success', $message);
+            ->with('success', $message);
     }
 
     public function getActiveAnnouncements()
     {
         $announcements = Announcement::where('is_active', true)
-                                   ->where(function($query) {
-                                       $query->whereNull('valid_from')
-                                             ->orWhere('valid_from', '<=', now());
-                                   })
-                                   ->where(function($query) {
-                                       $query->whereNull('valid_until')
-                                             ->orWhere('valid_until', '>=', now());
-                                   })
-                                   ->orderBy('priority', 'desc')
-                                   ->orderBy('created_at', 'desc')
-                                   ->take(10)
-                                   ->get();
+            ->where(function ($query) {
+                $query->whereNull('valid_from')
+                    ->orWhere('valid_from', '<=', now());
+            })
+            ->where(function ($query) {
+                $query->whereNull('valid_until')
+                    ->orWhere('valid_until', '>=', now());
+            })
+            ->orderBy('priority', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->take(10)
+            ->get();
 
         return response()->json($announcements);
     }

@@ -3,25 +3,19 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, LogsActivity;
-
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->logFillable()
-            ->logOnlyDirty()
-            ->dontSubmitEmptyLogs()
-            ->dontLogIfAttributesChangedOnly(['last_login_at', 'password']);
-    }
+    /** @use HasFactory<UserFactory> */
+    use HasFactory, LogsActivity, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -51,19 +45,15 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+
+
+    public function getActivitylogOptions(): LogOptions
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'is_active' => 'boolean',
-            'last_login_at' => 'datetime',
-        ];
+        return LogOptions::defaults()
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->dontLogIfAttributesChangedOnly(['last_login_at', 'password']);
     }
 
     /**
@@ -77,11 +67,11 @@ class User extends Authenticatable
     /**
      * Get user's direct permissions
      */
-    public function permissions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function permissions(): BelongsToMany
     {
         return $this->belongsToMany(Permission::class, 'user_permissions')
-                    ->withPivot('type')
-                    ->withTimestamps();
+            ->withPivot('type')
+            ->withTimestamps();
     }
 
     /**
@@ -94,11 +84,11 @@ class User extends Authenticatable
             $userPermission = $this->permissions()
                 ->where('permissions.name', $permission)
                 ->first();
-                
+
             if ($userPermission && $userPermission->pivot->type === 'deny') {
                 return false; // Explicit deny overrides super admin
             }
-            
+
             return true; // Super admin default
         }
 
@@ -136,20 +126,20 @@ class User extends Authenticatable
         $permission = Permission::where('name', $permissionName)->first();
         if ($permission) {
             $this->permissions()->syncWithoutDetaching([
-                $permission->id => ['type' => 'grant']
+                $permission->id => ['type' => 'grant'],
             ]);
         }
     }
 
     /**
-     * Deny permission to user  
+     * Deny permission to user
      */
     public function denyPermission(string $permissionName)
     {
         $permission = Permission::where('name', $permissionName)->first();
         if ($permission) {
             $this->permissions()->syncWithoutDetaching([
-                $permission->id => ['type' => 'deny']
+                $permission->id => ['type' => 'deny'],
             ]);
         }
     }
@@ -167,15 +157,28 @@ class User extends Authenticatable
 
     /**
      * Get the user's avatar URL.
-     *
-     * @return string
      */
     public function getAvatarUrlAttribute(): string
     {
-        if ($this->avatar && \Illuminate\Support\Facades\Storage::disk('public')->exists($this->avatar)) {
-            return \Illuminate\Support\Facades\Storage::url($this->avatar);
+        if ($this->avatar && Storage::disk('public')->exists($this->avatar)) {
+            return Storage::url($this->avatar);
         }
 
-        return "https://ui-avatars.com/api/?name=" . urlencode($this->name) . "&color=7F9CF5&background=EBF4FF";
+        return 'https://ui-avatars.com/api/?name='.urlencode($this->name).'&color=7F9CF5&background=EBF4FF';
+    }
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            'is_active' => 'boolean',
+            'last_login_at' => 'datetime',
+        ];
     }
 }

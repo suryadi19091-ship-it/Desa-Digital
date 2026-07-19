@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Agenda extends Model
 {
@@ -73,7 +73,7 @@ class Agenda extends Model
     public function scopeThisMonth($query)
     {
         return $query->whereMonth('event_date', now()->month)
-                    ->whereYear('event_date', now()->year);
+            ->whereYear('event_date', now()->year);
     }
 
     // Accessors
@@ -86,13 +86,15 @@ class Agenda extends Model
     {
         $start = $this->start_time ? Carbon::parse($this->start_time)->format('H:i') : '';
         $end = $this->end_time ? Carbon::parse($this->end_time)->format('H:i') : '';
-        
+
         if ($start && $end) {
-            return $start . ' - ' . $end . ' WIB';
-        } elseif ($start) {
-            return $start . ' WIB';
+            return $start.' - '.$end.' WIB';
         }
-        
+
+        if ($start) {
+            return $start.' WIB';
+        }
+
         return 'Waktu belum ditentukan';
     }
 
@@ -104,7 +106,7 @@ class Agenda extends Model
             'olahraga' => 'OLAHRAGA',
             'gotong_royong' => 'GOTONG ROYONG',
             'keagamaan' => 'KEAGAMAAN',
-            'lainnya' => 'LAINNYA'
+            'lainnya' => 'LAINNYA',
         ];
 
         return $labels[$this->category] ?? strtoupper($this->category);
@@ -118,7 +120,7 @@ class Agenda extends Model
             'olahraga' => 'purple',
             'gotong_royong' => 'yellow',
             'keagamaan' => 'red',
-            'lainnya' => 'gray'
+            'lainnya' => 'gray',
         ];
 
         return $colors[$this->category] ?? 'gray';
@@ -127,9 +129,9 @@ class Agenda extends Model
     public function getIsOngoingAttribute()
     {
         $now = now();
-        $startTime = Carbon::parse($this->event_date->format('Y-m-d') . ' ' . $this->start_time);
-        $endTime = $this->end_time ? 
-            Carbon::parse($this->event_date->format('Y-m-d') . ' ' . $this->end_time) : 
+        $startTime = Carbon::parse($this->event_date->format('Y-m-d').' '.$this->start_time);
+        $endTime = $this->end_time ?
+            Carbon::parse($this->event_date->format('Y-m-d').' '.$this->end_time) :
             $startTime->copy()->addHours(2);
 
         return $now->between($startTime, $endTime);

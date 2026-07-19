@@ -15,11 +15,11 @@ class Role extends Model
         'name',
         'display_name',
         'description',
-        'is_active'
+        'is_active',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
     ];
 
     public function permissions(): BelongsToMany

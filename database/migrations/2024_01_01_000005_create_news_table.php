@@ -18,13 +18,13 @@ return new class extends Migration
             $table->text('excerpt')->nullable();
             $table->longText('content');
             $table->enum('category', [
-                'kegiatan', 
-                'kesehatan', 
-                'ekonomi', 
-                'infrastruktur', 
-                'pendidikan', 
-                'olahraga', 
-                'lainnya'
+                'kegiatan',
+                'kesehatan',
+                'ekonomi',
+                'infrastruktur',
+                'pendidikan',
+                'olahraga',
+                'lainnya',
             ]);
             $table->string('featured_image')->nullable();
             $table->integer('views_count')->default(0);

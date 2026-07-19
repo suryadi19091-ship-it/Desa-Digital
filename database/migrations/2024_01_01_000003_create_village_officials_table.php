@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->enum('position', [
-                'kepala_desa', 
-                'sekretaris_desa', 
-                'kaur_pemerintahan', 
-                'kaur_keuangan', 
-                'kaur_pelayanan', 
-                'kadus', 
-                'staff'
+                'kepala_desa',
+                'sekretaris_desa',
+                'kaur_pemerintahan',
+                'kaur_keuangan',
+                'kaur_pelayanan',
+                'kadus',
+                'staff',
             ]);
             $table->string('nip', 50)->nullable();
             $table->string('education', 100)->nullable();

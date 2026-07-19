@@ -13,13 +13,13 @@ class Permission extends Model
     protected $fillable = [
         'name',
         'display_name',
-        'description', 
+        'description',
         'category',
-        'is_active'
+        'is_active',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
     ];
 
     public function roles(): BelongsToMany
@@ -30,7 +30,7 @@ class Permission extends Model
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'user_permissions')
-                    ->withPivot('type')
-                    ->withTimestamps();
+            ->withPivot('type')
+            ->withTimestamps();
     }
 }

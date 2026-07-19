@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Gallery;
+use Illuminate\Database\Seeder;
 
 class GallerySeeder extends Seeder
 {
@@ -90,7 +90,7 @@ class GallerySeeder extends Seeder
                 'likes_count' => 28,
                 'is_featured' => false,
                 'uploaded_by' => 1,
-            ]
+            ],
         ];
 
         foreach ($galleries as $gallery) {

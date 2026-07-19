@@ -4,20 +4,20 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
-use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
-use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -41,9 +41,10 @@ class AuthController extends Controller
     {
         // Rate limiting
         $key = Str::transliterate(Str::lower($request->input('email')).'|'.$request->ip());
-        
+
         if (RateLimiter::tooManyAttempts($key, 5)) {
             $seconds = RateLimiter::availableIn($key);
+
             return back()->withErrors([
                 'email' => "Terlalu banyak percobaan login. Coba lagi dalam {$seconds} detik.",
             ])->withInput($request->except('password'));
@@ -63,6 +64,7 @@ class AuthController extends Controller
             // Check user status and permissions using Gates
             if (Gate::denies('access-system', Auth::user())) {
                 Auth::logout();
+
                 return back()->withErrors([
                     'email' => 'Akun Anda tidak memiliki akses ke sistem ini.',
                 ]);
@@ -70,6 +72,7 @@ class AuthController extends Controller
 
             if (Gate::denies('account-active', Auth::user())) {
                 Auth::logout();
+
                 return back()->withErrors([
                     'email' => 'Akun Anda sedang tidak aktif. Hubungi administrator.',
                 ]);
@@ -115,6 +118,7 @@ class AuthController extends Controller
         $key = 'register:'.$request->ip();
         if (RateLimiter::tooManyAttempts($key, 3)) {
             $seconds = RateLimiter::availableIn($key);
+
             return back()->withErrors([
                 'registration' => "Terlalu banyak percobaan registrasi. Coba lagi dalam {$seconds} detik.",
             ]);
@@ -145,7 +149,7 @@ class AuthController extends Controller
 
         RateLimiter::clear($key);
 
-        return redirect()->route('login')->with('success', 
+        return redirect()->route('login')->with('success',
             'Registrasi berhasil! Akun Anda sedang menunggu persetujuan administrator.'
         );
     }
@@ -167,6 +171,7 @@ class AuthController extends Controller
         $key = 'password-reset:'.$request->ip();
         if (RateLimiter::tooManyAttempts($key, 3)) {
             $seconds = RateLimiter::availableIn($key);
+
             return back()->withErrors([
                 'email' => "Terlalu banyak percobaan reset password. Coba lagi dalam {$seconds} detik.",
             ]);
@@ -195,7 +200,7 @@ class AuthController extends Controller
 
         if ($status === Password::RESET_LINK_SENT) {
             RateLimiter::hit($key, 300); // 5 minutes cooldown
-            
+
             // Log password reset request
             if ($user) {
                 $this->logUserActivity($user, 'password_reset_request', $request);
@@ -215,7 +220,7 @@ class AuthController extends Controller
     public function showResetPassword(Request $request): View
     {
         return view('auth.reset-password', [
-            'request' => $request
+            'request' => $request,
         ]);
     }
 
@@ -255,7 +260,7 @@ class AuthController extends Controller
         );
 
         if ($status === Password::PASSWORD_RESET) {
-            return redirect()->route('login')->with('success', 
+            return redirect()->route('login')->with('success',
                 'Password berhasil direset. Silakan login dengan password baru Anda.'
             );
         }
@@ -297,11 +302,11 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            throw new \Illuminate\Validation\ValidationException($validator);
+            throw new ValidationException($validator);
         }
 
         $loginField = $this->getLoginField($request->email);
-        
+
         return [
             $loginField => $request->email,
             'password' => $request->password,
@@ -382,7 +387,7 @@ class AuthController extends Controller
                 'created_at' => now(),
             ]);
             */
-            
+
             // For now, we'll use Laravel's built-in logging
             \Log::info("User {$action}", [
                 'user_id' => $user->id,
@@ -440,13 +445,13 @@ class AuthController extends Controller
 
         // If changing password, verify current password
         if ($request->filled('password')) {
-            if (!$request->filled('current_password') || 
-                !Hash::check($request->current_password, $user->password)) {
+            if (! $request->filled('current_password') ||
+                ! Hash::check($request->current_password, $user->password)) {
                 return back()->withErrors([
                     'current_password' => 'Password saat ini tidak benar.',
                 ]);
             }
-            
+
             $validated['password'] = Hash::make($validated['password']);
             $validated['password_changed_at'] = now();
         } else {
@@ -485,7 +490,7 @@ class AuthController extends Controller
         ]);
 
         // Verify current password
-        if (!Hash::check($request->current_password, $user->password)) {
+        if (! Hash::check($request->current_password, $user->password)) {
             return back()->withErrors([
                 'current_password' => 'Password saat ini tidak benar.',
             ]);

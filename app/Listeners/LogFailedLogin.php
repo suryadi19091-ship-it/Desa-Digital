@@ -15,12 +15,13 @@ class LogFailedLogin
             if ($event->user) {
                 $user = $event->user;
                 $user->increment('login_attempts');
-                
+
                 // Optional: handle permanent lockout if attempts exceed a threshold
                 // Example: if ($user->login_attempts >= 10) { $user->update(['status' => 'suspended']); }
             }
         } catch (\Exception $e) {
-            // Fail silently
+            // Fail silently — listener must never interrupt the auth flow
+            unset($e);
         }
     }
 }

@@ -1,5 +1,10 @@
 <?php
 
+use App\Http\Middleware\GateMiddleware;
+use App\Http\Middleware\LogUserActivityMiddleware;
+use App\Http\Middleware\MaintenanceModeMiddleware;
+use App\Http\Middleware\RoleMiddleware;
+use App\Http\Middleware\SecurityHeadersMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,22 +18,22 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // Register custom middleware aliases
         $middleware->alias([
-            'role' => \App\Http\Middleware\RoleMiddleware::class,
-            'gate' => \App\Http\Middleware\GateMiddleware::class,
-            'maintenance.access' => \App\Http\Middleware\MaintenanceModeMiddleware::class,
+            'role' => RoleMiddleware::class,
+            'gate' => GateMiddleware::class,
+            'maintenance.access' => MaintenanceModeMiddleware::class,
         ]);
 
         // Register middleware groups
         $middleware->group('admin', [
             'auth',
-            'gate:access-admin-panel'
+            'gate:access-admin-panel',
         ]);
 
         // Register global middleware
         $middleware->web(append: [
-            \App\Http\Middleware\MaintenanceModeMiddleware::class,
-            \App\Http\Middleware\LogUserActivityMiddleware::class,
-            \App\Http\Middleware\SecurityHeadersMiddleware::class,
+            MaintenanceModeMiddleware::class,
+            LogUserActivityMiddleware::class,
+            SecurityHeadersMiddleware::class,
             'throttle:global',
         ]);
     })

@@ -4,8 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class LogUserActivityMiddleware
 {
@@ -18,13 +18,13 @@ class LogUserActivityMiddleware
         'admin/dashboard/stats',
         '_ignition/*',
         'telescope/*',
-        'broadcasting/auth'
+        'broadcasting/auth',
     ];
 
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
@@ -45,7 +45,7 @@ class LogUserActivityMiddleware
             } elseif ($method === 'POST') {
                 // If it's a POST and not downloading, it might be a submission not caught by Eloquent logs
                 $action = 'Eksekusi Aksi';
-                $description = "Menjalankan [$method] di URL: /{$path}";
+                $description = "Menjalankan [{$method}] di URL: /{$path}";
                 // Skip generic POST logs because Spatie Eloquent will catch actual CRUD
                 // return $response; // Uncomment to disable POST generic logging
             }
@@ -57,11 +57,12 @@ class LogUserActivityMiddleware
                         'ip' => $request->ip(),
                         'user_agent' => $request->userAgent(),
                         'method' => $method,
-                        'url' => $request->fullUrl()
+                        'url' => $request->fullUrl(),
                     ])
                     ->log("{$action} - {$description}");
             } catch (\Exception $e) {
-                // Fail silently so logging doesn't break the app
+                // Fail silently — logging must never break the application response
+                unset($e);
             }
         }
 

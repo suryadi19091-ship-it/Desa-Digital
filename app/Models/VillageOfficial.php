@@ -45,7 +45,7 @@ class VillageOfficial extends Model
             'kadus' => 'Kepala Dusun',
             'staff' => 'Staff',
         ];
-        
+
         return $titles[$this->position] ?? ucfirst(str_replace('_', ' ', $this->position));
     }
 
