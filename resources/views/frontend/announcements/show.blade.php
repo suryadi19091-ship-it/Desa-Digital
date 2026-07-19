@@ -1,9 +1,9 @@
 @extends('frontend.main')
 
-@section('title', $announcement->title . ' - ' . strtoupper($villageProfile->village_name ?? 'Desa Krandegan'))
+@section('title', $announcement->title . ' - ' . strtoupper($villageProfile->village_name ?? 'Desa'))
 @section('page_title', 'PENGUMUMAN')ends('frontend.main')
 
-@section('title', $announcement->title . ' - {{ $villageProfile->village_name ?? "DESA CIWULAN" }}')
+@section('title', $announcement->title . ' - {{ $villageProfile->village_name ?? "{{ strtoupper($villageProfile->village_name ?? "DESA") }}" }}')
 @section('page_title', 'DETAIL PENGUMUMAN')
 @section('header_icon', 'fas fa-bullhorn')
 @section('header_bg_color', 'bg-red-600')

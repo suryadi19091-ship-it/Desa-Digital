@@ -1,6 +1,6 @@
 @extends('frontend.main')
 
-@section('title', 'Statistik Penduduk - ' . strtoupper($villageProfile->village_name ?? 'Desa Krandegan'))
+@section('title', 'Statistik Penduduk - ' . strtoupper($villageProfile->village_name ?? 'Desa'))
 @section('page_title', 'STATISTIK PENDUDUK')
 @section('header_icon', 'fas fa-chart-line')
 @section('header_bg_color', 'bg-indigo-600')

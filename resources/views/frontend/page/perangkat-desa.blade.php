@@ -1,6 +1,6 @@
 @extends('frontend.main')
 
-@section('title', 'Perangkat Desa - ' . strtoupper($villageProfile->village_name ?? 'Desa Krandegan'))
+@section('title', 'Perangkat Desa - ' . strtoupper($villageProfile->village_name ?? 'Desa'))
 @section('page_title', 'PERANGKAT DESA')
 @section('header_icon', 'fas fa-user-friends')
 @section('header_bg_color', 'bg-emerald-600')
@@ -10,7 +10,7 @@
     <!-- Header -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
         <div class="text-center">
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Perangkat Desa Krandegan</h1>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Perangkat {{ $villageProfile->village_name ?? "Desa" }}</h1>
             <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500">Abdi masyarakat yang siap melayani dengan sepenuh hati</p>
         </div>
     </div>

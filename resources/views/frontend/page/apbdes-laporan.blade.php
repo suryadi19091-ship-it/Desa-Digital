@@ -1,6 +1,6 @@
 @extends('frontend.main')
 
-@section('title', 'Laporan APBDes - ' . strtoupper($villageProfile->village_name ?? 'Desa Krandegan'))
+@section('title', 'Laporan APBDes - ' . strtoupper($villageProfile->village_name ?? 'Desa'))
 @section('page_title', 'LAPORAN & DOKUMENTASI APB DESA')
 @section('header_icon', 'fas fa-file-alt')
 @section('header_bg_color', 'bg-indigo-600')
@@ -719,7 +719,7 @@
         const monthName = getMonthName(month);
         return `
             LAPORAN BULANAN APB DESA
-            DESA KRANDEGAN
+            {{ strtoupper($villageProfile->village_name ?? "DESA") }}
             
             Periode: ${monthName} ${year}
             Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}
@@ -739,7 +739,7 @@
             =====================================
             
             Dokumen ini digenerate secara otomatis
-            oleh Sistem Informasi Desa Krandegan
+            oleh Sistem Informasi {{ $villageProfile->village_name ?? "Desa" }}
         `;
     }
     
@@ -747,7 +747,7 @@
     function generateAnnualReportPDF(year) {
         return `
             LAPORAN TAHUNAN APB DESA
-            DESA KRANDEGAN
+            {{ strtoupper($villageProfile->village_name ?? "DESA") }}
             
             Tahun Anggaran: ${year}
             Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}
@@ -768,7 +768,7 @@
             =====================================
             
             Laporan Lengkap Tahun ${year}
-            Desa Krandegan
+            {{ $villageProfile->village_name ?? "Desa" }}
         `;
     }
     

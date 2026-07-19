@@ -1,6 +1,6 @@
 @extends('frontend.main')
 
-@section('title', 'UMKM ' . $categoryName . ' - Desa ' . strtoupper($villageProfile->village_name ?? 'Krandegan'))
+@section('title', 'UMKM ' . $categoryName . ' - Desa ' . strtoupper($villageProfile->village_name ?? 'Desa'))
 @section('page_title', 'UMKM ' . strtoupper($categoryName))
 @section('header_icon', 'fas fa-store')
 @section('header_bg_color', 'bg-orange-600')

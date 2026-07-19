@@ -1,6 +1,6 @@
 @extends('frontend.main')
 
-@section('title', 'Anggaran APBDes - ' . strtoupper($villageProfile->village_name ?? 'Desa Krandegan'))
+@section('title', 'Anggaran APBDes - ' . strtoupper($villageProfile->village_name ?? 'Desa'))
 @section('page_title', 'ANGGARAN APB DESA {{ $currentYear }}')
 @section('header_icon', 'fas fa-calculator')
 @section('header_bg_color', 'bg-blue-600')

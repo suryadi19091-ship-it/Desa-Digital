@@ -101,7 +101,7 @@
             </div>
             <div class="border-t border-blue-400 pt-2">
                 <div class="flex justify-between text-xs">
-                    <span id="weather-location">Desa Ciwulan, Telagsari</span>
+                    <span id="weather-location">{{ $villageProfile->village_name ?? "Desa" }}, {{ $villageProfile->district ?? "Kecamatan" }}</span>
                     <span id="weather-time">{{ date('H:i:s') }} WIB</span>
                 </div>
                 <div class="text-center text-xs mt-1 opacity-75" id="current-date">
@@ -293,7 +293,7 @@
     // Weather Widget Function - Real API Integration
     function updateWeatherWidget() {
         
-        // Coordinates for Ciuwlan, Telagsari, Banyumas (approximate)
+        // Coordinates for Ciuwlan, {{ $villageProfile->district ?? "Kecamatan" }}, Banyumas (approximate)
         const lat = -7.4781;
         const lon = 109.2963;
         const apiKey = 'b8c82d35dc91b9b2f7d5b4c3f1e2a8d6'; // Demo key - replace with real key

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use App\Models\VillageProfile;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,6 +29,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (\Illuminate\Support\Facades\Schema::hasTable('village_profiles')) {
+            View::share('villageProfile', VillageProfile::first());
+        }
+
         // Register view composer for sidebar
         View::composer('frontend.layout.sidebar-right', SidebarComposer::class);
 

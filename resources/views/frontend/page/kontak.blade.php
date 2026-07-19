@@ -1,6 +1,6 @@
 @extends('frontend.main')
 
-@section('title', 'Kontak - ' . strtoupper($villageProfile->village_name ?? 'Desa Krandegan'))
+@section('title', 'Kontak - ' . strtoupper($villageProfile->village_name ?? 'Desa'))
 @section('page_title', 'KONTAK KAMI')
 @section('header_icon', 'fas fa-phone-alt')
 @section('header_bg_color', 'bg-gray-600')
@@ -267,7 +267,7 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center text-sm text-red-800">
                             <i class="fas fa-shield-alt mr-2 w-4"></i>
-                            <span>Polsek Telagasari</span>
+                            <span>Polsek {{ $villageProfile->district ?? "Kecamatan" }}</span>
                         </div>
                         <button class="px-3 py-1 bg-red-200 text-red-800 rounded text-sm hover:bg-red-300">
                             (0267) 8431100
@@ -337,7 +337,7 @@
         <div class="flex items-center justify-between mb-6">
             <div>
                 <h3 class="font-bold text-gray-900 dark:text-gray-100">Peta Lokasi</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Kantor {{ $villageProfile->village_name ?? 'Desa Krandegan' }}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Kantor {{ $villageProfile->village_name }}</p>
             </div>
             <button class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 text-sm transition duration-200">
                 <i class="fas fa-directions mr-2"></i>
@@ -378,11 +378,11 @@
         <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div class="flex items-center">
                 <i class="fas fa-car text-gray-500 dark:text-gray-400 dark:text-gray-500 mr-2"></i>
-                <span class="text-gray-700 dark:text-gray-300">15 menit dari Stasiun Telagasari</span>
+                <span class="text-gray-700 dark:text-gray-300">15 menit dari Stasiun {{ $villageProfile->district ?? "Kecamatan" }}</span>
             </div>
             <div class="flex items-center">
                 <i class="fas fa-bus text-gray-500 dark:text-gray-400 dark:text-gray-500 mr-2"></i>
-                <span class="text-gray-700 dark:text-gray-300">Dilalui angkot jurusan Telagasari</span>
+                <span class="text-gray-700 dark:text-gray-300">Dilalui angkot jurusan {{ $villageProfile->district ?? "Kecamatan" }}</span>
             </div>
             <div class="flex items-center">
                 <i class="fas fa-parking text-gray-500 dark:text-gray-400 dark:text-gray-500 mr-2"></i>
@@ -416,7 +416,7 @@
 
         <div class="text-center">
             <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">
-                Kami berkomitmen memberikan pelayanan terbaik untuk seluruh warga dan pengunjung {{ $villageProfile->village_name ?? 'Desa Krandegan' }}
+                Kami berkomitmen memberikan pelayanan terbaik untuk seluruh warga dan pengunjung {{ $villageProfile->village_name }}
             </p>
             <div class="flex flex-col sm:flex-row gap-3 justify-center">
                 <button id="btn-wa" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-200">

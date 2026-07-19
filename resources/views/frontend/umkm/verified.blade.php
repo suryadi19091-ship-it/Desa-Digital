@@ -1,6 +1,6 @@
 @extends('frontend.main')
 
-@section('title', 'UMKM Terverifikasi - ' . strtoupper($villageProfile->village_name ?? 'Desa Krandegan'))
+@section('title', 'UMKM Terverifikasi - ' . strtoupper($villageProfile->village_name ?? 'Desa'))
 @section('page_title', 'UMKM TERVERIFIKASI')
 @section('header_icon', 'fas fa-certificate')
 @section('header_bg_color', 'bg-green-600')

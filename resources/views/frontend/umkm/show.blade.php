@@ -1,6 +1,6 @@
 @extends('frontend.main')
 
-@section('title', $umkm->business_name . ' - UMKM Desa ' . strtoupper($villageProfile->village_name ?? 'Krandegan'))
+@section('title', $umkm->business_name . ' - UMKM Desa ' . strtoupper($villageProfile->village_name ?? 'Desa'))
 @section('page_title', $umkm->business_name)
 @section('header_icon', 'fas fa-store')
 @section('header_bg_color', 'bg-orange-600')

@@ -1,6 +1,6 @@
 @extends('frontend.main')
 
-@section('title', 'Agenda Kegiatan - ' . strtoupper($villageProfile->village_name ?? 'Desa Krandegan'))
+@section('title', 'Agenda Kegiatan - ' . strtoupper($villageProfile->village_name ?? 'Desa'))
 @section('page_title', 'AGENDA KEGIATAN')
 @section('header_icon', 'fas fa-calendar-alt')
 @section('header_bg_color', 'bg-indigo-600')

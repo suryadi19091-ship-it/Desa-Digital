@@ -1,6 +1,6 @@
 @extends('frontend.main')
 
-@section('title', 'Website - ' . strtoupper($villageProfile->village_name ?? 'Desa Ciwulan'))
+@section('title', 'Website - ' . strtoupper($villageProfile->village_name ?? 'Desa'))
 @section('page_title', 'WEBSITE DESA')
 @section('header_icon', 'fas fa-tachometer-alt')
 @section('header_bg_color', 'bg-teal-600 dark:bg-gray-800')
@@ -72,11 +72,11 @@
                         @if(isset($user))
                             Halo, {{ $user->name }}!
                         @else
-                            Selamat Datang di {{ $villageProfile->village_name ?? 'Desa Ciwulan' }}
+                            Selamat Datang di {{ $villageProfile->village_name }}
                         @endif
                     </h1>
-                    <p class="text-sm sm:text-lg opacity-90">{{ $villageProfile->village_name ?? 'Desa Ciwulan' }},
-                        {{ $villageProfile->district ?? 'Telagasari' }}, {{ $villageProfile->regency ?? 'Karawang' }}</p>
+                    <p class="text-sm sm:text-lg opacity-90">{{ $villageProfile->village_name }},
+                        {{ $villageProfile->district ?? 'Kecamatan' }}, {{ $villageProfile->regency ?? 'Kabupaten' }}</p>
                     @if(isset($welcomeMessage))
                         <p class="text-xs sm:text-sm opacity-90 mt-1">{{ $welcomeMessage }}</p>
                     @else
@@ -788,7 +788,7 @@
         let showAreas = true; // Start with areas visible
         let allLocations = [];
 
-        // Village coordinates (Desa Ciwulan, Telagasari, Karawang)
+        // Village coordinates ({{ $villageProfile->village_name ?? "Desa" }}, {{ $villageProfile->district ?? "Kecamatan" }}, {{ $villageProfile->regency ?? "Kabupaten" }})
         const villageCoords = [-6.258346, 107.435520]; // Latitude, Longitude
 
         function initVillageMap() {
@@ -807,7 +807,7 @@
 
                 // Add village marker
                 villageMarker = L.marker(villageCoords).addTo(villageMap)
-                    .bindPopup('<b>Desa Ciuwlan</b><br>Telagasari, Karawang<br><small>Kantor Desa & Balai Desa</small>')
+                    .bindPopup('<b>Desa Ciuwlan</b><br>{{ $villageProfile->district ?? "Kecamatan" }}, {{ $villageProfile->regency ?? "Kabupaten" }}<br><small>Kantor Desa & Balai Desa</small>')
                     .openPopup();
 
                 // Load locations from database

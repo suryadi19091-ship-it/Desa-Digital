@@ -1,6 +1,6 @@
 @extends('frontend.main')
 
-@section('title', 'APBDes - ' . strtoupper($villageProfile->village_name ?? 'Desa Krandegan'))
+@section('title', 'APBDes - ' . strtoupper($villageProfile->village_name ?? 'Desa'))
 @section('page_title', 'APB DESA')
 @section('header_icon', 'fas fa-coins')
 @section('header_bg_color', 'bg-emerald-600')

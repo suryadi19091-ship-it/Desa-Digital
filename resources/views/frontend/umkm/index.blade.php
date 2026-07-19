@@ -1,6 +1,6 @@
 @extends('frontend.main')
 
-@section('title', 'UMKM Desa - ' . strtoupper($villageProfile->village_name ?? 'Desa Krandegan'))
+@section('title', 'UMKM Desa - ' . strtoupper($villageProfile->village_name ?? 'Desa'))
 @section('page_title', 'UMKM DESA')
 @section('header_icon', 'fas fa-store')
 @section('header_bg_color', 'bg-orange-600')
@@ -47,7 +47,7 @@
                     }ed-600 text-white rounded-lg shadow-lg p-6 mb-6">
         <div class="flex items-center justify-between">
             <div class="flex-1">
-                <h2 class="text-2xl font-bold mb-2">UMKM Desa {{ $villageProfile->village_name ?? 'Krandegan' }}</h2>
+                <h2 class="text-2xl font-bold mb-2">UMKM Desa {{ $villageProfile->village_name }}</h2>
                 <p class="text-lg opacity-90 mb-4">
                     Memberdayakan ekonomi lokal melalui usaha mikro, kecil, dan menengah
                 </p>

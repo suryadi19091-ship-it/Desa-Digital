@@ -10,8 +10,8 @@
     <!-- Village Header -->
     <a href="{{ route('home') }}" class="block">
         <div class="bg-gradient-to-r from-green-400 to-green-600 text-white p-6 text-center hover:from-green-500 hover:to-green-700 transition-colors duration-200">
-            <h2 class="text-xl font-bold">@yield('village_name', 'DESA CIWULAN')</h2>
-            <p class="text-sm text-green-100 mt-1">@yield('village_location', 'Telagasari, Karawang')</p>
+            <h2 class="text-xl font-bold">@yield('village_name', strtoupper($villageProfile->village_name ?? "DESA"))</h2>
+            <p class="text-sm text-green-100 mt-1">@yield('village_location', ($villageProfile->district ?? "Kecamatan") . ", " . ($villageProfile->regency ?? "Kabupaten"))</p>
         </div>
     </a>
 

@@ -1,6 +1,6 @@
 @extends('frontend.main')
 
-@section('title', 'Struktur Pemerintahan - ' . strtoupper($villageProfile->village_name ?? 'Desa Krandegan'))
+@section('title', 'Struktur Pemerintahan - ' . strtoupper($villageProfile->village_name ?? 'Desa'))
 @section('page_title', 'STRUKTUR PEMERINTAHAN')
 @section('header_icon', 'fas fa-sitemap')
 @section('header_bg_color', 'bg-cyan-600')
@@ -10,7 +10,7 @@
     <!-- Header -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
         <div class="text-center">
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Struktur Organisasi Pemerintah Desa Krandegan</h1>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Struktur Organisasi Pemerintah {{ $villageProfile->village_name ?? "Desa" }}</h1>
             <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500">Periode 2024-2029</p>
         </div>
     </div>
@@ -30,7 +30,7 @@
                 </div>
             </div>
             <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">{{ $kepala_desa->name }}</h2>
-            <p class="text-cyan-600 font-medium">Kepala Desa Krandegan</p>
+            <p class="text-cyan-600 font-medium">Kepala {{ $villageProfile->village_name ?? "Desa" }}</p>
             <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mt-2">Periode: {{ $kepala_desa->work_period }}</p>
             @if($kepala_desa->nip)
             <p class="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">NIP: {{ $kepala_desa->nip }}</p>

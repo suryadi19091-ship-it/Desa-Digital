@@ -1,6 +1,6 @@
 @extends('frontend.main')
 
-@section('title', 'Profil Desa - ' . strtoupper($villageProfile->village_name ?? 'Desa Krandegan'))
+@section('title', 'Profil Desa - ' . strtoupper($villageProfile->village_name ?? 'Desa'))
 @section('page_title', 'PROFIL DESA')
 @section('header_icon', 'fas fa-home')
 @section('header_bg_color', 'bg-green-600')
@@ -14,8 +14,8 @@
                 <img src="/images/logo-desa.png" alt="Logo Desa" class="w-24 h-24 object-contain" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCA5NiA5NiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9Ijk2IiBoZWlnaHQ9Ijk2IiByeD0iNDgiIGZpbGw9IiNGM0Y0RjYiLz4KPHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSIyNCIgeT0iMjQiPgo8cGF0aCBkPSJNMjQgMTJMMzYgMjBWMzZIMTJWMjBMMjQgMTJaIiBzdHJva2U9IiM2QjcyODAiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgo8L3N2Zz4KPC9zdmc+'">
             </div>
             <div class="flex-1">
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{{ $villageProfile->village_name ?? 'Desa Krandegan' }}</h1>
-                <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">Kecamatan {{ $villageProfile->district ?? 'Telagasari' }}, Kabupaten {{ $villageProfile->regency ?? 'Karawang' }}, Provinsi {{ $villageProfile->province ?? 'Jawa Barat' }}</p>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{{ $villageProfile->village_name }}</h1>
+                <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">Kecamatan {{ $villageProfile->district ?? 'Kecamatan' }}, Kabupaten {{ $villageProfile->regency ?? 'Kabupaten' }}, Provinsi {{ $villageProfile->province ?? 'Jawa Barat' }}</p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div>
                         <span class="font-medium text-gray-700 dark:text-gray-300">Kode Desa:</span>
@@ -54,7 +54,7 @@
                     </li>
                     <li class="flex">
                         <span class="font-medium text-gray-700 dark:text-gray-300 w-20">Selatan:</span>
-                        <span class="text-gray-600 dark:text-gray-400 dark:text-gray-500">{{ $villageProfile->south_border ?? 'Desa Telagasari' }}</span>
+                        <span class="text-gray-600 dark:text-gray-400 dark:text-gray-500">{{ $villageProfile->south_border ?? 'Desa' }}</span>
                     </li>
                     <li class="flex">
                         <span class="font-medium text-gray-700 dark:text-gray-300 w-20">Timur:</span>
@@ -94,7 +94,7 @@
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
         <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
             <i class="fas fa-info-circle text-blue-600 mr-2"></i>
-            Tentang {{ $villageProfile->village_name ?? 'Desa Krandegan' }}
+            Tentang {{ $villageProfile->village_name }}
         </h2>
         <div class="prose prose-gray max-w-none">
             @if($villageProfile && $villageProfile->description)
@@ -103,16 +103,16 @@
                 </div>
             @else
             <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-                {{ $villageProfile->village_name ?? 'Desa Krandegan' }} adalah salah satu desa yang terletak di Kecamatan {{ $villageProfile->district ?? 'Telagasari' }}, Kabupaten {{ $villageProfile->regency ?? 'Karawang' }}, Provinsi {{ $villageProfile->province ?? 'Jawa Barat' }}. 
+                {{ $villageProfile->village_name }} adalah salah satu desa yang terletak di Kecamatan {{ $villageProfile->district ?? 'Kecamatan' }}, Kabupaten {{ $villageProfile->regency ?? 'Kabupaten' }}, Provinsi {{ $villageProfile->province ?? 'Jawa Barat' }}. 
                 Desa ini memiliki luas wilayah {{ number_format((float)($villageProfile->area_size ?? 485.76), 2) }} hektar dengan jumlah penduduk sebanyak {{ number_format((int)($villageProfile->total_population ?? 3032)) }} jiwa yang terdiri dari {{ number_format((int)($villageProfile->total_families ?? 986)) }} kepala keluarga.
             </p>
             <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-                {{ $villageProfile->village_name ?? 'Desa Krandegan' }} memiliki potensi yang cukup baik dalam bidang pertanian, dengan mayoritas penduduknya bermata pencaharian 
+                {{ $villageProfile->village_name }} memiliki potensi yang cukup baik dalam bidang pertanian, dengan mayoritas penduduknya bermata pencaharian 
                 sebagai petani dan buruh tani. Wilayah desa ini sebagian besar merupakan lahan pertanian yang subur dengan sistem pengairan 
                 yang cukup memadai.
             </p>
             <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-                Sebagai bagian dari Kabupaten {{ $villageProfile->regency ?? 'Karawang' }} yang dikenal sebagai lumbung padi Jawa Barat, {{ $villageProfile->village_name ?? 'Desa Krandegan' }} turut berkontribusi 
+                Sebagai bagian dari Kabupaten {{ $villageProfile->regency ?? 'Kabupaten' }} yang dikenal sebagai lumbung padi Jawa Barat, {{ $villageProfile->village_name }} turut berkontribusi 
                 dalam pemenuhan kebutuhan pangan nasional melalui produksi padi dan komoditas pertanian lainnya.
             </p>
             @endif

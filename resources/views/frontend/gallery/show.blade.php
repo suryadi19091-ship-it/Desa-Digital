@@ -1,6 +1,6 @@
 @extends('frontend.main')
 
-@section('title', $gallery->title . ' - Galeri - ' . strtoupper($villageProfile->village_name ?? 'Desa Krandegan'))
+@section('title', $gallery->title . ' - Galeri - ' . strtoupper($villageProfile->village_name ?? 'Desa'))
 @section('page_title', 'DETAIL GALERI')
 @section('header_icon', 'fas fa-image')
 @section('header_bg_color', 'bg-purple-600')

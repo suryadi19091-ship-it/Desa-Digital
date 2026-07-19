@@ -1,6 +1,6 @@
 @extends('frontend.main')
 
-@section('title', 'Realisasi APBDes - DESA KRANDEGAN')
+@section('title', 'Realisasi APBDes - {{ strtoupper($villageProfile->village_name ?? "DESA") }}')
 @section('page_title', 'REALISASI APB DESA 2025')
 @section('header_icon', 'fas fa-chart-line')
 @section('header_bg_color', 'bg-green-600')
@@ -285,7 +285,7 @@
                         </div>
                         <div>
                             <h4 class="font-semibold text-gray-900 dark:text-gray-100">Pembangunan Jalan Desa</h4>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Ruas Krandegan - Pasar</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">Ruas {{ str_replace("Desa ", "", $villageProfile->village_name ?? "Desa") }} - Pasar</p>
                         </div>
                     </div>
                     <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">
@@ -313,7 +313,7 @@
                         </div>
                         <div>
                             <h4 class="font-semibold text-gray-900 dark:text-gray-100">Sistem Air Bersih</h4>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">PDAM Desa Krandegan</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">PDAM {{ $villageProfile->village_name ?? "Desa" }}</p>
                         </div>
                     </div>
                     <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">

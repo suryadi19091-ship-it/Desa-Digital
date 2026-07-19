@@ -1,6 +1,6 @@
 @extends('frontend.main')
 
-@section('title', 'Wisata Desa - ' . strtoupper($villageProfile->village_name ?? 'Desa Krandegan'))
+@section('title', 'Wisata Desa - ' . strtoupper($villageProfile->village_name ?? 'Desa'))
 @section('page_title', 'WISATA DESA')
 @section('header_icon', 'fas fa-mountain')
 @section('header_bg_color', 'bg-teal-600 dark:bg-gray-800')
@@ -11,9 +11,9 @@
     <div class="bg-gradient-to-r from-teal-500 to-blue-600 text-white rounded-lg shadow-lg p-6 mb-6">
         <div class="flex items-center justify-between">
             <div class="flex-1">
-                <h2 class="text-2xl font-bold mb-2">Pesona Wisata Krandegan</h2>
+                <h2 class="text-2xl font-bold mb-2">Pesona Wisata {{ str_replace("Desa ", "", $villageProfile->village_name ?? "Desa") }}</h2>
                 <p class="text-lg opacity-90 mb-4">
-                    Nikmati keindahan alam dan kearifan lokal Desa Krandegan
+                    Nikmati keindahan alam dan kearifan lokal {{ $villageProfile->village_name ?? "Desa" }}
                 </p>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div class="text-center">
@@ -305,7 +305,7 @@
                 <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-4">
                     <div class="flex items-center">
                         <i class="fas fa-check text-green-500 mr-2"></i>
-                        <span>Puncak Krandegan + Telaga Hijau</span>
+                        <span>Puncak {{ str_replace("Desa ", "", $villageProfile->village_name ?? "Desa") }} + Telaga Hijau</span>
                     </div>
                     <div class="flex items-center">
                         <i class="fas fa-check text-green-500 mr-2"></i>

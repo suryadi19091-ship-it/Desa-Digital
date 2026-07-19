@@ -1,6 +1,6 @@
 @extends('frontend.main')
 
-@section('title', 'Visi Misi - ' . strtoupper($villageProfile->village_name ?? 'Desa Krandegan'))
+@section('title', 'Visi Misi - ' . strtoupper($villageProfile->village_name ?? 'Desa'))
 @section('page_title', 'VISI & MISI')
 @section('header_icon', 'fas fa-eye')
 @section('header_bg_color', 'bg-indigo-600')
@@ -13,14 +13,14 @@
             <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <i class="fas fa-eye text-2xl text-indigo-600"></i>
             </div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">VISI DESA KRANDEGAN</h1>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">VISI {{ strtoupper($villageProfile->village_name ?? "DESA") }}</h1>
             <div class="w-24 h-1 bg-indigo-600 mx-auto"></div>
         </div>
         
         <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-6 border border-indigo-200">
             <blockquote class="text-center">
                 <p class="text-xl md:text-2xl font-semibold text-gray-900 dark:text-gray-100 leading-relaxed mb-4">
-                    "Terwujudnya Desa Krandegan yang Maju, Mandiri, dan Sejahtera 
+                    "Terwujudnya {{ $villageProfile->village_name ?? "Desa" }} yang Maju, Mandiri, dan Sejahtera 
                     Berdasarkan Nilai-Nilai Gotong Royong dan Kearifan Lokal"
                 </p>
                 <footer class="text-sm text-indigo-600 font-medium">
@@ -31,7 +31,7 @@
         
         <div class="mt-6 text-center">
             <p class="text-gray-700 dark:text-gray-300 leading-relaxed max-w-3xl mx-auto">
-                Visi ini mencerminkan tekad dan cita-cita bersama seluruh warga Desa Krandegan untuk membangun 
+                Visi ini mencerminkan tekad dan cita-cita bersama seluruh warga {{ $villageProfile->village_name ?? "Desa" }} untuk membangun 
                 desa yang berkembang pesat dalam segala aspek kehidupan, dengan tetap menjaga nilai-nilai 
                 tradisional dan kearifan lokal yang telah mengakar dalam masyarakat.
             </p>
@@ -44,7 +44,7 @@
             <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <i class="fas fa-bullseye text-2xl text-green-600"></i>
             </div>
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">MISI DESA KRANDEGAN</h2>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">MISI {{ strtoupper($villageProfile->village_name ?? "DESA") }}</h2>
             <div class="w-24 h-1 bg-green-600 mx-auto"></div>
         </div>
 

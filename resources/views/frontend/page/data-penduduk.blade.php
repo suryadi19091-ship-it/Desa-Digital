@@ -1,6 +1,6 @@
 @extends('frontend.main')
 
-@section('title', 'Data Penduduk - ' . strtoupper($villageProfile->village_name ?? 'Desa Krandegan'))
+@section('title', 'Data Penduduk - ' . strtoupper($villageProfile->village_name ?? 'Desa'))
 @section('page_title', 'DATA PENDUDUK')
 @section('header_icon', 'fas fa-users')
 @section('header_bg_color', 'bg-sky-600')
@@ -264,7 +264,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-orange-50 dark:bg-orange-900/40 border border-orange-200 rounded-lg p-6">
                 <div class="text-center mb-4">
-                    <h3 class="font-bold text-gray-900 dark:text-gray-100 text-lg">Dusun I Krandegan</h3>
+                    <h3 class="font-bold text-gray-900 dark:text-gray-100 text-lg">Dusun I {{ str_replace("Desa ", "", $villageProfile->village_name ?? "Desa") }}</h3>
                     <p class="text-3xl font-bold text-orange-600">{{ number_format($populationByArea['dusun_1']) }}</p>
                     <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">jiwa</p>
                 </div>
@@ -290,7 +290,7 @@
             
             <div class="bg-green-50 dark:bg-green-900/40 border border-green-200 rounded-lg p-6">
                 <div class="text-center mb-4">
-                    <h3 class="font-bold text-gray-900 dark:text-gray-100 text-lg">Dusun II Krandegan</h3>
+                    <h3 class="font-bold text-gray-900 dark:text-gray-100 text-lg">Dusun II {{ str_replace("Desa ", "", $villageProfile->village_name ?? "Desa") }}</h3>
                     <p class="text-3xl font-bold text-green-600">{{ number_format($populationByArea['dusun_2']) }}</p>
                     <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500">jiwa</p>
                 </div>

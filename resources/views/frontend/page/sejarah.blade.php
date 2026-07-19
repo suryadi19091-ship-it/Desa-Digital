@@ -1,6 +1,6 @@
 @extends('frontend.main')
 
-@section('title', 'Sejarah Desa - ' . strtoupper($villageProfile->village_name ?? 'Desa Krandegan'))
+@section('title', 'Sejarah Desa - ' . strtoupper($villageProfile->village_name ?? 'Desa'))
 @section('page_title', 'SEJARAH DESA')
 @section('header_icon', 'fas fa-history')
 @section('header_bg_color', 'bg-amber-600')
@@ -10,14 +10,14 @@
     <!-- Timeline Header -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
         <div class="text-center mb-6">
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Sejarah Desa Krandegan</h1>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Sejarah {{ $villageProfile->village_name ?? "Desa" }}</h1>
             <p class="text-gray-600 dark:text-gray-400 dark:text-gray-500">Perjalanan panjang pembentukan dan perkembangan desa</p>
         </div>
         
         <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-4 border-l-4 border-amber-500">
             <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-                Desa Krandegan memiliki sejarah yang panjang dan kaya akan nilai-nilai budaya Jawa. 
-                Nama "Krandegan" sendiri berasal dari kata dalam bahasa Jawa yang memiliki makna mendalam 
+                {{ $villageProfile->village_name ?? "Desa" }} memiliki sejarah yang panjang dan kaya akan nilai-nilai budaya Jawa. 
+                Nama "{{ str_replace("Desa ", "", $villageProfile->village_name ?? "Desa") }}" sendiri berasal dari kata dalam bahasa Jawa yang memiliki makna mendalam 
                 terkait dengan karakteristik wilayah dan kehidupan masyarakatnya.
             </p>
         </div>
@@ -45,7 +45,7 @@
                         <div class="bg-amber-50 rounded-lg p-4">
                             <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Era Kerajaan (Abad 15-16)</h3>
                             <p class="text-gray-700 dark:text-gray-300 text-sm mb-2">
-                                Wilayah yang sekarang menjadi Desa Krandegan pada masa ini merupakan bagian dari 
+                                Wilayah yang sekarang menjadi {{ $villageProfile->village_name ?? "Desa" }} pada masa ini merupakan bagian dari 
                                 Kerajaan Sumedang Larang. Daerah ini masih berupa hutan lebat dan rawa-rawa yang 
                                 dihuni oleh beberapa keluarga perintis.
                             </p>
@@ -65,7 +65,7 @@
                             <p class="text-gray-700 dark:text-gray-300 text-sm mb-2">
                                 Pembukaan lahan pertanian secara besar-besaran dimulai oleh pemerintah kolonial Belanda. 
                                 Sistem irigasi mulai dibangun dan penduduk mulai berdatangan untuk membuka lahan pertanian. 
-                                Nama "Krandegan" mulai dikenal pada periode ini.
+                                Nama "{{ str_replace("Desa ", "", $villageProfile->village_name ?? "Desa") }}" mulai dikenal pada periode ini.
                             </p>
                             <span class="text-xs text-amber-700 bg-amber-100 px-2 py-1 rounded">1800-1945</span>
                         </div>
@@ -82,7 +82,7 @@
                             <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Masa Kemerdekaan (1945-1950)</h3>
                             <p class="text-gray-700 dark:text-gray-300 text-sm mb-2">
                                 Setelah proklamasi kemerdekaan, wilayah ini mengalami reorganisasi pemerintahan. 
-                                Krandegan ditetapkan sebagai desa definitif dengan struktur pemerintahan yang jelas. 
+                                {{ str_replace("Desa ", "", $villageProfile->village_name ?? "Desa") }} ditetapkan sebagai desa definitif dengan struktur pemerintahan yang jelas. 
                                 Kepala desa pertama adalah Bapak Kartawiria.
                             </p>
                             <span class="text-xs text-amber-700 bg-amber-100 px-2 py-1 rounded">1945-1950</span>
@@ -140,7 +140,7 @@
                 <h3 class="font-bold text-gray-900 dark:text-gray-100 mb-2">Bapak Kartawiria</h3>
                 <p class="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-500 mb-2">Kepala Desa Pertama (1945-1965)</p>
                 <p class="text-sm text-gray-700 dark:text-gray-300">
-                    Pelopor pembentukan struktur pemerintahan desa dan pencetus nama "Krandegan". 
+                    Pelopor pembentukan struktur pemerintahan desa dan pencetus nama "{{ str_replace("Desa ", "", $villageProfile->village_name ?? "Desa") }}". 
                     Beliau juga yang memimpin pembangunan infrastruktur dasar desa.
                 </p>
             </div>

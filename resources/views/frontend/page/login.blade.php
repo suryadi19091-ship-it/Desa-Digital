@@ -1,6 +1,6 @@
 @extends('frontend.main')
 
-@section('title', 'Login - ' . strtoupper($villageProfile->village_name ?? 'Desa Krandegan'))
+@section('title', 'Login - ' . strtoupper($villageProfile->village_name ?? 'Desa'))
 @section('page_title', 'LOGIN')
 @section('header_icon', 'fas fa-sign-in-alt')
 @section('header_bg_color', 'bg-blue-600')
