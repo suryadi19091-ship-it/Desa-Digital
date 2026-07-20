@@ -149,7 +149,8 @@ class AuthController extends Controller
 
         RateLimiter::clear($key);
 
-        return redirect()->route('login')->with('success',
+        return redirect()->route('login')->with(
+            'success',
             'Registrasi berhasil! Akun Anda sedang menunggu persetujuan administrator.'
         );
     }
@@ -260,7 +261,8 @@ class AuthController extends Controller
         );
 
         if ($status === Password::PASSWORD_RESET) {
-            return redirect()->route('login')->with('success',
+            return redirect()->route('login')->with(
+                'success',
                 'Password berhasil direset. Silakan login dengan password baru Anda.'
             );
         }
@@ -286,6 +288,115 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('home')->with('success', 'Anda telah berhasil logout.');
+    }
+
+    /**
+     * Get user profile for authenticated user.
+     */
+    public function profile(): View
+    {
+        $user = Auth::user();
+
+        // Check if user can view their own profile
+        if (Gate::denies('view-profile', $user)) {
+            abort(403, 'Anda tidak memiliki akses untuk melihat profil.');
+        }
+
+        return view('auth.profile', compact('user'));
+    }
+
+    /**
+     * Update user profile.
+     */
+    public function updateProfile(Request $request): RedirectResponse
+    {
+        $user = Auth::user();
+
+        // Check if user can update their own profile
+        if (Gate::denies('update-profile', $user)) {
+            return back()->withErrors([
+                'profile' => 'Anda tidak memiliki akses untuk mengubah profil.',
+            ]);
+        }
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
+            'phone' => ['required', 'string', 'regex:/^08[0-9]{8,11}$/', 'unique:users,phone,'.$user->id],
+            'current_password' => ['nullable', 'string'],
+            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
+        ], [
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'name.regex' => 'Nama hanya boleh berisi huruf dan spasi.',
+            'phone.required' => 'Nomor telepon wajib diisi.',
+            'phone.regex' => 'Format nomor telepon tidak valid.',
+            'phone.unique' => 'Nomor telepon sudah digunakan.',
+            'current_password.required_with' => 'Password saat ini diperlukan untuk mengubah password.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+        ]);
+
+        // If changing password, verify current password
+        if ($request->filled('password')) {
+            if (! $request->filled('current_password') ||
+                ! Hash::check($request->current_password, $user->password)) {
+                return back()->withErrors([
+                    'current_password' => 'Password saat ini tidak benar.',
+                ]);
+            }
+
+            $validated['password'] = Hash::make($validated['password']);
+            $validated['password_changed_at'] = now();
+        } else {
+            unset($validated['password'], $validated['current_password']);
+        }
+
+        $user->update($validated);
+
+        // Log profile update
+        $this->logUserActivity($user, 'profile_update', $request);
+
+        return back()->with('success', 'Profil berhasil diperbarui.');
+    }
+
+    /**
+     * Change user password.
+     */
+    public function changePassword(Request $request): RedirectResponse
+    {
+        $user = Auth::user();
+
+        // Check if user can change their password
+        if (Gate::denies('change-password', $user)) {
+            return back()->withErrors([
+                'password' => 'Anda tidak memiliki akses untuk mengubah password.',
+            ]);
+        }
+
+        $request->validate([
+            'current_password' => ['required', 'string'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ], [
+            'current_password.required' => 'Password saat ini wajib diisi.',
+            'password.required' => 'Password baru wajib diisi.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+        ]);
+
+        // Verify current password
+        if (! Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors([
+                'current_password' => 'Password saat ini tidak benar.',
+            ]);
+        }
+
+        // Update password
+        $user->update([
+            'password' => Hash::make($request->password),
+            'password_changed_at' => now(),
+        ]);
+
+        // Log password change
+        $this->logUserActivity($user, 'password_change', $request);
+
+        return back()->with('success', 'Password berhasil diubah.');
     }
 
     /**
@@ -397,114 +508,5 @@ class AuthController extends Controller
                 'user_agent' => $request->userAgent(),
             ]);
         }
-    }
-
-    /**
-     * Get user profile for authenticated user.
-     */
-    public function profile(): View
-    {
-        $user = Auth::user();
-
-        // Check if user can view their own profile
-        if (Gate::denies('view-profile', $user)) {
-            abort(403, 'Anda tidak memiliki akses untuk melihat profil.');
-        }
-
-        return view('auth.profile', compact('user'));
-    }
-
-    /**
-     * Update user profile.
-     */
-    public function updateProfile(Request $request): RedirectResponse
-    {
-        $user = Auth::user();
-
-        // Check if user can update their own profile
-        if (Gate::denies('update-profile', $user)) {
-            return back()->withErrors([
-                'profile' => 'Anda tidak memiliki akses untuk mengubah profil.',
-            ]);
-        }
-
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
-            'phone' => ['required', 'string', 'regex:/^08[0-9]{8,11}$/', 'unique:users,phone,'.$user->id],
-            'current_password' => ['nullable', 'string'],
-            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
-        ], [
-            'name.required' => 'Nama lengkap wajib diisi.',
-            'name.regex' => 'Nama hanya boleh berisi huruf dan spasi.',
-            'phone.required' => 'Nomor telepon wajib diisi.',
-            'phone.regex' => 'Format nomor telepon tidak valid.',
-            'phone.unique' => 'Nomor telepon sudah digunakan.',
-            'current_password.required_with' => 'Password saat ini diperlukan untuk mengubah password.',
-            'password.confirmed' => 'Konfirmasi password tidak cocok.',
-        ]);
-
-        // If changing password, verify current password
-        if ($request->filled('password')) {
-            if (! $request->filled('current_password') ||
-                ! Hash::check($request->current_password, $user->password)) {
-                return back()->withErrors([
-                    'current_password' => 'Password saat ini tidak benar.',
-                ]);
-            }
-
-            $validated['password'] = Hash::make($validated['password']);
-            $validated['password_changed_at'] = now();
-        } else {
-            unset($validated['password'], $validated['current_password']);
-        }
-
-        $user->update($validated);
-
-        // Log profile update
-        $this->logUserActivity($user, 'profile_update', $request);
-
-        return back()->with('success', 'Profil berhasil diperbarui.');
-    }
-
-    /**
-     * Change user password.
-     */
-    public function changePassword(Request $request): RedirectResponse
-    {
-        $user = Auth::user();
-
-        // Check if user can change their password
-        if (Gate::denies('change-password', $user)) {
-            return back()->withErrors([
-                'password' => 'Anda tidak memiliki akses untuk mengubah password.',
-            ]);
-        }
-
-        $request->validate([
-            'current_password' => ['required', 'string'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ], [
-            'current_password.required' => 'Password saat ini wajib diisi.',
-            'password.required' => 'Password baru wajib diisi.',
-            'password.confirmed' => 'Konfirmasi password tidak cocok.',
-        ]);
-
-        // Verify current password
-        if (! Hash::check($request->current_password, $user->password)) {
-            return back()->withErrors([
-                'current_password' => 'Password saat ini tidak benar.',
-            ]);
-        }
-
-        // Update password
-        $user->update([
-            'password' => Hash::make($request->password),
-            'password_changed_at' => now(),
-        ]);
-
-        // Log password change
-        $this->logUserActivity($user, 'password_change', $request);
-
-        return back()->with('success', 'Password berhasil diubah.');
     }
 }

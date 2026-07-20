@@ -39,7 +39,7 @@ class BannerController extends Controller
             $imagePath = $request->file('image')->store('banners', 'public');
         }
 
-        $order = $request->order ?? (Banner::max('display_order') + 1);
+        $order = $request->order ?? Banner::max('display_order') + 1;
 
         Banner::create([
             'title' => $request->title,

@@ -82,7 +82,7 @@ class LetterTemplateController extends Controller
         try {
             // Handle Word template upload
             if ($request->template_type === 'word' && $request->hasFile('template_file')) {
-                $wordService = new WordTemplateService;
+                $wordService = new WordTemplateService();
                 $templateInfo = $wordService->uploadTemplate($request->file('template_file'));
 
                 $data['template_file'] = $templateInfo['path'];
@@ -162,7 +162,7 @@ class LetterTemplateController extends Controller
         try {
             // Handle Word template upload (if changing to Word or updating Word template)
             if ($request->template_type === 'word' && $request->hasFile('template_file')) {
-                $wordService = new WordTemplateService;
+                $wordService = new WordTemplateService();
 
                 // Delete old template file
                 if ($letterTemplate->template_file) {
@@ -361,7 +361,7 @@ class LetterTemplateController extends Controller
         }
 
         try {
-            $wordService = new WordTemplateService;
+            $wordService = new WordTemplateService();
 
             // Generate sample data for preview
             $sampleData = [
@@ -379,7 +379,6 @@ class LetterTemplateController extends Controller
 
             return response()->download(storage_path('app/public/'.$previewPath))
                 ->deleteFileAfterSend(true);
-
         } catch (Exception $e) {
             return back()->with('error', 'Gagal membuat preview: '.$e->getMessage());
         }
@@ -413,7 +412,7 @@ class LetterTemplateController extends Controller
         ]);
 
         try {
-            $wordService = new WordTemplateService;
+            $wordService = new WordTemplateService();
             $bookmarks = $wordService->extractBookmarks($request->file('template_file'));
 
             return response()->json([

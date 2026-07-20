@@ -215,167 +215,166 @@ Route::prefix('api')->group(function () {
 Route::prefix('admin')
     ->name('backend.')
     ->middleware(['auth', 'gate:access-admin-panel'])->group(function () {
+        // Dashboard
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+        Route::get('/system-info', [DashboardController::class, 'getSystemInfo'])->name('dashboard.system-info')->middleware('gate:view-system-info');
 
-    // Dashboard
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
-    Route::get('/system-info', [DashboardController::class, 'getSystemInfo'])->name('dashboard.system-info')->middleware('gate:view-system-info');
+        // Permission Management
+        Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index')->middleware('gate:manage-permissions');
+        Route::post('/permissions/role', [PermissionController::class, 'updateRolePermissions'])->name('permissions.update-role')->middleware('gate:manage-permissions');
+        Route::post('/permissions/user', [PermissionController::class, 'updateUserPermissions'])->name('permissions.update-user')->middleware('gate:manage-permissions');
+        Route::get('/permissions/test', [PermissionController::class, 'testPermissions'])->name('permissions.test');
 
-    // Permission Management
-    Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index')->middleware('gate:manage-permissions');
-    Route::post('/permissions/role', [PermissionController::class, 'updateRolePermissions'])->name('permissions.update-role')->middleware('gate:manage-permissions');
-    Route::post('/permissions/user', [PermissionController::class, 'updateUserPermissions'])->name('permissions.update-user')->middleware('gate:manage-permissions');
-    Route::get('/permissions/test', [PermissionController::class, 'testPermissions'])->name('permissions.test');
+        // Legacy Permissions Test Route
+        Route::get('/test-permissions', [PermissionsTestController::class, 'testPermissions'])->name('test-permissions');
 
-    // Legacy Permissions Test Route
-    Route::get('/test-permissions', [PermissionsTestController::class, 'testPermissions'])->name('test-permissions');
+        // User Management (New Admin System)
+        Route::resource('users', AdminUserController::class)->middleware('gate:manage-users');
+        Route::patch('users/{user}/status', [AdminUserController::class, 'updateStatus'])->name('users.update-status');
+        Route::post('users/bulk-action', [AdminUserController::class, 'bulkAction'])->name('users.bulk-action');
+        Route::get('users-export', [AdminUserController::class, 'export'])->name('users.export');
+        Route::get('role-permissions', [AdminUserController::class, 'getRolePermissions'])->name('users.role-permissions');
 
-    // User Management (New Admin System)
-    Route::resource('users', AdminUserController::class)->middleware('gate:manage-users');
-    Route::patch('users/{user}/status', [AdminUserController::class, 'updateStatus'])->name('users.update-status');
-    Route::post('users/bulk-action', [AdminUserController::class, 'bulkAction'])->name('users.bulk-action');
-    Route::get('users-export', [AdminUserController::class, 'export'])->name('users.export');
-    Route::get('role-permissions', [AdminUserController::class, 'getRolePermissions'])->name('users.role-permissions');
+        // Legacy User Management (Keep for compatibility)
+        Route::post('users/{user}/toggle-status', [BackendUserController::class, 'toggleStatus'])->name('users.toggle-status-legacy');
+        Route::delete('users/{user}/force-delete', [BackendUserController::class, 'forceDelete'])->name('users.force-delete');
 
-    // Legacy User Management (Keep for compatibility)
-    Route::post('users/{user}/toggle-status', [BackendUserController::class, 'toggleStatus'])->name('users.toggle-status-legacy');
-    Route::delete('users/{user}/force-delete', [BackendUserController::class, 'forceDelete'])->name('users.force-delete');
+        // Population Data Management
+        Route::resource('population', PopulationController::class)->middleware('gate:manage-population-data');
+        Route::get('population/statistics', [PopulationController::class, 'statistics'])->name('population.statistics');
+        Route::get('population/import/template', [PopulationController::class, 'downloadTemplate'])->name('population.template');
+        Route::post('population/import', [PopulationController::class, 'import'])->name('population.import')->middleware('throttle:uploads');
+        Route::get('population/export', [PopulationController::class, 'export'])->name('population.export');
+        Route::post('population/bulk-delete', [PopulationController::class, 'bulkDelete'])->name('population.bulk-delete');
 
-    // Population Data Management
-    Route::resource('population', PopulationController::class)->middleware('gate:manage-population-data');
-    Route::get('population/statistics', [PopulationController::class, 'statistics'])->name('population.statistics');
-    Route::get('population/import/template', [PopulationController::class, 'downloadTemplate'])->name('population.template');
-    Route::post('population/import', [PopulationController::class, 'import'])->name('population.import')->middleware('throttle:uploads');
-    Route::get('population/export', [PopulationController::class, 'export'])->name('population.export');
-    Route::post('population/bulk-delete', [PopulationController::class, 'bulkDelete'])->name('population.bulk-delete');
+        // Settlement Management
+        Route::resource('settlements', SettlementController::class);
+        Route::post('settlements/{settlement}/toggle-status', [SettlementController::class, 'toggleStatus'])->name('settlements.toggle-status');
 
-    // Settlement Management
-    Route::resource('settlements', SettlementController::class);
-    Route::post('settlements/{settlement}/toggle-status', [SettlementController::class, 'toggleStatus'])->name('settlements.toggle-status');
+        // Location Management
+        Route::resource('locations', LocationController::class)->middleware('gate:manage-locations');
+        Route::post('locations/{location}/toggle-status', [LocationController::class, 'toggleStatus'])->name('locations.toggle-status');
+        Route::get('locations/export', [LocationController::class, 'export'])->name('locations.export');
 
-    // Location Management
-    Route::resource('locations', LocationController::class)->middleware('gate:manage-locations');
-    Route::post('locations/{location}/toggle-status', [LocationController::class, 'toggleStatus'])->name('locations.toggle-status');
-    Route::get('locations/export', [LocationController::class, 'export'])->name('locations.export');
+        // News Management (New Admin System)
+        Route::resource('news', AdminNewsController::class)->middleware('gate:manage-content');
+        Route::patch('news/{news}/status', [AdminNewsController::class, 'updateStatus'])->name('news.update-status');
+        Route::post('news/bulk-action', [AdminNewsController::class, 'bulkAction'])->name('news.bulk-action');
+        Route::get('news-export', [AdminNewsController::class, 'export'])->name('news.export');
 
-    // News Management (New Admin System)
-    Route::resource('news', AdminNewsController::class)->middleware('gate:manage-content');
-    Route::patch('news/{news}/status', [AdminNewsController::class, 'updateStatus'])->name('news.update-status');
-    Route::post('news/bulk-action', [AdminNewsController::class, 'bulkAction'])->name('news.bulk-action');
-    Route::get('news-export', [AdminNewsController::class, 'export'])->name('news.export');
+        // Legacy News Management (Keep for compatibility)
+        Route::post('news/{news}/toggle-status', [BackendNewsController::class, 'toggleStatus'])->name('news.toggle-status-legacy');
+        Route::post('news/{news}/feature', [BackendNewsController::class, 'toggleFeatured'])->name('news.toggle-featured');
 
-    // Legacy News Management (Keep for compatibility)
-    Route::post('news/{news}/toggle-status', [BackendNewsController::class, 'toggleStatus'])->name('news.toggle-status-legacy');
-    Route::post('news/{news}/feature', [BackendNewsController::class, 'toggleFeatured'])->name('news.toggle-featured');
+        // Announcements Management
+        Route::resource('announcements', AnnouncementController::class);
+        Route::post('announcements/{announcement}/toggle-status', [AnnouncementController::class, 'toggleStatus'])->name('announcements.toggle-status');
+        Route::post('announcements/bulk-action', [AnnouncementController::class, 'bulkAction'])->name('announcements.bulk-action');
+        Route::get('announcements/active', [AnnouncementController::class, 'getActiveAnnouncements'])->name('announcements.active');
 
-    // Announcements Management
-    Route::resource('announcements', AnnouncementController::class);
-    Route::post('announcements/{announcement}/toggle-status', [AnnouncementController::class, 'toggleStatus'])->name('announcements.toggle-status');
-    Route::post('announcements/bulk-action', [AnnouncementController::class, 'bulkAction'])->name('announcements.bulk-action');
-    Route::get('announcements/active', [AnnouncementController::class, 'getActiveAnnouncements'])->name('announcements.active');
+        // UMKM Management
+        Route::resource('umkm', BackendUmkmController::class);
+        Route::post('umkm/{umkm}/toggle-status', [BackendUmkmController::class, 'toggleStatus'])->name('umkm.toggle-status');
+        Route::post('umkm/{umkm}/verify', [BackendUmkmController::class, 'verify'])->name('umkm.verify');
 
-    // UMKM Management
-    Route::resource('umkm', BackendUmkmController::class);
-    Route::post('umkm/{umkm}/toggle-status', [BackendUmkmController::class, 'toggleStatus'])->name('umkm.toggle-status');
-    Route::post('umkm/{umkm}/verify', [BackendUmkmController::class, 'verify'])->name('umkm.verify');
+        // Gallery Management
+        Route::resource('gallery', App\Http\Controllers\Backend\GalleryController::class);
+        Route::post('gallery/{gallery}/toggle-status', [App\Http\Controllers\Backend\GalleryController::class, 'toggleStatus'])->name('gallery.toggle-status');
+        Route::post('gallery/bulk-delete', [App\Http\Controllers\Backend\GalleryController::class, 'bulkDelete'])->name('gallery.bulk-delete');
 
-    // Gallery Management
-    Route::resource('gallery', App\Http\Controllers\Backend\GalleryController::class);
-    Route::post('gallery/{gallery}/toggle-status', [App\Http\Controllers\Backend\GalleryController::class, 'toggleStatus'])->name('gallery.toggle-status');
-    Route::post('gallery/bulk-delete', [App\Http\Controllers\Backend\GalleryController::class, 'bulkDelete'])->name('gallery.bulk-delete');
+        // Agenda Management
+        Route::resource('agenda', App\Http\Controllers\Backend\AgendaController::class);
+        Route::post('agenda/{agenda}/toggle-status', [App\Http\Controllers\Backend\AgendaController::class, 'toggleStatus'])->name('agenda.toggle-status');
+        Route::get('agenda/export', [App\Http\Controllers\Backend\AgendaController::class, 'export'])->name('agenda.export');
 
-    // Agenda Management
-    Route::resource('agenda', App\Http\Controllers\Backend\AgendaController::class);
-    Route::post('agenda/{agenda}/toggle-status', [App\Http\Controllers\Backend\AgendaController::class, 'toggleStatus'])->name('agenda.toggle-status');
-    Route::get('agenda/export', [App\Http\Controllers\Backend\AgendaController::class, 'export'])->name('agenda.export');
+        // Budget Management
+        Route::resource('budget', BudgetController::class)->middleware('gate:manage-village-budget');
+        Route::get('budget/transactions/{budget}', [BudgetController::class, 'transactions'])->name('budget.transactions');
+        Route::post('budget/{budget}/add-transaction', [BudgetController::class, 'addTransaction'])->name('budget.add-transaction');
+        Route::delete('budget/transactions/{transaction}', [BudgetController::class, 'deleteTransaction'])->name('budget.delete-transaction');
+        Route::get('budget/reports/summary', [BudgetController::class, 'reportSummary'])->name('budget.report-summary');
+        Route::get('budget/export/{budget}', [BudgetController::class, 'export'])->name('budget.export');
 
-    // Budget Management
-    Route::resource('budget', BudgetController::class)->middleware('gate:manage-village-budget');
-    Route::get('budget/transactions/{budget}', [BudgetController::class, 'transactions'])->name('budget.transactions');
-    Route::post('budget/{budget}/add-transaction', [BudgetController::class, 'addTransaction'])->name('budget.add-transaction');
-    Route::delete('budget/transactions/{transaction}', [BudgetController::class, 'deleteTransaction'])->name('budget.delete-transaction');
-    Route::get('budget/reports/summary', [BudgetController::class, 'reportSummary'])->name('budget.report-summary');
-    Route::get('budget/export/{budget}', [BudgetController::class, 'export'])->name('budget.export');
+        // Letter Request Management
+        Route::get('letter-requests', [App\Http\Controllers\Backend\ServiceController::class, 'letterRequests'])->name('letter-requests.index');
+        Route::get('letter-requests/{letterRequest}', [App\Http\Controllers\Backend\ServiceController::class, 'showLetterRequest'])->name('letter-requests.show');
+        Route::post('letter-requests/{letterRequest}/process', [App\Http\Controllers\Backend\ServiceController::class, 'processLetterRequest'])->name('letter-requests.process');
+        Route::post('letter-requests/{letterRequest}/complete', [App\Http\Controllers\Backend\ServiceController::class, 'completeLetterRequest'])->name('letter-requests.complete');
+        Route::post('letter-requests/{letterRequest}/reject', [App\Http\Controllers\Backend\ServiceController::class, 'rejectLetterRequest'])->name('letter-requests.reject');
 
-    // Letter Request Management
-    Route::get('letter-requests', [App\Http\Controllers\Backend\ServiceController::class, 'letterRequests'])->name('letter-requests.index');
-    Route::get('letter-requests/{letterRequest}', [App\Http\Controllers\Backend\ServiceController::class, 'showLetterRequest'])->name('letter-requests.show');
-    Route::post('letter-requests/{letterRequest}/process', [App\Http\Controllers\Backend\ServiceController::class, 'processLetterRequest'])->name('letter-requests.process');
-    Route::post('letter-requests/{letterRequest}/complete', [App\Http\Controllers\Backend\ServiceController::class, 'completeLetterRequest'])->name('letter-requests.complete');
-    Route::post('letter-requests/{letterRequest}/reject', [App\Http\Controllers\Backend\ServiceController::class, 'rejectLetterRequest'])->name('letter-requests.reject');
+        // Letter Template Management
+        Route::resource('letter-templates', LetterTemplateController::class);
+        Route::post('letter-templates/{letterTemplate}/duplicate', [LetterTemplateController::class, 'duplicate'])->name('letter-templates.duplicate');
+        Route::post('letter-templates/{letterTemplate}/toggle-status', [LetterTemplateController::class, 'toggleStatus'])->name('letter-templates.toggle-status');
+        Route::get('letter-templates/{letterTemplate}/preview', [LetterTemplateController::class, 'preview'])->name('letter-templates.preview');
+        Route::post('letter-templates/{letterTemplate}/preview', [LetterTemplateController::class, 'downloadPDF'])->name('letter-templates.download-pdf');
 
-    // Letter Template Management
-    Route::resource('letter-templates', LetterTemplateController::class);
-    Route::post('letter-templates/{letterTemplate}/duplicate', [LetterTemplateController::class, 'duplicate'])->name('letter-templates.duplicate');
-    Route::post('letter-templates/{letterTemplate}/toggle-status', [LetterTemplateController::class, 'toggleStatus'])->name('letter-templates.toggle-status');
-    Route::get('letter-templates/{letterTemplate}/preview', [LetterTemplateController::class, 'preview'])->name('letter-templates.preview');
-    Route::post('letter-templates/{letterTemplate}/preview', [LetterTemplateController::class, 'downloadPDF'])->name('letter-templates.download-pdf');
+        // Word Template specific routes
+        Route::get('letter-templates/{letterTemplate}/bookmarks', [LetterTemplateController::class, 'getBookmarks'])->name('letter-templates.bookmarks');
+        Route::get('letter-templates/{letterTemplate}/preview-word', [LetterTemplateController::class, 'previewWord'])->name('letter-templates.preview-word');
+        Route::get('letter-templates/{letterTemplate}/download', [LetterTemplateController::class, 'downloadTemplate'])->name('letter-templates.download');
+        Route::post('letter-templates/extract-bookmarks', [LetterTemplateController::class, 'extractBookmarks'])->name('letter-templates.extract-bookmarks');
 
-    // Word Template specific routes
-    Route::get('letter-templates/{letterTemplate}/bookmarks', [LetterTemplateController::class, 'getBookmarks'])->name('letter-templates.bookmarks');
-    Route::get('letter-templates/{letterTemplate}/preview-word', [LetterTemplateController::class, 'previewWord'])->name('letter-templates.preview-word');
-    Route::get('letter-templates/{letterTemplate}/download', [LetterTemplateController::class, 'downloadTemplate'])->name('letter-templates.download');
-    Route::post('letter-templates/extract-bookmarks', [LetterTemplateController::class, 'extractBookmarks'])->name('letter-templates.extract-bookmarks');
+        // Contact Message Management
+        Route::resource('contact', ContactController::class)->only(['index', 'show', 'destroy'])->middleware('gate:manage-contact-messages');
+        Route::get('contact/{contact}/reply', [ContactController::class, 'reply'])->name('contact.reply');
+        Route::post('contact/{contact}/reply', [ContactController::class, 'storeReply'])->name('contact.store-reply');
+        Route::patch('contact/{contact}/status', [ContactController::class, 'updateStatus'])->name('contact.update-status');
+        Route::post('contact/bulk-action', [ContactController::class, 'bulkAction'])->name('contact.bulk-action');
+        Route::get('contact-stats', [ContactController::class, 'getStats'])->name('contact.stats');
 
-    // Contact Message Management
-    Route::resource('contact', ContactController::class)->only(['index', 'show', 'destroy'])->middleware('gate:manage-contact-messages');
-    Route::get('contact/{contact}/reply', [ContactController::class, 'reply'])->name('contact.reply');
-    Route::post('contact/{contact}/reply', [ContactController::class, 'storeReply'])->name('contact.store-reply');
-    Route::patch('contact/{contact}/status', [ContactController::class, 'updateStatus'])->name('contact.update-status');
-    Route::post('contact/bulk-action', [ContactController::class, 'bulkAction'])->name('contact.bulk-action');
-    Route::get('contact-stats', [ContactController::class, 'getStats'])->name('contact.stats');
+        // Tourism Management
+        Route::resource('tourism', TourismController::class);
+        Route::post('tourism/{tourism}/toggle-status', [TourismController::class, 'toggleStatus'])->name('tourism.toggle-status');
 
-    // Tourism Management
-    Route::resource('tourism', TourismController::class);
-    Route::post('tourism/{tourism}/toggle-status', [TourismController::class, 'toggleStatus'])->name('tourism.toggle-status');
+        // Banner Management
+        Route::resource('banners', BannerController::class);
+        Route::post('banners/{banner}/toggle-status', [BannerController::class, 'toggleStatus'])->name('banners.toggle-status');
+        Route::post('banners/reorder', [BannerController::class, 'reorder'])->name('banners.reorder');
 
-    // Banner Management
-    Route::resource('banners', BannerController::class);
-    Route::post('banners/{banner}/toggle-status', [BannerController::class, 'toggleStatus'])->name('banners.toggle-status');
-    Route::post('banners/reorder', [BannerController::class, 'reorder'])->name('banners.reorder');
+        // Village Profile Management
+        Route::get('village-profile', [VillageController::class, 'profile'])->name('village.profile');
+        Route::put('village-profile', [VillageController::class, 'updateProfile'])->name('village.update-profile');
+        Route::get('village-officials', [VillageController::class, 'officials'])->name('village.officials');
+        Route::post('village-officials', [VillageController::class, 'storeOfficial'])->name('village.store-official');
+        Route::put('village-officials/{official}', [VillageController::class, 'updateOfficial'])->name('village.update-official');
+        Route::delete('village-officials/{official}', [VillageController::class, 'deleteOfficial'])->name('village.delete-official');
 
-    // Village Profile Management
-    Route::get('village-profile', [VillageController::class, 'profile'])->name('village.profile');
-    Route::put('village-profile', [VillageController::class, 'updateProfile'])->name('village.update-profile');
-    Route::get('village-officials', [VillageController::class, 'officials'])->name('village.officials');
-    Route::post('village-officials', [VillageController::class, 'storeOfficial'])->name('village.store-official');
-    Route::put('village-officials/{official}', [VillageController::class, 'updateOfficial'])->name('village.update-official');
-    Route::delete('village-officials/{official}', [VillageController::class, 'deleteOfficial'])->name('village.delete-official');
+        // Statistics & Reports
+        Route::get('statistics', [DashboardController::class, 'statistics'])->name('statistics')->middleware('gate:generate-reports');
+        Route::get('reports', [DashboardController::class, 'reports'])->name('reports')->middleware('gate:generate-reports');
+        Route::get('reports/export', [DashboardController::class, 'exportReports'])->name('reports.export')->middleware('gate:export-data');
 
-    // Statistics & Reports
-    Route::get('statistics', [DashboardController::class, 'statistics'])->name('statistics')->middleware('gate:generate-reports');
-    Route::get('reports', [DashboardController::class, 'reports'])->name('reports')->middleware('gate:generate-reports');
-    Route::get('reports/export', [DashboardController::class, 'exportReports'])->name('reports.export')->middleware('gate:export-data');
+        // Settings Management (New Admin System)
+        Route::get('settings', [SettingsController::class, 'index'])->name('settings.index')->middleware('gate:manage-settings');
+        Route::put('settings', [SettingsController::class, 'update'])->name('settings.update')->middleware('gate:manage-settings');
+        Route::post('settings/test-email', [SettingsController::class, 'testEmail'])->name('settings.test-email')->middleware('gate:manage-settings');
 
-    // Settings Management (New Admin System)
-    Route::get('settings', [SettingsController::class, 'index'])->name('settings.index')->middleware('gate:manage-settings');
-    Route::put('settings', [SettingsController::class, 'update'])->name('settings.update')->middleware('gate:manage-settings');
-    Route::post('settings/test-email', [SettingsController::class, 'testEmail'])->name('settings.test-email')->middleware('gate:manage-settings');
+        // Legacy Settings (Keep for compatibility)
+        Route::get('legacy-settings', [SettingController::class, 'index'])->name('legacy-settings.index');
+        Route::put('legacy-settings', [SettingController::class, 'update'])->name('legacy-settings.update');
 
-    // Legacy Settings (Keep for compatibility)
-    Route::get('legacy-settings', [SettingController::class, 'index'])->name('legacy-settings.index');
-    Route::put('legacy-settings', [SettingController::class, 'update'])->name('legacy-settings.update');
+        // File Management
+        Route::post('upload-image', [FileController::class, 'uploadImage'])->name('upload.image')->middleware('throttle:uploads');
+        Route::post('upload-document', [FileController::class, 'uploadDocument'])->name('upload.document')->middleware('throttle:uploads');
+        Route::delete('delete-file/{path}', [FileController::class, 'deleteFile'])->name('delete.file');
 
-    // File Management
-    Route::post('upload-image', [FileController::class, 'uploadImage'])->name('upload.image')->middleware('throttle:uploads');
-    Route::post('upload-document', [FileController::class, 'uploadDocument'])->name('upload.document')->middleware('throttle:uploads');
-    Route::delete('delete-file/{path}', [FileController::class, 'deleteFile'])->name('delete.file');
+        // Backup Management (New Admin System)
+        Route::get('backup', [BackupController::class, 'index'])->name('backup.index')->middleware('gate:manage-system-backup');
+        Route::post('backup/create', [BackupController::class, 'createBackup'])->name('backup.create')->middleware(['gate:manage-system-backup', 'throttle:uploads']);
+        Route::post('backup/restore', [BackupController::class, 'restoreBackup'])->name('backup.restore')->middleware(['gate:manage-system-backup', 'throttle:uploads']);
+        Route::post('backup/preview', [BackupController::class, 'getBackupPreview'])->name('backup.preview')->middleware('throttle:api');
+        Route::get('backup/statistics', [BackupController::class, 'getStatistics'])->name('backup.statistics');
+        Route::get('backup/{filename}/download', [BackupController::class, 'downloadBackup'])->name('backup.download');
+        Route::delete('backup/{filename}', [BackupController::class, 'deleteBackup'])->name('backup.delete');
 
-    // Backup Management (New Admin System)
-    Route::get('backup', [BackupController::class, 'index'])->name('backup.index')->middleware('gate:manage-system-backup');
-    Route::post('backup/create', [BackupController::class, 'createBackup'])->name('backup.create')->middleware(['gate:manage-system-backup', 'throttle:uploads']);
-    Route::post('backup/restore', [BackupController::class, 'restoreBackup'])->name('backup.restore')->middleware(['gate:manage-system-backup', 'throttle:uploads']);
-    Route::post('backup/preview', [BackupController::class, 'getBackupPreview'])->name('backup.preview')->middleware('throttle:api');
-    Route::get('backup/statistics', [BackupController::class, 'getStatistics'])->name('backup.statistics');
-    Route::get('backup/{filename}/download', [BackupController::class, 'downloadBackup'])->name('backup.download');
-    Route::delete('backup/{filename}', [BackupController::class, 'deleteBackup'])->name('backup.delete');
+        // Activity Logs
+        Route::get('activity-logs', [DashboardController::class, 'activityLogs'])->name('activity-logs')->middleware('gate:view-activity-logs');
+        Route::get('logs', [DashboardController::class, 'logs'])->name('logs')->middleware('gate:view-logs');
+        Route::post('logs/clear', [DashboardController::class, 'clearLogs'])->name('logs.clear')->middleware('gate:clear-logs');
 
-    // Activity Logs
-    Route::get('activity-logs', [DashboardController::class, 'activityLogs'])->name('activity-logs')->middleware('gate:view-activity-logs');
-    Route::get('logs', [DashboardController::class, 'logs'])->name('logs')->middleware('gate:view-logs');
-    Route::post('logs/clear', [DashboardController::class, 'clearLogs'])->name('logs.clear')->middleware('gate:clear-logs');
-
-    // Legacy Backup & Maintenance (Keep for compatibility)
-    Route::get('legacy-backup', [MaintenanceController::class, 'backup'])->name('legacy-backup.index');
-    Route::post('legacy-backup/create', [MaintenanceController::class, 'createBackup'])->name('legacy-backup.create');
-});
+        // Legacy Backup & Maintenance 
+        Route::get('legacy-backup', [MaintenanceController::class, 'backup'])->name('legacy-backup.index');
+        Route::post('legacy-backup/create', [MaintenanceController::class, 'createBackup'])->name('legacy-backup.create');
+    });

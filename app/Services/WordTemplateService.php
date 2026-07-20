@@ -132,7 +132,6 @@ class WordTemplateService
             $template->update(['last_used_at' => now()]);
 
             return $outputPath;
-
         } catch (Exception $e) {
             throw new Exception('Error generating document: '.$e->getMessage());
         }
@@ -160,7 +159,6 @@ class WordTemplateService
             $pdfWriter->save($pdfPath);
 
             return $pdfPath;
-
         } catch (Exception $e) {
             throw new Exception('Error converting to PDF: '.$e->getMessage());
         }

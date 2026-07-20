@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Http\View\Composers\SidebarComposer;
 use App\Listeners\LogFailedLogin;
 use App\Listeners\LogSuccessfulLogin;
+use App\Models\VillageProfile;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -13,7 +14,6 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-use App\Models\VillageProfile;
 
 class AppServiceProvider extends ServiceProvider
 {

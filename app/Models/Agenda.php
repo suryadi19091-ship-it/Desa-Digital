@@ -12,14 +12,6 @@ class Agenda extends Model
 {
     use HasFactory, LogsActivity;
 
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->logFillable()
-            ->logOnlyDirty()
-            ->dontSubmitEmptyLogs();
-    }
-
     protected $fillable = [
         'title',
         'description',
@@ -48,6 +40,14 @@ class Agenda extends Model
         'current_participants' => 'integer',
         'created_by' => 'integer',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     // Scopes
     public function scopePublished($query)

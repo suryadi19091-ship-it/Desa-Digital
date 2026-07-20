@@ -25,7 +25,7 @@
         <div class="row">
             <!-- Profile Card -->
             <div class="col-md-3">
-                <div class="card card-primary card-outline">
+                <div class="card card-primary card-outline" style="border-radius: 16px; overflow: hidden;">
                     <div class="card-body box-profile">
                         <div class="text-center">
                             <div class="profile-user-img-container mb-3">
@@ -40,7 +40,7 @@
                             </p>
                         </div>
 
-                        <ul class="list-group list-group-unbordered mb-3">
+                        <ul class="list-group list-group-unbordered mb-3" style="border-radius: 12px; overflow: hidden;">
                             <li class="list-group-item">
                                 <b>Jenis Kelamin</b>
                                 <span class="float-right">
@@ -102,7 +102,7 @@
 
             <!-- Details Card -->
             <div class="col-md-9">
-                <div class="card">
+                <div class="card" style="border-radius: 16px; overflow: hidden;">
                     <div class="card-header p-2">
                         <ul class="nav nav-pills">
                             <li class="nav-item">
@@ -402,10 +402,58 @@
     
     .form-control-static {
         min-height: 38px;
-        padding: 8px 12px;
+        padding: 10px 16px;
         margin-bottom: 0;
         font-size: 14px;
         line-height: 1.42857143;
+        border-radius: 8px;
+    }
+
+    /* Rounded list-group items */
+    .list-group-unbordered .list-group-item:first-child {
+        border-radius: 12px 12px 0 0;
+    }
+    .list-group-unbordered .list-group-item:last-child {
+        border-radius: 0 0 12px 12px;
+    }
+    .list-group-unbordered .list-group-item:only-child {
+        border-radius: 12px;
+    }
+
+    /* Padding lebih pada list-group-item agar teks tidak terlalu pojok */
+    .list-group-unbordered .list-group-item {
+        padding: 14px 20px;
+    }
+
+    /* Padding lebih pada card-body profil */
+    .card-body.box-profile {
+        padding: 24px 20px;
+    }
+
+    /* Padding lebih pada card-header tab */
+    .card-header.p-2 {
+        padding: 12px 20px !important;
+    }
+
+    /* Padding lebih pada card-body utama */
+    .card-body {
+        padding: 20px 24px;
+    }
+
+    /* Padding form-group agar lebih lapang */
+    .tab-content .form-group {
+        margin-bottom: 20px;
+    }
+
+    /* Rounded cards */
+    .card.card-primary.card-outline {
+        border-radius: 16px !important;
+        overflow: hidden;
+    }
+    /* Nav pills rounded */
+    .nav-pills .nav-link {
+        border-radius: 20px;
+        padding: 8px 18px;
     }
     
     .profile-user-img {

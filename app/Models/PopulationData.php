@@ -12,8 +12,6 @@ class PopulationData extends Model
 {
     use HasFactory, LogsActivity;
 
-
-
     protected $table = 'population_data';
 
     protected $fillable = [

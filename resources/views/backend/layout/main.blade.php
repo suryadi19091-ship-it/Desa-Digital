@@ -171,15 +171,73 @@
         body.dark-mode .card-text {
             color: var(--dm-text) !important;
         }
-        body.dark-mode .card-body p,
-        body.dark-mode .card-body span,
-        body.dark-mode .card-body small {
+        /* Batasi rule muted hanya ke p/span/small yang BUKAN di dalam form-group atau tab-content */
+        body.dark-mode .card-body > p,
+        body.dark-mode .card-body > span,
+        body.dark-mode .card-body > small {
             color: var(--dm-muted) !important;
         }
         body.dark-mode .card-body h3,
         body.dark-mode .card-body h4,
         body.dark-mode .card-body h5 {
             color: var(--dm-text) !important;
+        }
+
+        /* --- Semua teks nilai di dalam card (form-group, tab-content) = PUTIH --- */
+        body.dark-mode .card-body .form-group p,
+        body.dark-mode .card-body .form-group span:not(.badge),
+        body.dark-mode .card-body .form-group small:not(.text-muted),
+        body.dark-mode .card-body .tab-content p,
+        body.dark-mode .card-body .tab-content span:not(.badge),
+        body.dark-mode .card-body .form-control-static,
+        body.dark-mode .card-body p.form-control-static {
+            color: #ffffff !important;
+        }
+
+        /* --- Override: semua teks di dalam tabel harus PUTIH --- */
+        body.dark-mode .card-body .table td,
+        body.dark-mode .card-body .table th,
+        body.dark-mode .card-body .table tbody tr td {
+            color: #ffffff !important;
+        }
+        body.dark-mode .card-body .table td strong,
+        body.dark-mode .card-body .table td span,
+        body.dark-mode .card-body .table td small,
+        body.dark-mode .card-body .table td p {
+            color: #ffffff !important;
+        }
+        /* Khusus .text-muted di tabel tetap abu-abu agar informatif */
+        body.dark-mode .card-body .table td .text-muted,
+        body.dark-mode .card-body .table td small.text-muted {
+            color: var(--dm-muted) !important;
+        }
+
+        /* --- Override: list-group di dalam card (sidebar profil) --- */
+        body.dark-mode .list-group-item {
+            background-color: var(--dm-surface2) !important;
+            border-color: var(--dm-border) !important;
+            color: #ffffff !important;
+        }
+        body.dark-mode .list-group-item b,
+        body.dark-mode .list-group-item strong,
+        body.dark-mode .list-group-item span:not(.badge) {
+            color: #ffffff !important;
+        }
+
+        /* --- Override: badge-outline di dark mode --- */
+        body.dark-mode .badge-outline-primary {
+            border-color: #60a5fa !important;
+            color: #60a5fa !important;
+        }
+        body.dark-mode .badge-outline-secondary {
+            border-color: var(--dm-muted) !important;
+            color: var(--dm-muted) !important;
+        }
+
+        /* --- Override: bg-light di dalam card (address box) --- */
+        body.dark-mode .card-body .bg-light {
+            background-color: var(--dm-surface2) !important;
+            color: #ffffff !important;
         }
 
         /* --- Info Boxes --- */
@@ -434,22 +492,22 @@
 
         /* Text colors */
         body.dark-mode .text-gray-900 {
-            color: var(--dm-text) !important;
+            color: #ffffff !important;
         }
         body.dark-mode .text-gray-800 {
-            color: #d1d5db !important;
+            color: #ffffff !important;
         }
         body.dark-mode .text-gray-700 {
-            color: #9ca3af !important;
+            color: #ffffff !important;
         }
         body.dark-mode .text-gray-600 {
-            color: #9ca3af !important;
+            color: #ffffff !important;
         }
         body.dark-mode .text-gray-500 {
-            color: var(--dm-muted) !important;
+            color: #ffffff !important;
         }
         body.dark-mode .text-gray-400 {
-            color: #6b7280 !important;
+            color: #ffffff !important;
         }
 
         /* Borders */

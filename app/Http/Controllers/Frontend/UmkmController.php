@@ -132,21 +132,6 @@ class UmkmController extends Controller
         return redirect()->back()->with('success', 'Review submitted successfully! It will be published after verification.');
     }
 
-    private function updateUmkmRating($umkm)
-    {
-        $reviews = UmkmReview::where('umkm_id', $umkm->id)
-            ->where('is_verified', true)
-            ->get();
-
-        if ($reviews->count() > 0) {
-            $averageRating = $reviews->avg('rating');
-            $umkm->update([
-                'rating' => round($averageRating, 2),
-                'total_reviews' => $reviews->count(),
-            ]);
-        }
-    }
-
     public function verified()
     {
         $verifiedUmkms = Umkm::where('is_active', true)
@@ -257,5 +242,20 @@ class UmkmController extends Controller
             'pagination' => view('frontend.umkm.partials.umkm-pagination', compact('umkms'))->render(),
             'stats' => view('frontend.umkm.partials.umkm-stats', compact('categoryStats'))->render(),
         ]);
+    }
+
+    private function updateUmkmRating($umkm)
+    {
+        $reviews = UmkmReview::where('umkm_id', $umkm->id)
+            ->where('is_verified', true)
+            ->get();
+
+        if ($reviews->count() > 0) {
+            $averageRating = $reviews->avg('rating');
+            $umkm->update([
+                'rating' => round($averageRating, 2),
+                'total_reviews' => $reviews->count(),
+            ]);
+        }
     }
 }

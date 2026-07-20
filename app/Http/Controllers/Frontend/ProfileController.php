@@ -186,7 +186,6 @@ class ProfileController extends Controller
 
             return redirect()->route('contact')
                 ->with('success', 'Pesan Anda berhasil dikirim dan akan segera ditindaklanjuti. Terima kasih!');
-
         } catch (\Exception $e) {
             return redirect()->route('contact')
                 ->with('error', 'Terjadi kesalahan saat mengirim pesan. Silakan coba lagi.')

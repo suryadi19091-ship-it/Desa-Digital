@@ -101,7 +101,7 @@ class VillageController extends Controller
             $photoPath = $request->file('photo')->store('officials', 'public');
         }
 
-        $order = $request->order ?? (VillageOfficial::max('order') + 1);
+        $order = $request->order ?? VillageOfficial::max('order') + 1;
 
         VillageOfficial::create([
             'name' => $request->name,

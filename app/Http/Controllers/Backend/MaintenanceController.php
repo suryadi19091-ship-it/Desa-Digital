@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
 class MaintenanceController extends Controller
@@ -71,10 +70,79 @@ class MaintenanceController extends Controller
 
             return redirect()->route('backend.legacy-backup.index')
                 ->with('success', "Backup {$type} berhasil dibuat.");
-
         } catch (\Exception $e) {
             return redirect()->route('backend.legacy-backup.index')
                 ->with('error', 'Gagal membuat backup: '.$e->getMessage());
+        }
+    }
+
+    public function downloadBackup($file)
+    {
+        $filepath = storage_path("app/backups/{$file}");
+
+        if (! File::exists($filepath)) {
+            return redirect()->route('backend.legacy-backup.index')
+                ->with('error', 'File backup tidak ditemukan.');
+        }
+
+        return response()->download($filepath);
+    }
+
+    public function deleteBackup($file)
+    {
+        $filepath = storage_path("app/backups/{$file}");
+
+        if (File::exists($filepath)) {
+            File::delete($filepath);
+
+            // Delete associated info file
+            $infoFile = str_replace(['.sql', '.zip'], '.json', $filepath);
+            if (File::exists($infoFile)) {
+                File::delete($infoFile);
+            }
+
+            return redirect()->route('backend.legacy-backup.index')
+                ->with('success', 'Backup berhasil dihapus.');
+        }
+
+        return redirect()->route('backend.legacy-backup.index')
+            ->with('error', 'File backup tidak ditemukan.');
+    }
+
+    public function clearCache()
+    {
+        try {
+            Artisan::call('cache:clear');
+            Artisan::call('config:clear');
+            Artisan::call('view:clear');
+            Artisan::call('route:clear');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Cache berhasil dibersihkan.',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal membersihkan cache: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function optimizeApp()
+    {
+        try {
+            Artisan::call('optimize');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Aplikasi berhasil dioptimasi.',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengoptimasi aplikasi: '.$e->getMessage(),
+            ], 500);
         }
     }
 
@@ -176,76 +244,6 @@ class MaintenanceController extends Controller
             }, $tables);
         } catch (\Exception $e) {
             return [];
-        }
-    }
-
-    public function downloadBackup($file)
-    {
-        $filepath = storage_path("app/backups/{$file}");
-
-        if (! File::exists($filepath)) {
-            return redirect()->route('backend.legacy-backup.index')
-                ->with('error', 'File backup tidak ditemukan.');
-        }
-
-        return response()->download($filepath);
-    }
-
-    public function deleteBackup($file)
-    {
-        $filepath = storage_path("app/backups/{$file}");
-
-        if (File::exists($filepath)) {
-            File::delete($filepath);
-
-            // Delete associated info file
-            $infoFile = str_replace(['.sql', '.zip'], '.json', $filepath);
-            if (File::exists($infoFile)) {
-                File::delete($infoFile);
-            }
-
-            return redirect()->route('backend.legacy-backup.index')
-                ->with('success', 'Backup berhasil dihapus.');
-        }
-
-        return redirect()->route('backend.legacy-backup.index')
-            ->with('error', 'File backup tidak ditemukan.');
-    }
-
-    public function clearCache()
-    {
-        try {
-            Artisan::call('cache:clear');
-            Artisan::call('config:clear');
-            Artisan::call('view:clear');
-            Artisan::call('route:clear');
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Cache berhasil dibersihkan.',
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal membersihkan cache: '.$e->getMessage(),
-            ], 500);
-        }
-    }
-
-    public function optimizeApp()
-    {
-        try {
-            Artisan::call('optimize');
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Aplikasi berhasil dioptimasi.',
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal mengoptimasi aplikasi: '.$e->getMessage(),
-            ], 500);
         }
     }
 

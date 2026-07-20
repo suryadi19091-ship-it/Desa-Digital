@@ -12,8 +12,6 @@ class News extends Model
 {
     use HasFactory, LogsActivity;
 
-
-
     protected $fillable = [
         'title',
         'slug',
@@ -42,20 +40,6 @@ class News extends Model
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
             ->dontLogIfAttributesChangedOnly(['views_count']);
-    }
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($news) {
-            if (! isset($news->slug) || $news->slug === '') {
-                $news->slug = Str::slug($news->title);
-            }
-            if (! isset($news->author_id) || $news->author_id === null) {
-                $news->author_id = auth()->id();
-            }
-        });
     }
 
     public function author()
@@ -107,5 +91,19 @@ class News extends Model
         $categories = $this->categories;
 
         return $categories[$this->category] ?? $this->category;
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($news) {
+            if (! isset($news->slug) || $news->slug === '') {
+                $news->slug = Str::slug($news->title);
+            }
+            if (! isset($news->author_id) || $news->author_id === null) {
+                $news->author_id = auth()->id();
+            }
+        });
     }
 }

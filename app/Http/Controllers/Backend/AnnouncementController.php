@@ -15,7 +15,7 @@ class AnnouncementController extends Controller
         $query = Announcement::with('author');
 
         // Search
-        if ($request->has('search') && $request->search != '') {
+        if ($request->has('search') && $request->search !== '') {
             $query->where(function ($q) use ($request) {
                 $q->where('title', 'like', '%'.$request->search.'%')
                     ->orWhere('content', 'like', '%'.$request->search.'%');
@@ -23,25 +23,25 @@ class AnnouncementController extends Controller
         }
 
         // Filter by priority
-        if ($request->has('priority') && $request->priority != '') {
+        if ($request->has('priority') && $request->priority !== '') {
             $query->where('priority', $request->priority);
         }
 
         // Filter by status
         if ($request->has('status')) {
-            if ($request->status == 'active') {
+            if ($request->status === 'active') {
                 $query->where('is_active', true);
-            } elseif ($request->status == 'inactive') {
+            } elseif ($request->status === 'inactive') {
                 $query->where('is_active', false);
             }
         }
 
         // Filter by date range
-        if ($request->has('date_from') && $request->date_from != '') {
+        if ($request->has('date_from') && $request->date_from !== '') {
             $query->whereDate('valid_from', '>=', $request->date_from);
         }
 
-        if ($request->has('date_to') && $request->date_to != '') {
+        if ($request->has('date_to') && $request->date_to !== '') {
             $query->whereDate('valid_until', '<=', $request->date_to);
         }
 

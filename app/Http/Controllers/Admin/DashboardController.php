@@ -51,6 +51,224 @@ class DashboardController extends Controller
     }
 
     /**
+     * Get system information for dashboard
+     */
+    public function getSystemInfo()
+    {
+        if (! Gate::allows('view-system-info')) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $info = [
+            'php_version' => PHP_VERSION,
+            'laravel_version' => app()->version(),
+            'server_software' => request()->server('SERVER_SOFTWARE', 'Unknown'),
+            'database_version' => $this->getDatabaseVersion(),
+            'memory_limit' => ini_get('memory_limit'),
+            'max_execution_time' => ini_get('max_execution_time'),
+            'upload_max_filesize' => ini_get('upload_max_filesize'),
+        ];
+
+        return response()->json($info);
+    }
+
+    /**
+     * Show logs page
+     */
+    public function logs(Request $request)
+    {
+        if (! Gate::allows('view-logs')) {
+            abort(403, 'You do not have permission to view logs.');
+        }
+
+        $logs = $this->getLogEntries($request);
+
+        return view('backend.logs.index', [
+            'logs' => $logs,
+            'levels' => ['emergency', 'alert', 'critical', 'error', 'warning', 'notice', 'info', 'debug'],
+            'currentLevel' => $request->get('level', ''),
+            'currentDate' => $request->get('date', ''),
+            'search' => $request->get('search', ''),
+        ]);
+    }
+
+    /**
+     * Show activity logs page
+     */
+    public function activityLogs(Request $request)
+    {
+        if (! Gate::allows('view-activity-logs')) {
+            abort(403, 'You do not have permission to view activity logs.');
+        }
+
+        $query = Activity::with('causer')->latest();
+
+        if ($request->filled('search')) {
+            $search = $request->get('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('description', 'like', "%{$search}%")
+                    ->orWhere('log_name', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('user')) {
+            $user = $request->get('user');
+            $query->whereHasMorph('causer', [User::class], function ($q) use ($user) {
+                $q->where('name', 'like', "%{$user}%");
+            });
+        }
+
+        if ($request->filled('log_name')) {
+            $query->where('log_name', $request->get('log_name'));
+        }
+
+        $activities = $query->paginate(20)->withQueryString();
+
+        return view('backend.logs.activity', [
+            'activities' => $activities,
+            'search' => $request->get('search', ''),
+            'user_filter' => $request->get('user', ''),
+            'action_filter' => $request->get('action', ''),
+        ]);
+    }
+
+    /**
+     * Clear log files
+     */
+    public function clearLogs(Request $request)
+    {
+        if (! Gate::allows('clear-logs')) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        try {
+            $logPath = storage_path('logs/laravel.log');
+
+            if (file_exists($logPath)) {
+                // Clear the log file content
+                file_put_contents($logPath, '');
+            }
+
+            return response()->json(['success' => true, 'message' => 'Logs cleared successfully!']);
+        } catch (\Exception $e) {
+            \Log::error('Error clearing logs: '.$e->getMessage());
+
+            return response()->json(['success' => false, 'message' => 'Failed to clear logs.']);
+        }
+    }
+
+    /**
+     * Show statistics page
+     */
+    public function statistics()
+    {
+        if (! Gate::allows('generate-reports')) {
+            abort(403, 'Unauthorized access to statistics');
+        }
+
+        $demographics = [
+            'gender' => [
+                'male' => PopulationData::where('gender', 'L')->count(),
+                'female' => PopulationData::where('gender', 'P')->count(),
+            ],
+            'age_groups' => [
+                'child' => PopulationData::where('age', '<', 15)->count(),
+                'productive' => PopulationData::whereBetween('age', [15, 64])->count(),
+                'elderly' => PopulationData::where('age', '>=', 65)->count(),
+            ],
+            'religion' => PopulationData::select('religion', DB::raw('count(*) as total'))
+                ->groupBy('religion')
+                ->get(),
+            'occupation' => PopulationData::select('occupation', DB::raw('count(*) as total'))
+                ->groupBy('occupation')
+                ->orderBy('total', 'desc')
+                ->take(5)
+                ->get(),
+        ];
+
+        $budgetStats = [
+            'total_income' => VillageBudget::where('budget_type', 'pendapatan')->sum('planned_amount'),
+            'total_expense' => VillageBudget::where('budget_type', 'belanja')->sum('planned_amount'),
+            'realization_income' => VillageBudget::where('budget_type', 'pendapatan')->sum('realized_amount'),
+            'realization_expense' => VillageBudget::where('budget_type', 'belanja')->sum('realized_amount'),
+        ];
+
+        return view('backend.pages.statistics', compact('demographics', 'budgetStats'));
+    }
+
+    /**
+     * Show reports page
+     */
+    public function reports()
+    {
+        if (! Gate::allows('generate-reports')) {
+            abort(403, 'Unauthorized access to reports');
+        }
+
+        $reports = [
+            'population' => [
+                'total' => PopulationData::count(),
+                'male' => PopulationData::where('gender', 'L')->count(),
+                'female' => PopulationData::where('gender', 'P')->count(),
+            ],
+            'content' => [
+                'news' => News::count(),
+                'agendas' => Agenda::count(),
+                'messages' => ContactMessage::count(),
+            ],
+            'budget' => [
+                'planned' => VillageBudget::sum('planned_amount'),
+                'realized' => VillageBudget::sum('realized_amount'),
+            ],
+        ];
+
+        return view('backend.pages.reports', compact('reports'));
+    }
+
+    /**
+     * Export reports to CSV
+     */
+    public function exportReports()
+    {
+        if (! Gate::allows('export-data')) {
+            abort(403, 'Unauthorized to export data');
+        }
+
+        $filename = 'report-desa-'.date('Y-m-d').'.csv';
+        $headers = [
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename={$filename}",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
+
+        $columns = ['Kategori', 'Item', 'Nilai', 'Keterangan'];
+
+        $callback = function () use ($columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            // Population data
+            fputcsv($file, ['Penduduk', 'Total Penduduk', PopulationData::count(), 'Jiwa']);
+            fputcsv($file, ['Penduduk', 'Laki-laki', PopulationData::where('gender', 'L')->count(), 'Jiwa']);
+            fputcsv($file, ['Penduduk', 'Perempuan', PopulationData::where('gender', 'P')->count(), 'Jiwa']);
+
+            // Content data
+            fputcsv($file, ['Konten', 'Berita', News::count(), 'Artikel']);
+            fputcsv($file, ['Konten', 'Agenda', Agenda::count(), 'Kegiatan']);
+
+            // Budget data
+            fputcsv($file, ['Anggaran', 'Total Rencana', VillageBudget::sum('planned_amount'), 'Rupiah']);
+            fputcsv($file, ['Anggaran', 'Total Realisasi', VillageBudget::sum('realized_amount'), 'Rupiah']);
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
      * Get dashboard statistics
      */
     private function getDashboardStats()
@@ -115,7 +333,6 @@ class DashboardController extends Controller
             $stats['php_version'] = PHP_VERSION;
             $stats['laravel_version'] = app()->version();
             $stats['server_status'] = 'Active';
-
         } catch (\Exception $e) {
             \Log::error('Dashboard stats error: '.$e->getMessage());
             // Return default stats if there's an error
@@ -305,7 +522,6 @@ class DashboardController extends Controller
 
             // Limit to 5 most recent
             $activities = array_slice($activities, 0, 5);
-
         } catch (\Exception $e) {
             \Log::error('Recent activities error: '.$e->getMessage());
             $activities = [];
@@ -349,7 +565,7 @@ class DashboardController extends Controller
             $usedMB = 50; // Example value
             $totalMB = 1024; // 1GB in MB
 
-            return round(($usedMB / $totalMB) * 100, 1);
+            return round($usedMB / $totalMB * 100, 1);
         } catch (\Exception $e) {
             return 0;
         }
@@ -425,28 +641,6 @@ class DashboardController extends Controller
     }
 
     /**
-     * Get system information for dashboard
-     */
-    public function getSystemInfo()
-    {
-        if (! Gate::allows('view-system-info')) {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
-
-        $info = [
-            'php_version' => PHP_VERSION,
-            'laravel_version' => app()->version(),
-            'server_software' => request()->server('SERVER_SOFTWARE', 'Unknown'),
-            'database_version' => $this->getDatabaseVersion(),
-            'memory_limit' => ini_get('memory_limit'),
-            'max_execution_time' => ini_get('max_execution_time'),
-            'upload_max_filesize' => ini_get('upload_max_filesize'),
-        ];
-
-        return response()->json($info);
-    }
-
-    /**
      * Get database version
      */
     private function getDatabaseVersion()
@@ -458,66 +652,6 @@ class DashboardController extends Controller
         } catch (\Exception $e) {
             return 'Unknown';
         }
-    }
-
-    /**
-     * Show logs page
-     */
-    public function logs(Request $request)
-    {
-        if (! Gate::allows('view-logs')) {
-            abort(403, 'You do not have permission to view logs.');
-        }
-
-        $logs = $this->getLogEntries($request);
-
-        return view('backend.logs.index', [
-            'logs' => $logs,
-            'levels' => ['emergency', 'alert', 'critical', 'error', 'warning', 'notice', 'info', 'debug'],
-            'currentLevel' => $request->get('level', ''),
-            'currentDate' => $request->get('date', ''),
-            'search' => $request->get('search', ''),
-        ]);
-    }
-
-    /**
-     * Show activity logs page
-     */
-    public function activityLogs(Request $request)
-    {
-        if (! Gate::allows('view-activity-logs')) {
-            abort(403, 'You do not have permission to view activity logs.');
-        }
-
-        $query = Activity::with('causer')->latest();
-
-        if ($request->filled('search')) {
-            $search = $request->get('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('description', 'like', "%{$search}%")
-                    ->orWhere('log_name', 'like', "%{$search}%");
-            });
-        }
-
-        if ($request->filled('user')) {
-            $user = $request->get('user');
-            $query->whereHasMorph('causer', [User::class], function ($q) use ($user) {
-                $q->where('name', 'like', "%{$user}%");
-            });
-        }
-
-        if ($request->filled('log_name')) {
-            $query->where('log_name', $request->get('log_name'));
-        }
-
-        $activities = $query->paginate(20)->withQueryString();
-
-        return view('backend.logs.activity', [
-            'activities' => $activities,
-            'search' => $request->get('search', ''),
-            'user_filter' => $request->get('user', ''),
-            'action_filter' => $request->get('action', ''),
-        ]);
     }
 
     /**
@@ -570,147 +704,10 @@ class DashboardController extends Controller
                     $logs->push($entry);
                 }
             }
-
         } catch (\Exception $e) {
             \Log::error('Error reading log file: '.$e->getMessage());
         }
 
         return $logs->take(50); // Limit to 50 entries
-    }
-
-    /**
-     * Clear log files
-     */
-    public function clearLogs(Request $request)
-    {
-        if (! Gate::allows('clear-logs')) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
-        }
-
-        try {
-            $logPath = storage_path('logs/laravel.log');
-
-            if (file_exists($logPath)) {
-                // Clear the log file content
-                file_put_contents($logPath, '');
-            }
-
-            return response()->json(['success' => true, 'message' => 'Logs cleared successfully!']);
-        } catch (\Exception $e) {
-            \Log::error('Error clearing logs: '.$e->getMessage());
-
-            return response()->json(['success' => false, 'message' => 'Failed to clear logs.']);
-        }
-    }
-
-    /**
-     * Show statistics page
-     */
-    public function statistics()
-    {
-        if (! Gate::allows('generate-reports')) {
-            abort(403, 'Unauthorized access to statistics');
-        }
-
-        $demographics = [
-            'gender' => [
-                'male' => PopulationData::where('gender', 'L')->count(),
-                'female' => PopulationData::where('gender', 'P')->count(),
-            ],
-            'age_groups' => [
-                'child' => PopulationData::where('age', '<', 15)->count(),
-                'productive' => PopulationData::whereBetween('age', [15, 64])->count(),
-                'elderly' => PopulationData::where('age', '>=', 65)->count(),
-            ],
-            'religion' => PopulationData::select('religion', DB::raw('count(*) as total'))
-                ->groupBy('religion')
-                ->get(),
-            'occupation' => PopulationData::select('occupation', DB::raw('count(*) as total'))
-                ->groupBy('occupation')
-                ->orderBy('total', 'desc')
-                ->take(5)
-                ->get(),
-        ];
-
-        $budgetStats = [
-            'total_income' => VillageBudget::where('budget_type', 'pendapatan')->sum('planned_amount'),
-            'total_expense' => VillageBudget::where('budget_type', 'belanja')->sum('planned_amount'),
-            'realization_income' => VillageBudget::where('budget_type', 'pendapatan')->sum('realized_amount'),
-            'realization_expense' => VillageBudget::where('budget_type', 'belanja')->sum('realized_amount'),
-        ];
-
-        return view('backend.pages.statistics', compact('demographics', 'budgetStats'));
-    }
-
-    /**
-     * Show reports page
-     */
-    public function reports()
-    {
-        if (! Gate::allows('generate-reports')) {
-            abort(403, 'Unauthorized access to reports');
-        }
-
-        $reports = [
-            'population' => [
-                'total' => PopulationData::count(),
-                'male' => PopulationData::where('gender', 'L')->count(),
-                'female' => PopulationData::where('gender', 'P')->count(),
-            ],
-            'content' => [
-                'news' => News::count(),
-                'agendas' => Agenda::count(),
-                'messages' => ContactMessage::count(),
-            ],
-            'budget' => [
-                'planned' => VillageBudget::sum('planned_amount'),
-                'realized' => VillageBudget::sum('realized_amount'),
-            ],
-        ];
-
-        return view('backend.pages.reports', compact('reports'));
-    }
-
-    /**
-     * Export reports to CSV
-     */
-    public function exportReports()
-    {
-        if (! Gate::allows('export-data')) {
-            abort(403, 'Unauthorized to export data');
-        }
-
-        $filename = 'report-desa-'.date('Y-m-d').'.csv';
-        $headers = [
-            'Content-type' => 'text/csv',
-            'Content-Disposition' => "attachment; filename={$filename}",
-            'Pragma' => 'no-cache',
-            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-            'Expires' => '0',
-        ];
-
-        $columns = ['Kategori', 'Item', 'Nilai', 'Keterangan'];
-
-        $callback = function () use ($columns) {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, $columns);
-
-            // Population data
-            fputcsv($file, ['Penduduk', 'Total Penduduk', PopulationData::count(), 'Jiwa']);
-            fputcsv($file, ['Penduduk', 'Laki-laki', PopulationData::where('gender', 'L')->count(), 'Jiwa']);
-            fputcsv($file, ['Penduduk', 'Perempuan', PopulationData::where('gender', 'P')->count(), 'Jiwa']);
-
-            // Content data
-            fputcsv($file, ['Konten', 'Berita', News::count(), 'Artikel']);
-            fputcsv($file, ['Konten', 'Agenda', Agenda::count(), 'Kegiatan']);
-
-            // Budget data
-            fputcsv($file, ['Anggaran', 'Total Rencana', VillageBudget::sum('planned_amount'), 'Rupiah']);
-            fputcsv($file, ['Anggaran', 'Total Realisasi', VillageBudget::sum('realized_amount'), 'Rupiah']);
-
-            fclose($file);
-        };
-
-        return response()->stream($callback, 200, $headers);
     }
 }

@@ -11,15 +11,6 @@ class Banner extends Model
 {
     use HasFactory, LogsActivity;
 
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->logFillable()
-            ->logOnlyDirty()
-            ->dontSubmitEmptyLogs()
-            ->dontLogIfAttributesChangedOnly(['click_count']);
-    }
-
     protected $fillable = [
         'title',
         'image_path',
@@ -39,4 +30,13 @@ class Banner extends Model
         'display_order' => 'integer',
         'click_count' => 'integer',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->dontLogIfAttributesChangedOnly(['click_count']);
+    }
 }

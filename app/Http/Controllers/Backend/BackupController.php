@@ -78,7 +78,6 @@ class BackupController extends Controller
                 'filename' => $filename,
                 'size' => $this->formatFileSize(filesize($fullPath)),
             ]);
-
         } catch (Exception $e) {
             Log::error('Backup creation error: '.$e->getMessage());
 
@@ -108,7 +107,6 @@ class BackupController extends Controller
             }
 
             return response()->download($filePath);
-
         } catch (Exception $e) {
             Log::error('Backup download error: '.$e->getMessage());
             abort(500, 'Gagal mengunduh backup');
@@ -149,7 +147,6 @@ class BackupController extends Controller
                 'success' => false,
                 'message' => 'File backup tidak ditemukan',
             ], 404);
-
         } catch (Exception $e) {
             Log::error('Backup deletion error: '.$e->getMessage());
 
@@ -204,7 +201,6 @@ class BackupController extends Controller
                 'success' => true,
                 'message' => 'Data berhasil dipulihkan dari backup!',
             ]);
-
         } catch (Exception $e) {
             Log::error('Backup restore error: '.$e->getMessage());
 
@@ -228,13 +224,166 @@ class BackupController extends Controller
                 'success' => true,
                 'data' => $statistics,
             ]);
-
         } catch (Exception $e) {
             Log::error('Backup statistics error: '.$e->getMessage());
 
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal memuat statistik backup',
+            ], 500);
+        }
+    }
+
+    /**
+     * Get all tables in current database
+     */
+    public function getAllTables()
+    {
+        $database = config('database.connections.mysql.database');
+        $tables = DB::select('SELECT TABLE_NAME as table_name FROM information_schema.tables WHERE table_schema = ?', [$database]);
+
+        $tableNames = array_map(function ($table) {
+            // Convert object to array to handle different property access methods
+            $tableArray = (array) $table;
+
+            return $table->table_name ?? $tableArray['table_name'];
+        }, $tables);
+
+        return collect($tableNames);
+    }
+
+    /**
+     * Get table backup SQL
+     */
+    public function getTableBackup($tableName)
+    {
+        try {
+            // Check if table exists using INFORMATION_SCHEMA
+            $database = config('database.connections.mysql.database');
+            $tableExists = DB::select('SELECT table_name FROM information_schema.tables WHERE table_schema = ? AND table_name = ?', [$database, $tableName]);
+
+            if ($tableExists === [] || $tableExists === false) {
+                Log::info("Table {$tableName} does not exist, skipping backup");
+
+                return "-- Table {$tableName} does not exist\n\n";
+            }
+
+            $sql = "-- Table: {$tableName}\n";
+            $sql .= "DROP TABLE IF EXISTS `{$tableName}`;\n";
+
+            // Get table structure
+            $createTable = DB::select("SHOW CREATE TABLE `{$tableName}`");
+            if ($createTable !== [] && $createTable !== false) {
+                $sql .= $createTable[0]->{'Create Table'}.";\n\n";
+            }
+
+            // Get row count
+            $rowCount = DB::table($tableName)->count();
+
+            if ($rowCount > 0) {
+                $sql .= "-- Dumping data for table `{$tableName}` ({$rowCount} rows)\n";
+                $sql .= "LOCK TABLES `{$tableName}` WRITE;\n";
+                $sql .= "/*!40000 ALTER TABLE `{$tableName}` DISABLE KEYS */;\n";
+
+                // Process data in chunks to avoid memory issues
+                $chunkSize = 1000;
+                $chunks = ceil($rowCount / $chunkSize);
+
+                for ($i = 0; $i < $chunks; $i++) {
+                    $offset = $i * $chunkSize;
+                    $data = DB::table($tableName)->offset($offset)->limit($chunkSize)->get();
+
+                    if ($data->count() > 0) {
+                        $sql .= "INSERT INTO `{$tableName}` VALUES\n";
+                        $values = [];
+
+                        foreach ($data as $row) {
+                            $rowData = array_map(function ($value) {
+                                if (is_null($value)) {
+                                    return 'NULL';
+                                }
+                                if (is_numeric($value)) {
+                                    return $value;
+                                }
+                                return "'".addslashes($value)."'";
+                            }, (array) $row);
+
+                            $values[] = '('.implode(',', $rowData).')';
+                        }
+
+                        $sql .= implode(",\n", $values).";\n";
+                    }
+                }
+
+                $sql .= "/*!40000 ALTER TABLE `{$tableName}` ENABLE KEYS */;\n";
+                $sql .= "UNLOCK TABLES;\n\n";
+            } else {
+                $sql .= "-- Table `{$tableName}` is empty\n\n";
+            }
+
+            return $sql;
+        } catch (Exception $e) {
+            Log::warning("Failed to backup table {$tableName}: ".$e->getMessage());
+
+            return "-- Failed to backup table: {$tableName} - Error: ".$e->getMessage()."\n\n";
+        }
+    }
+
+    /**
+     * Get backup preview information
+     */
+    public function getBackupPreview(Request $request)
+    {
+        try {
+            $request->validate([
+                'backup_types' => 'required|array',
+                'backup_types.*' => 'in:users,locations,news,content,village,services,business,tourism,settings,system,all',
+            ]);
+
+            $backupTypes = $request->input('backup_types', []);
+
+            if (in_array('all', $backupTypes)) {
+                $tables = $this->getAllTables();
+            } else {
+                $tables = $this->getTablesForCategories($backupTypes);
+            }
+
+            $preview = [];
+            $totalRows = 0;
+
+            foreach ($tables as $table) {
+                try {
+                    $count = DB::table($table)->count();
+                    $preview[] = [
+                        'table' => $table,
+                        'rows' => $count,
+                        'size_estimate' => $this->estimateTableSize($table),
+                    ];
+                    $totalRows += $count;
+                } catch (Exception $e) {
+                    $preview[] = [
+                        'table' => $table,
+                        'rows' => 0,
+                        'error' => $e->getMessage(),
+                    ];
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'tables' => $preview,
+                    'total_tables' => count($tables),
+                    'total_rows' => $totalRows,
+                    'estimated_time' => $this->estimateBackupTime($totalRows),
+                ],
+            ]);
+        } catch (Exception $e) {
+            Log::error('Backup preview error: '.$e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memuat preview backup: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -319,24 +468,6 @@ class BackupController extends Controller
     }
 
     /**
-     * Get all tables in current database
-     */
-    public function getAllTables()
-    {
-        $database = config('database.connections.mysql.database');
-        $tables = DB::select('SELECT TABLE_NAME as table_name FROM information_schema.tables WHERE table_schema = ?', [$database]);
-
-        $tableNames = array_map(function ($table) {
-            // Convert object to array to handle different property access methods
-            $tableArray = (array) $table;
-
-            return $table->table_name ?? $tableArray['table_name'];
-        }, $tables);
-
-        return collect($tableNames);
-    }
-
-    /**
      * Get tables for specific categories
      */
     private function getTablesForCategories($categories)
@@ -366,144 +497,6 @@ class BackupController extends Controller
         $existingTables = $this->getAllTables()->toArray();
 
         return array_intersect($tables, $existingTables);
-    }
-
-    /**
-     * Get table backup SQL
-     */
-    public function getTableBackup($tableName)
-    {
-        try {
-            // Check if table exists using INFORMATION_SCHEMA
-            $database = config('database.connections.mysql.database');
-            $tableExists = DB::select('SELECT table_name FROM information_schema.tables WHERE table_schema = ? AND table_name = ?', [$database, $tableName]);
-
-            if ($tableExists === [] || $tableExists === false) {
-                Log::info("Table {$tableName} does not exist, skipping backup");
-
-                return "-- Table {$tableName} does not exist\n\n";
-            }
-
-            $sql = "-- Table: {$tableName}\n";
-            $sql .= "DROP TABLE IF EXISTS `{$tableName}`;\n";
-
-            // Get table structure
-            $createTable = DB::select("SHOW CREATE TABLE `{$tableName}`");
-            if ($createTable !== [] && $createTable !== false) {
-                $sql .= $createTable[0]->{'Create Table'}.";\n\n";
-            }
-
-            // Get row count
-            $rowCount = DB::table($tableName)->count();
-
-            if ($rowCount > 0) {
-                $sql .= "-- Dumping data for table `{$tableName}` ({$rowCount} rows)\n";
-                $sql .= "LOCK TABLES `{$tableName}` WRITE;\n";
-                $sql .= "/*!40000 ALTER TABLE `{$tableName}` DISABLE KEYS */;\n";
-
-                // Process data in chunks to avoid memory issues
-                $chunkSize = 1000;
-                $chunks = ceil($rowCount / $chunkSize);
-
-                for ($i = 0; $i < $chunks; $i++) {
-                    $offset = $i * $chunkSize;
-                    $data = DB::table($tableName)->offset($offset)->limit($chunkSize)->get();
-
-                    if ($data->count() > 0) {
-                        $sql .= "INSERT INTO `{$tableName}` VALUES\n";
-                        $values = [];
-
-                        foreach ($data as $row) {
-                            $rowData = array_map(function ($value) {
-                                if (is_null($value)) {
-                                    return 'NULL';
-                                }
-                                if (is_numeric($value)) {
-                                    return $value;
-                                }
-                                return "'".addslashes($value)."'";
-                            }, (array) $row);
-
-                            $values[] = '('.implode(',', $rowData).')';
-                        }
-
-                        $sql .= implode(",\n", $values).";\n";
-                    }
-                }
-
-                $sql .= "/*!40000 ALTER TABLE `{$tableName}` ENABLE KEYS */;\n";
-                $sql .= "UNLOCK TABLES;\n\n";
-            } else {
-                $sql .= "-- Table `{$tableName}` is empty\n\n";
-            }
-
-            return $sql;
-
-        } catch (Exception $e) {
-            Log::warning("Failed to backup table {$tableName}: ".$e->getMessage());
-
-            return "-- Failed to backup table: {$tableName} - Error: ".$e->getMessage()."\n\n";
-        }
-    }
-
-    /**
-     * Get backup preview information
-     */
-    public function getBackupPreview(Request $request)
-    {
-        try {
-            $request->validate([
-                'backup_types' => 'required|array',
-                'backup_types.*' => 'in:users,locations,news,content,village,services,business,tourism,settings,system,all',
-            ]);
-
-            $backupTypes = $request->input('backup_types', []);
-
-            if (in_array('all', $backupTypes)) {
-                $tables = $this->getAllTables();
-            } else {
-                $tables = $this->getTablesForCategories($backupTypes);
-            }
-
-            $preview = [];
-            $totalRows = 0;
-
-            foreach ($tables as $table) {
-                try {
-                    $count = DB::table($table)->count();
-                    $preview[] = [
-                        'table' => $table,
-                        'rows' => $count,
-                        'size_estimate' => $this->estimateTableSize($table),
-                    ];
-                    $totalRows += $count;
-                } catch (Exception $e) {
-                    $preview[] = [
-                        'table' => $table,
-                        'rows' => 0,
-                        'error' => $e->getMessage(),
-                    ];
-                }
-            }
-
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'tables' => $preview,
-                    'total_tables' => count($tables),
-                    'total_rows' => $totalRows,
-                    'estimated_time' => $this->estimateBackupTime($totalRows),
-                ],
-            ]);
-
-        } catch (Exception $e) {
-            Log::error('Backup preview error: '.$e->getMessage());
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal memuat preview backup: '.$e->getMessage(),
-            ], 500);
-        }
     }
 
     /**

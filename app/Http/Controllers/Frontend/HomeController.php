@@ -221,8 +221,8 @@ class HomeController extends Controller
             'male_population' => $malePopulation,
             'female_population' => $femalePopulation,
             'total_families' => $totalFamilies,
-            'male_percentage' => $totalPopulation > 0 ? round(($malePopulation / $totalPopulation) * 100, 1) : 0,
-            'female_percentage' => $totalPopulation > 0 ? round(($femalePopulation / $totalPopulation) * 100, 1) : 0,
+            'male_percentage' => $totalPopulation > 0 ? round($malePopulation / $totalPopulation * 100, 1) : 0,
+            'female_percentage' => $totalPopulation > 0 ? round($femalePopulation / $totalPopulation * 100, 1) : 0,
         ];
 
         // Age distribution
@@ -235,7 +235,7 @@ class HomeController extends Controller
 
         // Calculate percentages for age distribution
         foreach ($ageDistribution as $key => $value) {
-            $ageDistribution[$key.'_percentage'] = $totalPopulation > 0 ? round(($value / $totalPopulation) * 100, 1) : 0;
+            $ageDistribution[$key.'_percentage'] = $totalPopulation > 0 ? round($value / $totalPopulation * 100, 1) : 0;
         }
 
         // Education level (for people 15+)
@@ -331,8 +331,8 @@ class HomeController extends Controller
         $genderStats = [
             'male_count' => $maleCount,
             'female_count' => $femaleCount,
-            'male_percentage' => $totalPop > 0 ? ($maleCount / $totalPop) * 100 : 50,
-            'female_percentage' => $totalPop > 0 ? ($femaleCount / $totalPop) * 100 : 50,
+            'male_percentage' => $totalPop > 0 ? $maleCount / $totalPop * 100 : 50,
+            'female_percentage' => $totalPop > 0 ? $femaleCount / $totalPop * 100 : 50,
             'ratio' => $femaleCount > 0 ? '1:'.number_format($maleCount / $femaleCount, 2) : '1:1',
         ];
 
@@ -430,10 +430,10 @@ class HomeController extends Controller
         $livingPopulation = PopulationData::where('status', 'Hidup')->count();
         $totalPopulation = PopulationData::count(); // Total including deceased for rate calculation
 
-        $birthRate = $totalPopulation > 0 ? ($totalBirths / $totalPopulation) * 1000 : 0;
-        $deathRate = $totalPopulation > 0 ? ($totalDeaths / $totalPopulation) * 1000 : 0;
+        $birthRate = $totalPopulation > 0 ? $totalBirths / $totalPopulation * 1000 : 0;
+        $deathRate = $totalPopulation > 0 ? $totalDeaths / $totalPopulation * 1000 : 0;
         $naturalGrowth = $totalBirths - $totalDeaths;
-        $naturalGrowthRate = $totalPopulation > 0 ? ($naturalGrowth / $totalPopulation) * 1000 : 0;
+        $naturalGrowthRate = $totalPopulation > 0 ? $naturalGrowth / $totalPopulation * 1000 : 0;
 
         $birthDeathStats = [
             'births' => [
@@ -580,7 +580,7 @@ class HomeController extends Controller
             ->with([
                 'transactions' => function ($q) {
                     $q->where('transaction_type', 'expense');
-                }
+                },
             ])
             ->get();
 
@@ -836,7 +836,7 @@ class HomeController extends Controller
             'total_budget' => $totalBudget,
             'total_realized' => $totalRealized,
             'remaining' => $totalBudget - $totalRealized,
-            'percentage' => $totalBudget > 0 ? ($totalRealized / $totalBudget) * 100 : 0,
+            'percentage' => $totalBudget > 0 ? $totalRealized / $totalBudget * 100 : 0,
         ]);
     }
 

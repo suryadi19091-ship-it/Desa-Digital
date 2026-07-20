@@ -157,7 +157,6 @@ class UserController extends Controller
 
             return redirect()->route('backend.users.index')
                 ->with('success', 'User created successfully');
-
         } catch (\Exception $e) {
             Log::error('User creation error: '.$e->getMessage());
 
@@ -270,7 +269,6 @@ class UserController extends Controller
 
             return redirect()->route('backend.users.show', $user)
                 ->with('success', 'User updated successfully');
-
         } catch (\Exception $e) {
             Log::error('User update error: '.$e->getMessage());
 
@@ -324,7 +322,6 @@ class UserController extends Controller
                 'success' => true,
                 'message' => 'User deleted successfully',
             ]);
-
         } catch (\Exception $e) {
             Log::error('User deletion error: '.$e->getMessage());
 
@@ -369,7 +366,6 @@ class UserController extends Controller
                 'success' => true,
                 'message' => 'User status updated successfully',
             ]);
-
         } catch (\Exception $e) {
             Log::error('User status update error: '.$e->getMessage());
 
@@ -441,7 +437,6 @@ class UserController extends Controller
                 'success' => true,
                 'message' => "Bulk action completed successfully on {$count} users",
             ]);
-
         } catch (\Exception $e) {
             Log::error('Bulk action error: '.$e->getMessage());
 
@@ -501,7 +496,6 @@ class UserController extends Controller
             return response($csvContent)
                 ->header('Content-Type', 'text/csv')
                 ->header('Content-Disposition', 'attachment; filename="'.$filename.'"');
-
         } catch (\Exception $e) {
             Log::error('Export error: '.$e->getMessage());
 

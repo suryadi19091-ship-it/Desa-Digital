@@ -113,7 +113,6 @@ class SettingsController extends Controller
 
             return redirect()->route('backend.settings.index')
                 ->with('success', 'Settings updated successfully');
-
         } catch (\Exception $e) {
             \Log::error('Settings update error: '.$e->getMessage());
 
@@ -153,7 +152,6 @@ class SettingsController extends Controller
                 'success' => true,
                 'message' => 'Test email sent successfully',
             ]);
-
         } catch (\Exception $e) {
             \Log::error('Test email error: '.$e->getMessage());
 
@@ -224,7 +222,6 @@ class SettingsController extends Controller
                 'message' => 'Backup created successfully',
                 'filename' => $filename,
             ]);
-
         } catch (\Exception $e) {
             \Log::error('Backup creation error: '.$e->getMessage());
 
@@ -277,7 +274,6 @@ class SettingsController extends Controller
                 'success' => false,
                 'message' => 'Backup file not found',
             ]);
-
         } catch (\Exception $e) {
             \Log::error('Backup deletion error: '.$e->getMessage());
 

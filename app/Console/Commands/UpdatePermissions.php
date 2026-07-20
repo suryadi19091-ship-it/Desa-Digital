@@ -320,7 +320,6 @@ class UpdatePermissions extends Command
             } else {
                 $this->warn('Admin role not found. Please create admin role manually.');
             }
-
         } catch (\Exception $e) {
             $this->warn('Could not update role permissions: '.$e->getMessage());
         }

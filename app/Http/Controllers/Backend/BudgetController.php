@@ -52,7 +52,7 @@ class BudgetController extends Controller
             'total_budget' => $totalBudget,
             'total_realized' => $totalRealized,
             'remaining' => $totalBudget - $totalRealized,
-            'realization_percentage' => $totalBudget > 0 ? ($totalRealized / $totalBudget) * 100 : 0,
+            'realization_percentage' => $totalBudget > 0 ? $totalRealized / $totalBudget * 100 : 0,
         ];
 
         return view('backend.budget.index', compact('budgets', 'summary'));
@@ -76,7 +76,7 @@ class BudgetController extends Controller
 
         VillageBudget::create([
             'fiscal_year' => $request->year,
-            'budget_type' => $request->type == 'income' ? 'pendapatan' : 'belanja',
+            'budget_type' => $request->type === 'income' ? 'pendapatan' : 'belanja',
             'category' => $request->category,
             'sub_category' => $request->name,
             'description' => $request->description,
@@ -216,7 +216,7 @@ class BudgetController extends Controller
                 'allocated' => $allocated,
                 'spent' => $spent,
                 'remaining' => $allocated - $spent,
-                'percentage' => $allocated > 0 ? ($spent / $allocated) * 100 : 0,
+                'percentage' => $allocated > 0 ? $spent / $allocated * 100 : 0,
             ];
         });
 

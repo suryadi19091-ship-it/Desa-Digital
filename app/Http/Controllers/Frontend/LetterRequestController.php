@@ -131,7 +131,6 @@ class LetterRequestController extends Controller
             ]);
 
             return redirect()->back()->with('success', "Pengajuan surat berhasil dikirim dengan nomor: {$requestNumber}. Anda akan dihubungi dalam 1-3 hari kerja untuk proses selanjutnya.");
-
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
